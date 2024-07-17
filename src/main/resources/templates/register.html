@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate Management System</title>
+    <link rel="stylesheet" href="../static/styles/register.css">
+    <link rel="icon" href="../static/images/favicon.ico">
+</head>
+<body>
+<div class="register-container">
+  <form action="/register/add" method="post">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+    <div class="register-box">
+      <div>
+        <img src="../static/images/uew-logo-alumni.jpg">
+      </div>
+      <h2>Register</h2>
+      <form action="/register/add" method="POST">
+        <div class="textbox">
+          <div class="textbox">
+            <input type="text" placeholder="Full name" name="name" required>
+          </div>
+          <input type="text" placeholder="User ID" name="userId" required>
+        </div>
+        <div class="textbox">
+          <input type="password" placeholder="Password" name="password" required>
+        </div>
+        <select class="textbox" name="role">
+          <option value="select">-Select Role-</option>
+          <option value="ROLE_ADMIN">ADMIN</option>
+          <option value="ROLE_CLIENT">CLIENT</option>
+        </select>
+
+        <button type="submit" class="btn">Register</button>
+        <a href="forgotpw.html" class="forgot-password">Forgot Password?</a>
+      </form>
+      <div class="register-link">
+        Already have an account? <a href="/login">Login</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Certificate Management System</title>
-  <link rel="stylesheet" href="../static/styles/dashboard.css">
-  <link rel="icon" href="../static/images/favicon.ico">
+    <link rel="stylesheet" href="../static/styles/dashboard.css">
+    <link rel="icon" href="../static/images/favicon.ico">
 </head>
 <body>
 <div class="dashboard">
   <!-- Header -->
   <header class="header">
+
+<!--    Profile section area-->
     <div class="header-left">
-      <img src="../static/images/profile-pic.jpg" alt="User Profile" class="profile-image" id="profileImage">
+      <img src="../static/images/profile-pic.jpg" alt="Logo" class="profile-image" id="profileImage">
       <span id="userName" th:text="${loggedInUser.name}">Full Name</span>
-      <span id="role" th:text="${loggedInUser.role}">Role</span>
+      <span id="role" th:text="${loggedInUser.role}">ROLE</span>
     </div>
+
+<!--    Title section area-->
     <div class="header-center">
       <h1>CERTIFICATE MANAGEMENT SYSTEM</h1>
     </div>
@@ -24,10 +28,12 @@
           <img src="../static/images/person_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Profile Icon">
           <span>&#9662;</span>
         </button>
+<!--        Logout section of the header-->
         <ul class="dropdown-menu" id="profileDropdownMenu">
           <li><a href="#">Profile</a></li>
           <li><a href="#">Logout</a></li>
         </ul>
+
       </div>
     </div>
   </header>
@@ -35,7 +41,7 @@
   <!-- Sidebar and Main Content -->
   <div class="main-section">
     <nav class="sidebar">
-      <!-- Sidebar content here -->
+      <!-- Sidebar content area -->
       <div class="sidebar-toggle" id="sidebarToggle">
         <span>&#9776;</span>
       </div>
@@ -54,19 +60,19 @@
           </a>
           <ul class="dropdown-content">
             <li>
-              <a href="/academic-year" id="yearButton"  >Academic Year</a>
+              <a href="#" id="yearButton" onclick="loadContent('academicYear'); return false" >Academic Year</a>
             </li>
             <li>
-              <a href="/faculty" id="faculty">Faculty</a>
+              <a href="#" id="faculty" onclick="loadContent('faculty'); return false">Faculty</a>
             </li>
             <li>
-              <a href="/department" id="department">Department</a>
+              <a href="#" id="department" onclick="loadContent('department'); return false">Department</a>
             </li>
             <li>
-              <a href="/programme" id="programme">Program</a>
+              <a href="#" id="programme" onclick="loadContent('programme'); return false">Program</a>
             </li>
             <li>
-              <a href="#" id="student">Student</a>
+              <a href="#" id="student" onclick="loadContent('student'); return false">Student</a>
             </li>
           </ul>
         </li>
@@ -84,12 +90,6 @@
         </li>
         <li>
           <a href="#">
-            <img src="../static/images/person_add_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Forum">
-            <span class="link-text">USERS</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
             <img src="../static/images/summarize_24dp_FILL0_wght400_GRAD0_opsz24.png" alt="Forum">
             <span class="link-text">REPORT</span>
           </a>
@@ -97,12 +97,14 @@
       </ul>
     </nav>
     <div class="main-content" id="mainContent">
-      <!-- Main content here -->
+      <!-- Main content area -->
 
     </div>
   </div>
 </div>
+
 <script src="../static/scripts/dashboard-topbar.js"></script>
 <script src="../static/scripts/dashboard-sidebar.js"></script>
+
 </body>
 </html>
