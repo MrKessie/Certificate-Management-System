@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty</title>
+  <link rel="stylesheet" href="../static/styles/pages2.css">
+</head>
+<body>
+<header>
+  <nav>
+    <div class="menu-icon">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="nav-title">Faculties</div>
+    <div class="nav-icons">
+      <i class="fas fa-bell"></i>
+      <i class="fas fa-envelope"></i>
+    </div>
+  </nav>
+</header>
+<main>
+  <form id="faculty-form" method="post" enctype="multipart/form-data">
+    <section class="filter-section">
+      <div class="filter-group">
+        <label for="facultyId">Faculty ID</label>
+        <input type="text" id="facultyId" placeholder="Faculty ID" name="facultyId">
+      </div>
+      <div class="filter-group">
+        <label for="facultyName">Faculty Name</label>
+        <input type="text" id="facultyName" placeholder="Faculty name" name="facultyName">
+      </div>
+      <div class="filter-group">
+        <label for="importFile">Import Faculties</label>
+        <input id="importFile" type="file" name="facultyFile" readonly>
+      </div>
+      <div class="button-actions">
+        <button id="save-btn" class="save-btn" type="submit" onclick="return validateForm()">Save</button>
+        <button id="import-btn" class="import-btn" type="button" onclick="importFaculties()">Import (Excel)</button>
+      </div>
+    </section>
+  </form>
+    <section class="results-section">
+      <div class="results-info">
+        <span>Faculty List</span>
+        <input type="text" class="search-bar" placeholder="Search">
+        <div class="sort-options">
+          <label for="sort-by">Sort by</label>
+          <select id="sort-by">
+            <option>ID</option>
+            <option>Name (A-Z)</option>
+            <option>Date</option>
+          </select>
+        </div>
+      </div>
+      <table class="results-table">
+        <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Faculty ID</th>
+          <th>Faculty Name</th>
+          <th>Date Added</th>
+          <th>Date Edited</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Table data will be loaded here -->
+        <tr th:each="faculty : ${faculties}">
+              <td th:text="${faculty.id}">ID</td>
+          <td th:text="${faculty.facultyId}">Faculty ID</td>
+          <td th:text="${faculty.facultyName}">Faculty Name</td>
+          <td th:text="${faculty.dateAdded}">Date Added</td>
+          <td th:text="${faculty.dateEdited}">Date Edited</td>
+          <td>
+            <button class="icon-btn">✎</button>
+            <!--          <button class="icon-btn">✄</button>-->
+            <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+
+</main>
+
+<script src="../static/scripts/faculty.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate Management System</title>
+    <link rel="stylesheet" href="../static/styles/dashboard.css">
+    <link rel="icon" href="../static/images/favicon.ico">
+</head>
+<body>
+<div class="dashboard">
+  <!-- Header -->
+  <header class="header">
+
+<!--    Profile section area-->
+    <div class="header-left">
+      <img src="../static/images/profile-pic.jpg" alt="Logo" class="profile-image" id="profileImage">
+      <span id="userName" th:text="${loggedInUser.name}">Full Name</span>
+      <span id="role" th:text="${loggedInUser.role}">ROLE</span>
+    </div>
+
+<!--    Title section area-->
+    <div class="header-center">
+      <h1>CERTIFICATE MANAGEMENT SYSTEM</h1>
+    </div>
+    <div class="header-right">
+      <div class="profile-dropdown">
+        <button class="dropdown-toggle" id="profileDropdownBtn">
+          <img src="../static/images/person_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Profile Icon">
+          <span>&#9662;</span>
+        </button>
+<!--        Logout section of the header-->
+        <ul class="dropdown-menu" id="profileDropdownMenu">
+          <li><a href="#">Profile</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar and Main Content -->
+  <div class="main-section">
+    <nav class="sidebar">
+      <!-- Sidebar content area -->
+      <div class="sidebar-toggle" id="sidebarToggle">
+        <span>&#9776;</span>
+      </div>
+      <ul>
+        <li>
+          <a href="#" class="nav-btn" data-page="dashboard_page.html" id="dashboardButton" onclick="loadContent('dashboard_page'); return false">
+            <img src="../static/images/dashboard_24dp_FILL0_wght400_GRAD0_opsz24.png" alt="Dashboard">
+            <span class="link-text">DASHBOARD</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="dropdown-btn">
+            <img src="../static/images/add_circle_24dp_FILL0_wght400_GRAD0_opsz24.png">
+            <span class="link-text">SETUP</span>
+            <span class="dropdown-arrow">&#9662;</span>
+          </a>
+          <ul class="dropdown-content">
+            <li>
+              <a href="#" id="yearButton" onclick="loadContent('academicYear'); return false" >Academic Year</a>
+            </li>
+            <li>
+              <a href="#" id="faculty" onclick="loadContent('faculty'); return false">Faculty</a>
+            </li>
+            <li>
+              <a href="#" id="department" onclick="loadContent('department'); return false">Department</a>
+            </li>
+            <li>
+              <a href="#" id="programme" onclick="loadContent('programme'); return false">Program</a>
+            </li>
+            <li>
+              <a href="#" id="student" onclick="loadContent('student'); return false">Student</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#" class="dropdown-btn">
+            <img src="../static/images/card_membership_24dp_FILL0_wght400_GRAD0_opsz24.png">
+            <span class="link-text">CERTIFICATE</span>
+            <span class="dropdown-arrow">&#9662;</span>
+          </a>
+          <ul class="dropdown-content">
+            <li><a href="#">Add Certificate</a></li>
+            <li><a href="#">Collect Certificate</a></li>
+            <li><a href="#">Verify Certificate</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">
+            <img src="../static/images/summarize_24dp_FILL0_wght400_GRAD0_opsz24.png" alt="Forum">
+            <span class="link-text">REPORT</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="main-content" id="mainContent">
+      <!-- Main content area -->
+
+    </div>
+  </div>
+</div>
+
+<script src="../static/scripts/dashboard-topbar.js"></script>
+<script src="../static/scripts/dashboard-sidebar.js"></script>
+
+</body>
+</html>

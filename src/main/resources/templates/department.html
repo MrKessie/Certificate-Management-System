@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department</title>
+    <link rel="stylesheet" href="../static/styles/pages2.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="menu-icon">
+            <i class="fas fa-bars">
+<!--                <img src="../static/images/mail_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png">-->
+            </i>
+        </div>
+        <div class="nav-title">Departments</div>
+        <div class="nav-icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+        </div>
+    </nav>
+</header>
+<main>
+    <form id="department-form" method="post" enctype="multipart/form-data">
+        <section class="filter-section">
+            <div class="filter-group">
+                <label for="departmentId">Department ID</label>
+                <input type="text" id="departmentId" placeholder="Department ID" name="departmentId">
+            </div>
+            <div class="filter-group">
+                <label for="departmentName">Department</label>
+                <input type="text" id="departmentName" placeholder="Department name" name="departmentName">
+            </div>
+            <div class="filter-group">
+                <label for="facultyName">Faculty</label>
+                <select id="facultyName" name="facultyId">
+                    <option value="">Select Faculty</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="importFile">Import Faculties</label>
+                <input id="importFile" type="file" name="departmentFile" readonly>
+            </div>
+            <div class="button-actions">
+                <button class="save-btn" onclick="validateForm()">Save</button>
+                <button class="save-btn" onclick="importDepartments()">Import (Excel)</button>
+            </div>
+        </section>
+    </form>
+    <section class="results-section">
+        <div class="results-info">
+            <span>Department List</span>
+            <input type="text" class="search-bar" placeholder="Search">
+            <div class="sort-options">
+                <label for="sort-by">Sort by</label>
+                <select id="sort-by">
+                    <option>ID</option>
+                    <option>Name (A-Z)</option>
+                    <option>Faculty</option>
+                    <option>Date</option>
+<!--                    <option>Department</option>-->
+                </select>
+            </div>
+        </div>
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Faculty</th>
+                <th>Date Added</th>
+                <th>Date Edited</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Table data will be loaded here -->
+            <tr th:each="deparment : ${departments}">
+                <td th:text="${deparment.id}">ID</td>
+                <td th:text="${deparment.departmentId}">Faculty ID</td>
+                <td th:text="${deparment.departmentName}">Faculty Name</td>
+                <td th:text="${@departmentController.getFacultyName(deparment.facultyId)}">Faculty Name</td>
+<!--                <td th:text="${deparment.facultyId}">Faculty Name</td>-->
+                <td th:text="${deparment.dateAdded}">Date Added</td>
+                <td th:text="${deparment.dateEdited}">Date Edited</td>
+
+
+                <td>
+                    <button class="icon-btn">✎</button>
+                    <!--          <button class="icon-btn">✄</button>-->
+                    <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </section>
+</main>
+<!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
+<script src="../static/scripts/department.js"></script>
+</body>
+</html>

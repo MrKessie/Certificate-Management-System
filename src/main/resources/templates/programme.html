@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate Management System</title>
+    <link rel="stylesheet" href="../static/styles/pages.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <input type="text" class="search-bar" placeholder="Search">
+        <div class="stats">
+            <p>Total programmes: <span id="total-years">0</span></p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="tab">
+            <!--      <span >Academic Year</span>-->
+            <h2>Programmes</h2>
+            <!--      <button class="tablinks active">Academic Year</button>-->
+        </div>
+        <div class="actions">
+            <button class="btn">Add new</button>
+            <button class="btn">Import Programme (Excel)</button>
+            <button class="btn">Export Programme (Excel)</button>
+            <button class="btn filter">Filter</button>
+        </div>
+        <table class="members-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Programme ID</th>
+                <th>Programme Name</th>
+                <th>Date Added</th>
+                <th>Date Edited</th>
+                <th>Action</th>
+                <!--        <th>Status</th>-->
+                <!--        <th>Operation</th>-->
+            </tr>
+            </thead>
+            <tbody id="table-body">
+            <!-- Rows will be populated by JavaScript -->
+            <tr th:each="programme : ${programmes}">
+                <td th:text="${programme.id}">ID</td>
+                <td th:text="${programme.programmeId}">Programme ID</td>
+                <td th:text="${programme.programmeName}">Programme Name</td>
+                <td th:text="${programme.facultyId}">Programme Name</td>
+                <td th:text="${programme.departmentId}">Programme Name</td>
+                <td th:text="${programme.dateAdded}">Date Added</td>
+                <td th:text="${programme.dateEdited}">Date Edited</td>
+                <td>
+                    <button class="icon-btn">✎</button>
+                    <!--          <button class="icon-btn">✄</button>-->
+                    <button class="icon-btn">🗑</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
