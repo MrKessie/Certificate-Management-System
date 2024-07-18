@@ -2,43 +2,60 @@ function validateForm() {
     var departmentId = document.getElementById("departmentId").value;
     var departmentName = document.getElementById("departmentName").value;
     var facultyName = document.getElementById("facultyName").value;
-    var selectedIndex = facultyName.selectedIndex;
+    //var selectedIndex = facultyName.selectedIndex;
 
-    if (departmentId === null || departmentName === "") {
+    if (isNaN(departmentId) || departmentName === "" || facultyName === 0) {
         alert("Please fill in all the fields.");
         return false; // Prevent form submission
     }
 
-    else if (selectedIndex === 0) {
-        alert("Please select valid Faculty")
-        return false
-    }
-
-    // Submit form data to the backend for saving faculty details
     var form = document.getElementById("department-form");
     form.action = "/department/add";
-    form.method = "POST";
+    form.method = "post";
     form.submit();
     alert("Department added successfully")
     return true; // Allow form submission
 }
 
-function importDepartments() {
+
+// // Submit form data to the backend for importing students
+async function importDepartments(event) {
+    event.preventDefault();
+
     var departmentFile = document.getElementById("importFile").files[0];
 
     if (!departmentFile) {
         alert("Please select an Excel file.");
-        return;
+        return false; // Prevent form submission
     }
 
-    // Submit form data to the backend for importing students
-    var form = document.getElementById("department-form");
-    form.action = "department/import-faculties";
-    form.method = "POST";
-    form.submit();
-    alert("Department imported successfully")
+    // Create FormData object
+    var formData = new FormData();
+    formData.append("departmentFile", departmentFile);
+
+    // Submit form data to the backend for importing departments
+    try{
+        let response = await fetch("department/import-departments", {
+            method: "POST",
+            body: formData
+        });
+        // Check if the response is OK
+        if (response.ok) {
+            alert("Department imported successfully"); // Show success message
+            window.location.reload(); // Reload the page
+        } else {
+            let errorMessage = await response.text();
+            alert('Error: ' + errorMessage); // Show error message
+        }
+    }
+    catch(error) {
+        alert("Failed to import departments: " + error.message);
+    };
+
+    return true;
 }
 
+// Fetches a list of faculties to fill input control on the form
 document.addEventListener("DOMContentLoaded", function() {
     fetch('/faculty/all/faculties')
         .then(response => response.json())

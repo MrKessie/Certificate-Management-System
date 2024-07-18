@@ -3,6 +3,7 @@ package com.certificatemanagementsystem.Controller;
 
 
 import com.certificatemanagementsystem.Model.AcademicYear;
+import com.certificatemanagementsystem.Model.Department;
 import com.certificatemanagementsystem.Model.Faculty;
 import com.certificatemanagementsystem.Service.AcademicYearService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -53,6 +55,21 @@ public class AcademicYearController {
         List<AcademicYear> academicYears = academicYearService.allAcademicYears();
         model.addAttribute("academicYears", academicYears);
         return "redirect:academic-year";
+    }
+
+    @GetMapping("/all/academic-years")
+    @ResponseBody
+    public List<AcademicYear> getAcademicYears() {
+        List<AcademicYear> academicYears = academicYearService.allAcademicYears();
+        // Create a new list of simplified faculty objects with only id and name
+        List<AcademicYear> newAcademicYears = new ArrayList<>();
+        for (AcademicYear academicYear : academicYears) {
+            AcademicYear simplifiedAcademicYear = new AcademicYear();
+            simplifiedAcademicYear.setYearId(academicYear.getYearId());
+            simplifiedAcademicYear.setYear(academicYear.getYear());
+            newAcademicYears.add(simplifiedAcademicYear); // create
+        }
+        return newAcademicYears;
     }
 
     @PostMapping("/delete")

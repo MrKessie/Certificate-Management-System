@@ -22,7 +22,7 @@
     </nav>
 </header>
 <main>
-    <form id="department-form" method="post" enctype="multipart/form-data">
+    <form id="department-form" method="post" enctype="multipart/form-data" action="/department/add">
         <section class="filter-section">
             <div class="filter-group">
                 <label for="departmentId">Department ID</label>
@@ -44,7 +44,7 @@
             </div>
             <div class="button-actions">
                 <button class="save-btn" onclick="validateForm()">Save</button>
-                <button class="save-btn" onclick="importDepartments()">Import (Excel)</button>
+                <button class="save-btn" onclick="importDepartments(event)">Import (Excel)</button>
             </div>
         </section>
     </form>

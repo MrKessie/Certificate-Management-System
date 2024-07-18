@@ -17,7 +17,7 @@ public class Programme {
     @Column(nullable = false, unique = true)
     private int programmeId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String programmeName;
 
     @ManyToOne

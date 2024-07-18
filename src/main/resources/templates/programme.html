@@ -1,63 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Certificate Management System</title>
-    <link rel="stylesheet" href="../static/styles/pages.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programme</title>
+  <link rel="stylesheet" href="../static/styles/pages2.css">
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <input type="text" class="search-bar" placeholder="Search">
-        <div class="stats">
-            <p>Total programmes: <span id="total-years">0</span></p>
-        </div>
+<header>
+  <nav>
+    <div class="menu-icon">
+      <i class="fas fa-bars"></i>
     </div>
-    <div class="content">
-        <div class="tab">
-            <!--      <span >Academic Year</span>-->
-            <h2>Programmes</h2>
-            <!--      <button class="tablinks active">Academic Year</button>-->
-        </div>
-        <div class="actions">
-            <button class="btn">Add new</button>
-            <button class="btn">Import Programme (Excel)</button>
-            <button class="btn">Export Programme (Excel)</button>
-            <button class="btn filter">Filter</button>
-        </div>
-        <table class="members-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Programme ID</th>
-                <th>Programme Name</th>
-                <th>Date Added</th>
-                <th>Date Edited</th>
-                <th>Action</th>
-                <!--        <th>Status</th>-->
-                <!--        <th>Operation</th>-->
-            </tr>
-            </thead>
-            <tbody id="table-body">
-            <!-- Rows will be populated by JavaScript -->
-            <tr th:each="programme : ${programmes}">
-                <td th:text="${programme.id}">ID</td>
-                <td th:text="${programme.programmeId}">Programme ID</td>
-                <td th:text="${programme.programmeName}">Programme Name</td>
-                <td th:text="${programme.facultyId}">Programme Name</td>
-                <td th:text="${programme.departmentId}">Programme Name</td>
-                <td th:text="${programme.dateAdded}">Date Added</td>
-                <td th:text="${programme.dateEdited}">Date Edited</td>
-                <td>
-                    <button class="icon-btn">✎</button>
-                    <!--          <button class="icon-btn">✄</button>-->
-                    <button class="icon-btn">🗑</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="nav-title">Programmes</div>
+    <div class="nav-icons">
+      <i class="fas fa-bell"></i>
+      <i class="fas fa-envelope"></i>
     </div>
-</div>
+  </nav>
+</header>
+<main>
+  <form id="programme-form" method="post" enctype="multipart/form-data" action="/programme/add">
+    <section class="filter-section">
+      <div class="filter-group">
+        <label for="programmeId">Programme ID</label>
+        <input type="text" id="programmeId" placeholder="Programme ID" name="programmeId">
+      </div>
+      <div class="filter-group">
+        <label for="programmeName">Programme</label>
+        <input type="text" id="programmeName" placeholder="Programme name" name="programmeName">
+      </div>
+      <div class="filter-group">
+        <label for="facultyName">Faculty</label>
+        <select id="facultyName" name="facultyId">
+          <option value="">Select Faculty</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="departmentName">Department</label>
+        <select id="departmentName" name="departmentId">
+          <option value="">Select Department</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="importFile">Import Faculties</label>
+        <input id="importFile" type="file" name="programmeFile" readonly>
+      </div>
+      <div class="button-actions">
+        <button class="save-btn" onclick="validateForm()">Save</button>
+        <button class="import-btn" onclick="importProgrammes(event)">Import (Excel)</button>
+      </div>
+    </section>
+  </form>
+  <section class="results-section">
+    <div class="results-info">
+      <span>Programme List</span>
+      <input type="text" class="search-bar" placeholder="Search">
+      <div class="sort-options">
+        <label for="sort-by">Sort by</label>
+        <select id="sort-by">
+          <option>ID</option>
+          <option>Name (A-Z)</option>
+          <option>Faculty</option>
+          <option>Department</option>
+          <option>Date</option>
+        </select>
+      </div>
+    </div>
+    <table class="results-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Programme ID</th>
+        <th>Programme Name</th>
+        <th>Faculty</th>
+        <th>Department</th>
+        <th>Date Added</th>
+        <th>Date Edited</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Table data will be loaded here -->
+      <tr th:each="programme : ${programmes}">
+        <td th:text="${programme.id}">ID</td>
+        <td th:text="${programme.programmeId}">Faculty ID</td>
+        <td th:text="${programme.programmeName}">Faculty Name</td>
+        <td th:text="${@programmeController.getFacultyName(programme.facultyId)}">Faculty Name</td>
+        <td th:text="${@programmeController.getDepartmentName(programme.departmentId)}">Department Name</td>
+        <!--                <td th:text="${deparment.facultyId}">Faculty Name</td>-->
+        <td th:text="${programme.dateAdded}">Date Added</td>
+        <td th:text="${programme.dateEdited}">Date Edited</td>
 
+
+        <td>
+          <button class="icon-btn">✎</button>
+          <!--          <button class="icon-btn">✄</button>-->
+          <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script src="../static/scripts/programme.js"></script>
 </body>
 </html>

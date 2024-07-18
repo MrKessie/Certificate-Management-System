@@ -4,6 +4,7 @@ import com.certificatemanagementsystem.Model.Department;
 import com.certificatemanagementsystem.Model.Faculty;
 import com.certificatemanagementsystem.Repository.DepartmentRepository;
 import com.certificatemanagementsystem.Repository.FacultyRepository;
+import jakarta.transaction.Transactional;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.*;
 
 @Service
-public class DepartmentService {
+public class DepartmentService implements DepartmentServiceInterface{
 
     @Autowired
     DepartmentRepository departmentRepository;
@@ -46,40 +47,13 @@ public class DepartmentService {
         return department;
     }
 
-//    public void importDepartment(MultipartFile file) {
-//        try {
-//            List<Department> departments = parseExcelFile(file.getInputStream());
-//            departmentRepository.saveAll(departments);
-//        } catch (IOException e) {
-//            throw new RuntimeException("Failed to parse Excel file: " + e.getMessage());
-//        }
-//    }
-
-    public void importDepartments(MultipartFile file) throws IOException {
-        List<Department> departments = new ArrayList<>();
-
-        Workbook workbook = WorkbookFactory.create(file.getInputStream());
-        Sheet sheet = workbook.getSheetAt(0);
-
-        for (Row row : sheet) {
-            Department department = new Department();
-            department.setDepartmentId((int) row.getCell(0).getNumericCellValue()); // Assuming departmentId is in the first column
-            department.setDepartmentName(row.getCell(1).getStringCellValue());
-            int facultyId = (int) row.getCell(1).getNumericCellValue();
-            Faculty faculty = facultyRepository.findById(facultyId);
-            //faculty.orElseThrow(() -> new RuntimeException("Faculty not found: " + facultyId));
-
-            department.setFacultyId(faculty);
-            department.setDateAdded(LocalDateTime.now());
-            department.setDateEdited(LocalDateTime.now());
-
-            departments.add(department);
-        }
-
-        workbook.close();
-
+    @Override
+    @Transactional
+    public void importDepartment(InputStream is) {
+        List<Department> departments = parseExcelFile(is);
         departmentRepository.saveAll(departments);
     }
+
 
     public List<Department> allDepartments() {
         List<Department> departments = (List<Department>) departmentRepository.findAll();
@@ -92,6 +66,9 @@ public class DepartmentService {
         return department;
     }
 
+    public Optional<Department> getDepartmentById(int departmentId) {
+        return departmentRepository.getDepartmentById(departmentId);
+    }
 
     private List<Department> parseExcelFile(InputStream is) {
         try {
@@ -111,7 +88,7 @@ public class DepartmentService {
                 }
 
                 Iterator<Cell> cellsInRow = currentRow.iterator();
-                Department department = new Department();
+                Department department     = new Department();
 
                 int cellIdx = 0;
                 while (cellsInRow.hasNext()) {
@@ -125,20 +102,14 @@ public class DepartmentService {
                             department.setDepartmentName(currentCell.getStringCellValue());
                             break;
                             case 2:
-                                double facultyId = currentCell.getNumericCellValue();
-                                String facultyName = String.valueOf((int) facultyId); // Convert numeric value to string
-                                Faculty faculty = facultyRepository.findByFacultyName(facultyName);
-                                if (faculty != null) {
-                                    department.setFacultyId(faculty);
+                                int facultyId = (int) currentCell.getNumericCellValue();
+                                Optional<Faculty> facultyOptional = facultyRepository.getFacultyById(facultyId);
+                                if (facultyOptional.isPresent()) {
+                                    department.setFacultyId(facultyOptional.get());
                                 } else {
-                                    Faculty newFaculty = new Faculty();
-                                    newFaculty.setFacultyName(facultyName);
-                                    facultyRepository.save(newFaculty);
-                                    department.setFacultyId(newFaculty);
+                                    throw new RuntimeException("Faculty not found: " + facultyId);
                                 }
                                 break;
-
-                        // Add more cases here for other columns
                         default:
                             break;
                     }
@@ -156,4 +127,5 @@ public class DepartmentService {
             throw new RuntimeException("Failed to parse Excel file: " + e.getMessage());
         }
     }
+
 }

@@ -2,6 +2,7 @@ package com.certificatemanagementsystem.Service;
 
 import com.certificatemanagementsystem.Model.AcademicYear;
 import com.certificatemanagementsystem.Model.Faculty;
+import com.certificatemanagementsystem.Model.Programme;
 import com.certificatemanagementsystem.Repository.AcademicYearRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AcademicYearService {
@@ -57,6 +59,10 @@ public class AcademicYearService {
         AcademicYear academicYear = academicYearRepository.findById(yearId);
         academicYearRepository.delete(academicYear);
         return academicYear;
+    }
+
+    public Optional<AcademicYear> getAcademicYearById(int academicYearId) {
+        return academicYearRepository.getAcademicYearByYearId(academicYearId);
     }
 
 
