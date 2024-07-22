@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>
+    <link rel="stylesheet" href="../static/styles/pages2.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="menu-icon">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-title">Students</div>
+        <div class="nav-icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+        </div>
+    </nav>
+</header>
+<main>
+    <form id="student-form" method="post" enctype="multipart/form-data" action="/student/add">
+        <section class="filter-section">
+            <div class="filter-group">
+                <label for="studentId">Student ID</label>
+                <input type="text" id="studentId" placeholder="Student ID" name="studentId">
+            </div>
+            <div class="filter-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" placeholder="Student name" name="studentName">
+            </div>
+            <div class="filter-group">
+                <label for="facultyName">Faculty</label>
+                <select id="facultyName" name="facultyId">
+                    <option value="">Select Faculty</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="departmentName">Department</label>
+                <select id="departmentName" name="departmentId">
+                    <option value="">Select Department</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="programmeName">Programme</label>
+                <select id="programmeName" name="programmeId">
+                    <option value="">Select Programme</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="academicYear">Academic Year</label>
+                <select id="academicYear" name="yearId">
+                    <option value="">Select Academic Year</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="importFile">Import Faculties</label>
+                <input id="importFile" type="file" name="studentFile" readonly>
+            </div>
+            <div class="button-actions">
+                <button class="save-btn" onclick="validateForm()">Save</button>
+                <button class="import-btn" onclick="importStudents(event)">Import (Excel)</button>
+            </div>
+        </section>
+    </form>
+    <section class="results-section">
+        <div class="results-info">
+            <span>Student List</span>
+            <input type="text" class="search-bar" placeholder="Search">
+            <div class="sort-options">
+                <label for="sort-by">Sort by</label>
+                <select id="sort-by">
+                    <option>ID</option>
+                    <option>Name (A-Z)</option>
+                    <option>Faculty</option>
+                    <option>Department</option>
+                    <option>Programme</option>
+                    <option>Academic Year</option>
+                    <option>Date</option>
+                </select>
+            </div>
+        </div>
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Faculty</th>
+                <th>Department</th>
+                <th>Programme</th>
+                <th>Academic Year</th>
+                <th>Date Added</th>
+                <th>Date Edited</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Table data will be loaded here -->
+            <tr th:each="student : ${students}">
+                <td th:text="${student.Id}">ID</td>
+                <td th:text="${student.studentId}">Student ID</td>
+                <td th:text="${student.studentName}">Student Name</td>
+                <td th:text="${@studentController.getFacultyName(student.facultyId)}">Faculty Name</td>
+                <td th:text="${@studentController.getDepartmentName(student.departmentId)}">Department Name</td>
+                <td th:text="${@studentController.getProgrammeName(student.programmeId)}">Programme</td>
+                <td th:text="${@studentController.getAcademicYear(student.academicYearId)}">Academic Year</td>
+                <td th:text="${student.dateAdded}">Date Added</td>
+                <td th:text="${student.dateEdited}">Date Edited</td>
+                <td>
+                    <button class="icon-btn">✎</button>
+                    <!--          <button class="icon-btn">✄</button>-->
+                    <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script src="../static/scripts/student.js"></script>
+</body>
+</html>
