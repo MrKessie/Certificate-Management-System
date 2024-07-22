@@ -23,6 +23,7 @@ public class Department {
 
     @ManyToOne
     @JoinColumn(name = "facultyId", nullable = false)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     //@OnDelete(action = OnDeleteAction.SET_NULL)
     Faculty facultyId;
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Certificate Management System</title>
   <link rel="stylesheet" href="../static/styles/dashboard.css">
+  <link rel="stylesheet" href="../static/styles/pages2.css">
   <link rel="icon" href="../static/images/favicon.ico">
 </head>
 <body>
@@ -25,8 +26,8 @@
           <span>&#9662;</span>
         </button>
         <ul class="dropdown-menu" id="profileDropdownMenu">
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Logout</a></li>
+          <li><a href="#">Reset Password</a></li>
+          <li><a href="/login">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -34,39 +35,40 @@
 
   <!-- Sidebar and Main Content -->
   <div class="main-section">
-    <nav class="sidebar">
+    <nav class="sidebar" id="side-bar">
       <!-- Sidebar content here -->
       <div class="sidebar-toggle" id="sidebarToggle">
         <span>&#9776;</span>
       </div>
       <ul>
         <li>
-          <a href="#" class="nav-btn" data-page="dashboard_page.html" id="dashboardButton" onclick="loadContent('dashboard_page'); return false">
+          <a href="#" class="nav-btn" data-page="dashboard_page.html" id="dashboardButton" onclick="loadPage('dashboard_page'); return false">
             <img src="../static/images/dashboard_24dp_FILL0_wght400_GRAD0_opsz24.png" alt="Dashboard">
             <span class="link-text">DASHBOARD</span>
           </a>
         </li>
         <li>
-          <a href="#" class="dropdown-btn">
+          <a class="dropdown-btn">
             <img src="../static/images/add_circle_24dp_FILL0_wght400_GRAD0_opsz24.png">
             <span class="link-text">SETUP</span>
             <span class="dropdown-arrow">&#9662;</span>
           </a>
           <ul class="dropdown-content">
             <li>
-              <a href="/academic-year" id="yearButton"  >Academic Year</a>
+              <a id="yearButton">Academic Year</a>
             </li>
             <li>
-              <a href="/faculty" id="faculty">Faculty</a>
+              <a id="facultyButton">Faculty</a>
             </li>
             <li>
-              <a href="/department" id="department">Department</a>
+              <a id="departmentButton">Department</a>
             </li>
             <li>
-              <a href="/programme" id="programme">Program</a>
+              <a id="programmeButton" onclick="loadPage('programme', loadFaculties(), loadDepartments())">Program</a>
             </li>
             <li>
-              <a href="#" id="student">Student</a>
+<!--              <a id="studentButton" onclick="loadPage('student', loadFaculties(), loadDepartments(), loadProgrammes(), loadAcademicYears())">Student</a>-->
+              <a id="studentButton">Student</a>
             </li>
           </ul>
         </li>
@@ -104,5 +106,11 @@
 </div>
 <script src="../static/scripts/dashboard-topbar.js"></script>
 <script src="../static/scripts/dashboard-sidebar.js"></script>
+<script src="../static/scripts/page-load.js"></script>
+<!--<script src="../static/scripts/academic-year.js"></script>-->
+<!--<script src="../static/scripts/department.js"></script>-->
+<!--&lt;!&ndash;<script src="../static/scripts/faculty.js"></script>&ndash;&gt;-->
+<!--<script src="../static/scripts/programme.js"></script>-->
+<!--<script src="../static/scripts/student.js"></script>-->
 </body>
 </html>

@@ -7,6 +7,7 @@ import com.certificatemanagementsystem.Model.Department;
 import com.certificatemanagementsystem.Model.Faculty;
 import com.certificatemanagementsystem.Service.AcademicYearService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -72,10 +73,15 @@ public class AcademicYearController {
         return newAcademicYears;
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete/{yearId}")
 //    @ResponseBody
-    public AcademicYear deleteAcademicYear(@RequestParam int yearId) {
+    public ResponseEntity<?> deleteAcademicYear(@PathVariable int yearId) {
         AcademicYear academicYear = academicYearService.deleteAcademicYear(yearId);
-        return academicYear;
+        if (academicYear != null) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+//        return academicYear;
     }
 }

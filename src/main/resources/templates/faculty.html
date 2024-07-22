@@ -12,7 +12,9 @@
     <div class="menu-icon">
       <i class="fas fa-bars"></i>
     </div>
-    <div class="nav-title">Faculties</div>
+    <div class="nav-title">
+      <h2>Faculties</h2>
+    </div>
     <div class="nav-icons">
       <i class="fas fa-bell"></i>
       <i class="fas fa-envelope"></i>
@@ -68,15 +70,15 @@
         <tbody>
         <!-- Table data will be loaded here -->
         <tr th:each="faculty : ${faculties}">
-              <td th:text="${faculty.id}">ID</td>
-          <td th:text="${faculty.facultyId}">Faculty ID</td>
+              <td class="faculty-Id" th:text="${faculty.id}">ID</td>
+          <td  th:text="${faculty.facultyId}">Faculty ID</td>
           <td th:text="${faculty.facultyName}">Faculty Name</td>
           <td th:text="${faculty.dateAdded}">Date Added</td>
           <td th:text="${faculty.dateEdited}">Date Edited</td>
           <td>
             <button class="icon-btn">✎</button>
             <!--          <button class="icon-btn">✄</button>-->
-            <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+            <button class="icon-btn" id="deleteButton" onclick="deleteFaculty(this)">🗑</button>
           </td>
         </tr>
         </tbody>

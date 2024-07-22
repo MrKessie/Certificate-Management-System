@@ -54,8 +54,10 @@ public class FacultyService {
     }
 
     //Method to delete Faculty
-    public void deleteFaculty(int facultyId) {
-        facultyRepository.deleteById(facultyId);
+    public Faculty deleteFaculty(int facultyId) {
+        Faculty faculty = facultyRepository.findById(facultyId);
+        facultyRepository.delete(faculty);
+        return faculty;
     }
 
     public Optional<Faculty> getFacultyById(int facultyId) {

@@ -26,7 +26,7 @@ public class FacultyController {
     public String showFacultyPage(Model model) {
         List<Faculty> faculties = facultyService.allFaculties();
         model.addAttribute("faculties", faculties);
-        return "faculty";
+        return "/faculty";
     }
 
     @PostMapping("/add")
@@ -71,14 +71,14 @@ public class FacultyController {
         return newFaculties;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{facultyId}")
     @ResponseBody
-    public ResponseEntity<Void> deleteFaculty(@PathVariable int id) {
-        try {
-            facultyService.deleteFaculty(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> deleteFaculty(@PathVariable int facultyId) {
+        Faculty faculty = facultyService.deleteFaculty(facultyId);
+        if (faculty != null) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,9 @@
     <div class="menu-icon">
       <i class="fas fa-bars"></i>
     </div>
-    <div class="nav-title">Academic Years</div>
+    <div class="nav-title">
+      <h2>Academic Years</h2>
+    </div>
     <div class="nav-icons">
       <i class="fas fa-bell"></i>
       <i class="fas fa-envelope"></i>
@@ -20,18 +22,19 @@
   </nav>
 </header>
 <main>
-  <form id="academicYear-form" method="post" enctype="multipart/form-data">
+
+    <form id="academicYear-form" method="post" action="#" enctype="multipart/form-data">
     <section class="filter-section">
       <div class="filter-group">
         <label for="academicYear">Academic Year</label>
-        <input type="text" id="academicYear" placeholder="Academic year" name="year">
+        <input type="text" id="academicYear" placeholder="Academic year" name="year" required>
       </div>
       <div class="filter-group">
         <label for="importFile">Import Academic Year</label>
         <input id="importFile" type="file" name="academicYearFile" readonly>
       </div>
       <div class="button-actions">
-        <button class="save-btn" onclick="return validateForm()">Save</button>
+        <button class="save-btn" type="submit">Save</button>
         <button class="import-btn" onclick="importAcademicYears()">Import (Excel)</button>
       </div>
     </section>
@@ -63,7 +66,7 @@
       <tbody>
       <!-- Table data will be loaded here -->
       <tr th:each="academicYear : ${academicYears}">
-        <td th:text="${academicYear.yearId}">ID</td>
+        <td class="year-id" th:text="${academicYear.yearId}">ID</td>
         <td th:text="${academicYear.year}">Faculty ID</td>
 <!--        <td th:text="${faculty.facultyName}">Faculty Name</td>-->
         <td th:text="${academicYear.dateAdded}">Date Added</td>
@@ -71,7 +74,7 @@
         <td>
           <button class="icon-btn">✎</button>
           <!--          <button class="icon-btn">✄</button>-->
-          <button class="icon-btn" id="deleteButton" onclick="deleteFaculty('${faculty.id}')">🗑</button>
+          <button class="icon-btn" id="deleteButton" onclick="deleteAcademicYear(this)">🗑</button>
         </td>
       </tr>
       </tbody>
@@ -80,5 +83,36 @@
 </main>
 
 <script src="../static/scripts/academic-year.js"></script>
+
+<!--<script>-->
+<!--  const form = document.getElementById("academicYear-form");-->
+
+<!--  form.addEventListener("submit", function (event) {-->
+<!--    event.preventDefault();-->
+<!--    event.stopPropagation();-->
+<!--    alert("hey")-->
+<!--    const year = document.getElementById("academicYear").value;-->
+
+<!--    const formData = new FormData();-->
+<!--    formData.append("year", year);-->
+
+<!--    fetch("http://localhost:8080/academic-year/add", {-->
+<!--      method: "POST",-->
+<!--      body: formData,-->
+<!--    })-->
+<!--     .then((response) => response.json())-->
+<!--     .then((data) => {-->
+<!--        if (data.success) {-->
+<!--          alert("Academic Year saved successfully.");-->
+<!--          location.reload();-->
+<!--        } else {-->
+<!--          alert(data.message);-->
+<!--        }-->
+<!--      })-->
+<!--     .catch((error) => {-->
+<!--        console.error("Error:", error);-->
+<!--      });-->
+<!--  })-->
+<!--</script>-->
 </body>
 </html>

@@ -25,6 +25,10 @@ body {
     background-color: #2e2e4f;
     color: #fff;
     border-bottom: 1px solid #161622;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .header-left, .header-center, .header-right {
@@ -112,12 +116,19 @@ body {
     flex-shrink: 0;
     overflow-y: auto;
     transition: width 0.3s;
+    position: fixed;
+    height: 100%;
+    top: 60px;
 }
 
 .main-content {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
+    background-color: white;
+    color: black;
+    margin-left: 250px;
+    margin-top: 60px;
 }
 
 .sidebar {

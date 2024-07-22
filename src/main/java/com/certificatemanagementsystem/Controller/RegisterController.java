@@ -43,9 +43,10 @@ public class RegisterController {
 
     @GetMapping("/all")
     //@ResponseBody
-    public List<Register> userList() {
+    public String userList(Model model) {
         List<Register> users = registerService.userList();
-        return users;
+        model.addAttribute("users", users);
+        return "redirect:/users";
     }
 
     @PostMapping("/delete")
