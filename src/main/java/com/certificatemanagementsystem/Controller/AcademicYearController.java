@@ -24,6 +24,7 @@ public class AcademicYearController {
     AcademicYearService academicYearService;
 
     @GetMapping
+//    @ResponseBody
     public String showAcademicYearPage(Model model) {
         List<AcademicYear> academicYears = academicYearService.allAcademicYears();
         model.addAttribute("academicYears", academicYears);
@@ -42,6 +43,7 @@ public class AcademicYearController {
     }
 
     @PostMapping("/import-academic-years")
+//    @ResponseBody
     public String importAcademicYears(@RequestParam MultipartFile academicYearFile, Model model) {
         academicYearService.importAcademicYears(academicYearFile);
         List<AcademicYear> academicYears = academicYearService.allAcademicYears();
@@ -59,7 +61,7 @@ public class AcademicYearController {
     }
 
     @GetMapping("/all/academic-years")
-    @ResponseBody
+//    @ResponseBody
     public List<AcademicYear> getAcademicYears() {
         List<AcademicYear> academicYears = academicYearService.allAcademicYears();
         // Create a new list of simplified faculty objects with only id and name
@@ -83,5 +85,11 @@ public class AcademicYearController {
             return ResponseEntity.notFound().build();
         }
 //        return academicYear;
+    }
+
+    @GetMapping("/sort-by")
+    public List<AcademicYear> sortAcademicYear(String sortType) {
+        List<AcademicYear> AcademicYears = academicYearService.sortAcademicYear(sortType);
+        return AcademicYears;
     }
 }

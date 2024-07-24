@@ -22,10 +22,11 @@ public class Department {
     private String departmentName;
 
     @ManyToOne
-    @JoinColumn(name = "facultyId", nullable = false)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    //@OnDelete(action = OnDeleteAction.SET_NULL)
-    Faculty facultyId;
+//    @JoinColumn(name = "facultyId")
+//    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "faculty_id", foreignKey = @ForeignKey(name = "fk_department_faculty",
+            foreignKeyDefinition = "FOREIGN KEY (faculty_id) REFERENCES faculty(id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    Faculty faculty;
 
 //    private List<Faculty> facultyId;
 
@@ -64,12 +65,12 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public Faculty getFacultyId() {
-        return facultyId;
+    public Faculty getFaculty() {
+        return faculty;
     }
 
-    public void setFacultyId(Faculty facultyId) {
-        this.facultyId = facultyId;
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     public LocalDateTime getDateAdded() {

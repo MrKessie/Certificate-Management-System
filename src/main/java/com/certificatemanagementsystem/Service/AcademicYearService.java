@@ -116,4 +116,23 @@ public class AcademicYearService {
             throw new RuntimeException("Failed to parse Excel file: " + e.getMessage());
         }
     }
+
+    public List<AcademicYear> sortAcademicYear(String sortType) {
+        switch (sortType) {
+            case "id-asc":
+                return academicYearRepository.findAllByIdAsc();
+            case "id-desc":
+                return academicYearRepository.findAllByIdDesc();
+            case "year-asc":
+                return academicYearRepository.findAllByYearAsc();
+            case "year-desc":
+                return academicYearRepository.findAllByYearDesc();
+            case "date-added-asc":
+                return academicYearRepository.findAllByDateAddedAsc();
+            case "date-added-desc":
+                return academicYearRepository.findAllByDateAddedDesc();
+            default:
+                return (List<AcademicYear>) academicYearRepository.findAll();
+        }
+    }
 }

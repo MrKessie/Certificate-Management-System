@@ -67,10 +67,10 @@ public class StudentService implements  StudentServiceInterface{
         }
         AcademicYear academicYear = academicYearOpt.get();
 
-        student.setFacultyId(faculty);
-        student.setDepartmentId(department);
-        student.setProgrammeId(programme);
-        student.setAcademicYearId(academicYear);
+        student.setFaculty(faculty);
+        student.setDepartment(department);
+        student.setProgramme(programme);
+        student.setAcademicYear(academicYear);
         student.setDateAdded(LocalDateTime.now());
         student.setDateEdited(LocalDateTime.now());
 
@@ -137,7 +137,7 @@ public class StudentService implements  StudentServiceInterface{
                             int facultyId = (int) currentCell.getNumericCellValue();
                             Optional<Faculty> facultyOptional = facultyRepository.getFacultyById(facultyId);
                             if (facultyOptional.isPresent()) {
-                                student.setFacultyId(facultyOptional.get());
+                                student.setFaculty(facultyOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Faculty not found: " + facultyId);
@@ -147,7 +147,7 @@ public class StudentService implements  StudentServiceInterface{
                             int departmentId = (int) currentCell.getNumericCellValue();
                             Optional<Department> departmentOptional = departmentRepository.getDepartmentById(departmentId);
                             if (departmentOptional.isPresent()) {
-                                student.setDepartmentId(departmentOptional.get());
+                                student.setDepartment(departmentOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Could not find department: " + departmentId);
@@ -157,7 +157,7 @@ public class StudentService implements  StudentServiceInterface{
                             int programmeId = (int) currentCell.getNumericCellValue();
                             Optional<Programme> programmeOptional = programmeRepository.getProgrammeById(programmeId);
                             if (programmeOptional.isPresent()) {
-                                student.setProgrammeId(programmeOptional.get());
+                                student.setProgramme(programmeOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Could not find department: " + programmeId);
@@ -167,7 +167,7 @@ public class StudentService implements  StudentServiceInterface{
                             int academicYearId = (int) currentCell.getNumericCellValue();
                             Optional<AcademicYear> academicYearOptional = academicYearRepository.getAcademicYearByYearId(academicYearId);
                             if (academicYearOptional.isPresent()) {
-                                student.setAcademicYearId(academicYearOptional.get());
+                                student.setAcademicYear(academicYearOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Could not find department: " + academicYearId);

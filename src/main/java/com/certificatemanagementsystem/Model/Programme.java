@@ -21,14 +21,18 @@ public class Programme {
     private String programmeName;
 
     @ManyToOne
-    @JoinColumn(name = "faculty_Id", nullable = false)
+//    @JoinColumn(name = "faculty_Id", nullable = false)
     //@OnDelete(action = OnDeleteAction.SET_NULL)
-    private Faculty facultyId;
+    @JoinColumn(name = "faculty_id", foreignKey = @ForeignKey(name = "fk_programme_faculty",
+            foreignKeyDefinition = "FOREIGN KEY (faculty_id) REFERENCES faculty(id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    private Faculty faculty;
 
     @ManyToOne
-    @JoinColumn(name = "department_Id", nullable = false)
+//    @JoinColumn(name = "department_Id", nullable = false)
     //@OnDelete(action = OnDeleteAction.SET_NULL)
-    private Department departmentId;
+    @JoinColumn(name = "department_id", foreignKey = @ForeignKey(name = "fk_programme_department",
+            foreignKeyDefinition = "FOREIGN KEY (department_id) REFERENCES department(id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    private Department department;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -65,20 +69,20 @@ public class Programme {
         this.programmeName = programmeName;
     }
 
-    public Faculty getFacultyId() {
-        return facultyId;
+    public Faculty getFaculty() {
+        return faculty;
     }
 
-    public void setFacultyId(Faculty facultyId) {
-        this.facultyId = facultyId;
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
-    public Department getDepartmentId() {
-        return departmentId;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDepartmentId(Department departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public LocalDateTime getDateAdded() {

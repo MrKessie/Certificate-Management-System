@@ -52,8 +52,8 @@ public class ProgrammeService implements ProgrammeServiceInterface{
         }
         Department department = departmentOpt.get();
 
-        programme.setFacultyId(faculty);
-        programme.setDepartmentId(department);
+        programme.setFaculty(faculty);
+        programme.setDepartment(department);
         programme.setDateAdded(LocalDateTime.now());
         programme.setDateEdited(LocalDateTime.now());
 
@@ -119,7 +119,7 @@ public class ProgrammeService implements ProgrammeServiceInterface{
                             int facultyId = (int) currentCell.getNumericCellValue();
                             Optional<Faculty> facultyOptional = facultyRepository.getFacultyById(facultyId);
                             if (facultyOptional.isPresent()) {
-                                programme.setFacultyId(facultyOptional.get());
+                                programme.setFaculty(facultyOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Faculty not found: " + facultyId);
@@ -129,7 +129,7 @@ public class ProgrammeService implements ProgrammeServiceInterface{
                             int departmentId = (int) currentCell.getNumericCellValue();
                             Optional<Department> departmentOptional = departmentRepository.getDepartmentById(departmentId);
                             if (departmentOptional.isPresent()) {
-                                programme.setDepartmentId(departmentOptional.get());
+                                programme.setDepartment(departmentOptional.get());
                             }
                             else {
                                 throw new RuntimeException("Could not find department: " + departmentId);

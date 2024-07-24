@@ -99,13 +99,13 @@
             <tbody>
             <!-- Table data will be loaded here -->
             <tr th:each="student : ${students}">
-                <td th:text="${student.Id}">ID</td>
+                <td th:text="${student.id}">ID</td>
                 <td th:text="${student.studentId}">Student ID</td>
                 <td th:text="${student.studentName}">Student Name</td>
-                <td th:text="${@studentController.getFacultyName(student.facultyId)}">Faculty Name</td>
-                <td th:text="${@studentController.getDepartmentName(student.departmentId)}">Department Name</td>
-                <td th:text="${@studentController.getProgrammeName(student.programmeId)}">Programme</td>
-                <td th:text="${@studentController.getAcademicYear(student.academicYearId)}">Academic Year</td>
+                <td th:text="${@studentController.getFacultyName(student.faculty)}">Faculty Name</td>
+                <td th:text="${@studentController.getDepartmentName(student.department)}">Department Name</td>
+                <td th:text="${@studentController.getProgrammeName(student.programme)}">Programme</td>
+                <td th:text="${@studentController.getAcademicYear(student.academicYear)}">Academic Year</td>
                 <td th:text="${student.dateAdded}">Date Added</td>
                 <td th:text="${student.dateEdited}">Date Edited</td>
                 <td>

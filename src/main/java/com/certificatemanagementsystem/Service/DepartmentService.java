@@ -39,7 +39,7 @@ public class DepartmentService implements DepartmentServiceInterface{
         Department department = new Department();
         department.setDepartmentId(departmentId);
         department.setDepartmentName(departmentName);
-        department.setFacultyId(facultyId);
+        department.setFaculty(facultyId);
         department.setDateAdded(LocalDateTime.now());
         department.setDateEdited(LocalDateTime.now());
 
@@ -105,7 +105,7 @@ public class DepartmentService implements DepartmentServiceInterface{
                                 int facultyId = (int) currentCell.getNumericCellValue();
                                 Optional<Faculty> facultyOptional = facultyRepository.getFacultyById(facultyId);
                                 if (facultyOptional.isPresent()) {
-                                    department.setFacultyId(facultyOptional.get());
+                                    department.setFaculty(facultyOptional.get());
                                 } else {
                                     throw new RuntimeException("Faculty not found: " + facultyId);
                                 }
