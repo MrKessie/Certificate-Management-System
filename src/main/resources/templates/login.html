@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../static/styles/login.css">
+</head>
+<body>
+<div class="login-card">
+  <div class="left-side" style="background: url('static/images/Graduates.jpg') no-repeat center center;"></div>
+  <div class="right-side">
+    <h4 class="text-center mb-4">Login</h4>
+    <form action="/login/loginUser" method="post">
+      <div class="form-group">
+        <label for="userId">User ID</label>
+        <input type="text" class="form-control" id="userId" name="userId" placeholder="Enter your User ID" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-group">
+          <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+          <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-eye" id="togglePassword"></i>
+                            </span>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+      <a href="#" class="forgot-password">Forgot password?</a>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script src="../static/scripts/login.js"></script>
+</body>
+</html>

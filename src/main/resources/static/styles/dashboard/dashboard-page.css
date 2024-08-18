@@ -1,0 +1,67 @@
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    background-color: #f0f2f5;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+/*.dashboard {*/
+/*    !*max-width: 1200px;*!*/
+/*    width: 100%;*/
+/*    margin: 0 auto;*/
+/*    padding: 20px;*/
+/*}*/
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.card {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    margin-left: 20px;
+    border-radius: 50%;
+}
+
+.certificate-icon {
+    background-color: #8a8aff;
+}
+
+.collected-icon {
+    background-color: #4f8fff;
+}
+
+.verified-icon {
+    background-color: #ff77a9;
+}
+
+.card-content h2 {
+    font-size: 32px;
+    margin: 0;
+}
+
+.card-content p {
+    color: #666;
+    margin: 0;
+}

@@ -1,0 +1,52 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+}
+.login-card {
+    display: flex;
+    width: 900px;
+    max-width: 100%;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.login-card img {
+    width: 100%;
+    height: auto;
+}
+.left-side {
+    flex: 1;
+    /*background: url('../images/Graduates.jpg') no-repeat center center;*/
+    background-size: cover;
+}
+.right-side {
+    flex: 1;
+    padding: 2rem;
+    background-color: #fff;
+}
+.form-control {
+    border-radius: 25px;
+    padding: 0.75rem 1.25rem;
+}
+.btn-primary {
+    border-radius: 25px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+}
+.forgot-password {
+    display: block;
+    margin-top: 1rem;
+    text-align: right;
+    color: #007bff;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+.input-group-text {
+    border-radius: 25px;
+    cursor: pointer;
+}

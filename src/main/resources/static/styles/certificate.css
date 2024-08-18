@@ -1,0 +1,10 @@
+
+.form-group {
+    flex: 1 1 calc(50% - 16px);
+
+}
+
+.certificate-add-form {
+    display: flex;
+    flex-wrap: wrap;
+}

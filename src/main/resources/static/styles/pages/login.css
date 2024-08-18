@@ -1,0 +1,94 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*background: linear-gradient(to top, #2b1055, #7597de);*/
+    color: white;
+    /*background: url('../images/graduation-2.jpg') no-repeat center center fixed;*/
+    /*background-repeat: no-repeat;*/
+    background-size: cover;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+}
+
+.login-box {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 300px;
+}
+
+.login-box img {
+    border-radius: 20px;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.textbox {
+    margin-bottom: 20px;
+}
+
+.textbox input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #03a9f4;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #0288d1;
+}
+
+.forgot-password {
+    display: block;
+    margin-top: 15px;
+    color: #bbb;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    color: white;
+}
+
+.register-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link a {
+    color: #03a9f4;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}

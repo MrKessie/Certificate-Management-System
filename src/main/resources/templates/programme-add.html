@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles/dashboard.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
+    <style>
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+        }
+    </style>
+</head>
+<body>
+<!--======== HEADER STARTS HERE ========== -->
+<!--======== HEADER STARTS HERE ========== -->
+<!-- Header -->
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+                <span class="navbar-text text-white mr-3">||</span>
+                <span class="navbar-text text-white mr-3" id="role" th:text="${loggedInUser.role}">Role</span>
+                <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
+                <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
+            </div>
+            <div class="mx-auto">
+                <a class="navbar-brand text-white" href="#">Certificate Management System</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <a class="nav-link text-white" href="#"><img src="../static/images/notification.png" alt="Notification" class="icon"></a>
+                <a class="nav-link text-white" href="#"><img src="../static/images/logout.png" alt="Logout" class="icon"></a>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
+
+
+<!--======== SIDE BAR STARTS HERE ==========-->
+<!--======== SIDE BAR STARTS HERE ========== -->
+<nav th:fragment="sidebar">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="list-group list-group-flush" id="sidebar-content">
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <img src="../static/images/home.png" alt="home">
+                    Dashboard</a>
+                <div class="dropdown">
+                    <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/calendar.png" alt="dashboard">
+                        Academic Year</a>
+                    <div id="academicYearMenu" class="collapse">
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Add Academic Year</a>
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-all">All Academic Years</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#facultyMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Faculty">Faculty</a>
+                    <div id="facultyMenu" class="collapse">
+                        <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Add Faculty</a>
+                        <a href="/faculty/faculty-all" class="list-group-item list-group-item-action bg-dark text-white">All Faculties</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#departmentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Department">Department</a>
+                    <div id="departmentMenu" class="collapse">
+                        <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Add Department</a>
+                        <a href="/department/department-all" class="list-group-item list-group-item-action bg-dark text-white">All Departments</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#programmeMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Programme">Programme</a>
+                    <div id="programmeMenu" class="collapse">
+                        <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Add Programme</a>
+                        <a href="/programme/programme-all" class="list-group-item list-group-item-action bg-dark text-white">All Programmes</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#studentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/student.png" alt="Student">Student</a>
+                    <div id="studentMenu" class="collapse">
+                        <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Add Student</a>
+                        <a href="/student/student-all" class="list-group-item list-group-item-action bg-dark text-white">All Students</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#certificateMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
+                    <div id="certificateMenu" class="collapse">
+                        <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
+                        <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
+                        <a href="/certificate/certificate-verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/user.png" alt="User">User</a>
+                    <div id="userMenu" class="collapse">
+
+                        <a href="/user/add-user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+                        <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
+                    </div>
+                </div>
+                <!-- Add more menu items as needed -->
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- /#sidebar-wrapper -->
+<!--======== SIDE BAR ENDS HERE ==========-->
+<!--======== SIDE BAR ENDS HERE ========== -->
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Programme Management</h1>
+
+    <div class="row justify-content-center">
+        <!-- Add Programme Form -->
+        <div class="col-md-6" id="addForm">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Add Programme</h5>
+                    <form id="addProgrammeForm" action="/programme/add" method="POST" onsubmit="return validateForm()">
+                        <div class="form-group">
+                            <label for="programmeId">Programme ID</label>
+                            <input type="text" class="form-control" id="programmeId" name="programmeId" placeholder="Programme ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="programmeName">Programme Name</label>
+                            <input type="text" class="form-control" id="programmeName" name="programmeName" placeholder="Programme Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="faculty">Faculty</label>
+                            <select class="form-control" id="faculty" name="faculty" required>
+                                <option value="">Select Faculty</option>
+                                <!-- Add options here -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <select class="form-control" id="department" name="department" required>
+                                <option value="">Select Department</option>
+                                <!-- Add options here -->
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Programme (Excel) Form -->
+        <div class="col-md-6" id="importForm" style="display: none;">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Import Programme (Excel)</h5>
+                    <form action="/importProgramme" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Choose File</label>
+                            <input type="file" class="form-control-file" id="file" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import (Excel)</button>
+                        <button type="button" class="btn btn-secondary" id="cancelImport">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programmes Table -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="card-title">All Programmes</h5>
+                        <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="programmeTable">
+                            <thead>
+                            <tr>
+                                <th>Programme ID</th>
+                                <th>Programme Name</th>
+                                <th>Faculty</th>
+                                <th>Department</th>
+                                <th>Date Added</th>
+                                <th>Date Edited</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
+<!--                            <tr>-->
+                            <tr th:each="programme : ${programmes}">
+                                <td th:text="${programme.programmeId}">ID</td>
+                                <td th:text="${programme.programmeName}">Academic Year</td>
+                                <td th:text="${programme.faculty.facultyName}">Academic Year</td>
+                                <td th:text="${programme.department.departmentName}">Academic Year</td>
+                                <td th:text="${programme.dateAdded}">Date Added</td>
+                                <td th:text="${programme.dateEdited}">Date Edited</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">Delete</button>
+                                </td>
+                            </tr>
+                            <!-- Repeat rows as necessary -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination handled by DataTables -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="../static/scripts/dashb.js"></script>
+<script src="../static/scripts/programme.js"></script>
+</body>
+</html>

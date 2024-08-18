@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles/dashboard.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
+    <style>
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .table-controls {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<!--======== HEADER STARTS HERE ========== -->
+<!--======== HEADER STARTS HERE ========== -->
+<!-- Header -->
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+                <span class="navbar-text text-white mr-3">||</span>
+                <span class="navbar-text text-white mr-3" id="role" th:text="${loggedInUser.role}">Role</span>
+                <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
+                <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
+            </div>
+            <div class="mx-auto">
+                <a class="navbar-brand text-white" href="#">Certificate Management System</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <a class="nav-link text-white" href="#"><img src="../static/images/notification.png" alt="Notification" class="icon"></a>
+                <a class="nav-link text-white" href="#"><img src="../static/images/logout.png" alt="Logout" class="icon"></a>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
+
+
+<!--======== SIDE BAR STARTS HERE ==========-->
+<!--======== SIDE BAR STARTS HERE ========== -->
+<nav th:fragment="sidebar">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="list-group list-group-flush" id="sidebar-content">
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <img src="../static/images/home.png" alt="home">
+                    Dashboard</a>
+                <div class="dropdown">
+                    <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/calendar.png" alt="dashboard">
+                        Academic Year</a>
+                    <div id="academicYearMenu" class="collapse">
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Add Academic Year</a>
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-all">All Academic Years</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#facultyMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Faculty">Faculty</a>
+                    <div id="facultyMenu" class="collapse">
+                        <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Add Faculty</a>
+                        <a href="/faculty/faculty-all" class="list-group-item list-group-item-action bg-dark text-white">All Faculties</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#departmentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Department">Department</a>
+                    <div id="departmentMenu" class="collapse">
+                        <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Add Department</a>
+                        <a href="/department/department-all" class="list-group-item list-group-item-action bg-dark text-white">All Departments</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#programmeMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Programme">Programme</a>
+                    <div id="programmeMenu" class="collapse">
+                        <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Add Programme</a>
+                        <a href="/programme/programme-all" class="list-group-item list-group-item-action bg-dark text-white">All Programmes</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#studentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/student.png" alt="Student">Student</a>
+                    <div id="studentMenu" class="collapse">
+                        <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Add Student</a>
+                        <a href="/student/student-all" class="list-group-item list-group-item-action bg-dark text-white">All Students</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#certificateMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
+                    <div id="certificateMenu" class="collapse">
+                        <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
+                        <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
+                        <a href="/certificate/certificate-verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/user.png" alt="User">User</a>
+                    <div id="userMenu" class="collapse">
+
+                        <a href="/user/add-user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+                        <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
+                    </div>
+                </div>
+                <!-- Add more menu items as needed -->
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- /#sidebar-wrapper -->
+<!--======== SIDE BAR ENDS HERE ==========-->
+<!--======== SIDE BAR ENDS HERE ========== -->
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Student Table</h1>
+
+    <!-- Students Table -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="card-title">All Students</h5>
+                        <button class="btn btn-primary" onclick="loadPage('/student/student-add')">+ Add new</button>
+                    </div>
+                    <table class="table table-bordered" id="studentTable">
+                        <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Surname</th>
+                            <th>Other Names</th>
+                            <th>Academic Year</th>
+                            <th>Faculty</th>
+                            <th>Department</th>
+                            <th>Programme</th>
+                            <th>Date Added</th>
+                            <th>Date Edited</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Sample data, to be replaced by server-side data -->
+                        <tr th:each="student : ${students}">
+                            <td th:text="${student.studentId}">ID</td>
+                            <td th:text="${student.surname}">Academic Year</td>
+                            <td th:text="${student.otherNames}">Academic Year</td>
+                            <td th:text="${student.academicYear.academicYear}">Academic Year</td>
+                            <td th:text="${student.faculty.facultyName}">Academic Year</td>
+                            <td th:text="${student.department.departmentName}">Academic Year</td>
+                            <td th:text="${student.programme.programmeName}">Academic Year</td>
+                            <td th:text="${student.dateAdded}">Date Added</td>
+                            <td th:text="${student.dateEdited}">Date Edited</td>
+                            <td>
+                                <button class="btn btn-sm btn-info">Edit</button>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- Repeat for other rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="../static/scripts/dashb.js"></script>
+<script src="../static/scripts/student.js"></script>
+</body>
+</html>
+

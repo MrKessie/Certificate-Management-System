@@ -1,0 +1,25 @@
+/*.result{*/
+/*    width: 100%;*/
+/*    height: 60px;*/
+/*    background-color: transparent;*/
+/*    justify-content: center;*/
+/*    gap: 20px;*/
+/*    align-items: center;*/
+/*    position: relative;*/
+/*    display: flex;*/
+/*}*/
+
+.error {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+.results {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none;
+}

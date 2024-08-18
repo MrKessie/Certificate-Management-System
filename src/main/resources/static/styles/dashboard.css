@@ -1,0 +1,74 @@
+body {
+    overflow-x: hidden;
+}
+
+#wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    margin-left: 0; /* Sidebar visible on page load */
+    transition: all 0.3s ease;
+    position: fixed;
+    top: 56px; /* height of the fixed navbar */
+    overflow-y: auto;
+    background-color: #2c3e50;
+}
+
+#sidebar-wrapper .list-group {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+#page-content-wrapper {
+    width: calc(100% - 250px);
+    padding: 20px;
+    margin-left: 250px;
+    margin-top: 56px; /* height of the fixed navbar */
+    transition: all 0.3s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    width: 100%;
+    margin-left: 0;
+}
+
+.bg-dark {
+    background-color: #2c3e50 !important;
+}
+
+.text-white {
+    color: #fff !important;
+}
+
+.list-group-item-action:hover, .list-group-item-action:focus {
+    color: #2c3e50 !important;
+    background-color: #f8f9fa !important;
+}
+
+.fixed-top {
+    background-color: #2980b9 !important;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}
+
+.list-group img {
+    width: 30px;
+    margin-right: 5px;
+    vertical-align: middle;
+}

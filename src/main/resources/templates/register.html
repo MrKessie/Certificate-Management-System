@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
+  <link rel="stylesheet" href="../static/styles/dashboard.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+    .header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+    .form-buttons button {
+      width: 48%;
+    }
+  </style>
+</head>
+<body>
+<!--======== HEADER STARTS HERE ========== -->
+<!--======== HEADER STARTS HERE ========== -->
+<!-- Header -->
+<header th:fragment="header">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+        <span class="navbar-text text-white mr-3">||</span>
+        <span class="navbar-text text-white mr-3" id="roleUser" th:text="${loggedInUser.role}">Role</span>
+        <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
+        <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
+      </div>
+      <div class="mx-auto">
+        <a class="navbar-brand text-white" href="#">Certificate Management System</a>
+      </div>
+      <div class="d-flex align-items-center">
+        <a class="nav-link text-white" href="#"><img src="../static/images/notification.png" alt="Notification" class="icon"></a>
+        <a class="nav-link text-white" href="#"><img src="../static/images/logout.png" alt="Logout" class="icon"></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
+
+
+<!--======== SIDE BAR STARTS HERE ==========-->
+<!--======== SIDE BAR STARTS HERE ========== -->
+<nav th:fragment="sidebar">
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-dark border-right" id="sidebar-wrapper">
+      <div class="list-group list-group-flush" id="sidebar-content">
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+          <img src="../static/images/home.png" alt="home">
+          Dashboard</a>
+        <div class="dropdown">
+          <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/calendar.png" alt="dashboard">
+            Academic Year</a>
+          <div id="academicYearMenu" class="collapse">
+            <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-all">All Academic Years</a>
+            <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Add Academic Year</a>
+            <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-edit">Edit Academic Year</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#facultyMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/dashboard.png" alt="Faculty">Faculty</a>
+          <div id="facultyMenu" class="collapse">
+            <a href="/faculty/faculty-all" class="list-group-item list-group-item-action bg-dark text-white">All Faculties</a>
+            <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Add Faculty</a>
+            <a href="/faculty/faculty-edit" class="list-group-item list-group-item-action bg-dark text-white">Edit Faculty</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#departmentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/dashboard.png" alt="Department">Department</a>
+          <div id="departmentMenu" class="collapse">
+            <a href="/department/department-all" class="list-group-item list-group-item-action bg-dark text-white">All Departments</a>
+            <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Add Department</a>
+            <a href="/department/department-edit" class="list-group-item list-group-item-action bg-dark text-white">Edit Department</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#programmeMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/dashboard.png" alt="Programme">Programme</a>
+          <div id="programmeMenu" class="collapse">
+            <a href="/programme/programme-all" class="list-group-item list-group-item-action bg-dark text-white">All Programmes</a>
+            <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Add Programme</a>
+            <a href="/programme/programme-edit" class="list-group-item list-group-item-action bg-dark text-white">Edit Programme</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#studentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/student.png" alt="Student">Student</a>
+          <div id="studentMenu" class="collapse">
+            <a href="/student/student-all" class="list-group-item list-group-item-action bg-dark text-white">All Students</a>
+            <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Add Student</a>
+            <a href="/student/student-edit" class="list-group-item list-group-item-action bg-dark text-white">Edit Student</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#certificateMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
+          <div id="certificateMenu" class="collapse">
+            <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
+            <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
+            <a href="/certificate/certificate-verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+            <img src="../static/images/user.png" alt="User">User</a>
+          <div id="userMenu" class="collapse">
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
+            <a href="/user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Edit User</a>
+          </div>
+        </div>
+        <!-- Add more menu items as needed -->
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- /#sidebar-wrapper -->
+<!--======== SIDE BAR ENDS HERE ==========-->
+<!--======== SIDE BAR ENDS HERE ========== -->
+
+<div class="container">
+  <div class="header">
+    <h1>Add User</h1>
+  </div>
+<!--  <div class="content">-->
+    <div class="form-container">
+      <h2>User Info</h2>
+<!--      <form action="/user/add" method="POST" id="registerForm">-->
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="userId">User ID</label>
+            <input type="text" class="form-control" id="userId" placeholder="User ID" name="userId" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="fullName">Full Name</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Full Name" name="fullName" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="gender">Gender</label>
+            <select id="gender" class="form-control" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="role">Role</label>
+            <select id="role" class="form-control" name="role" required>
+              <option value="">Select Role</option>
+              <option value="ROLE_ADMIN">Admin</option>
+              <option value="ROLE_CLIENT">Client</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" name="confirmPassword" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary" onclick="validateForm()">Save</button>
+          <!-- <button type="submit" class="btn btn-secondary">Import (Excel)</button> -->
+          <button type="button" class="btn btn-danger">Cancel</button>
+        </div>
+      </form>
+    </div>
+<!--  </div>-->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="../static/scripts/register.js"></script>
+<script src="../static/scripts/dashb.js"></script>
+</body>
+</html>

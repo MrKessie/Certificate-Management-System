@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Certificate</title>
+<!--    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles/dashboard.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
+    <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
+    <link rel="stylesheet" href="../static/styles/verify.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+    </script>
+<!--    <link rel="stylesheet" href="../static/styles/certificate.css">-->
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<!--======== HEADER STARTS HERE ========== -->
+<!--======== HEADER STARTS HERE ========== -->
+<!-- Header -->
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+                <span class="navbar-text text-white mr-3">||</span>
+                <span class="navbar-text text-white mr-3" id="role" th:text="${loggedInUser.role}">Role</span>
+                <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
+                <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
+            </div>
+            <div class="mx-auto">
+                <a class="navbar-brand text-white" href="#">Certificate Management System</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <a class="nav-link text-white" href="#"><img src="../static/images/notification.png" alt="Notification" class="icon"></a>
+                <a class="nav-link text-white" href="#"><img src="../static/images/logout.png" alt="Logout" class="icon"></a>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
+
+
+<!--======== SIDE BAR STARTS HERE ==========-->
+<!--======== SIDE BAR STARTS HERE ========== -->
+<nav th:fragment="sidebar">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="list-group list-group-flush" id="sidebar-content">
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <img src="../static/images/home.png" alt="home">
+                    Dashboard</a>
+                <div class="dropdown">
+                    <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/calendar.png" alt="dashboard">
+                        Academic Year</a>
+                    <div id="academicYearMenu" class="collapse">
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Add Academic Year</a>
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-all">All Academic Years</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#facultyMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Faculty">Faculty</a>
+                    <div id="facultyMenu" class="collapse">
+                        <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Add Faculty</a>
+                        <a href="/faculty/faculty-all" class="list-group-item list-group-item-action bg-dark text-white">All Faculties</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#departmentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Department">Department</a>
+                    <div id="departmentMenu" class="collapse">
+                        <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Add Department</a>
+                        <a href="/department/department-all" class="list-group-item list-group-item-action bg-dark text-white">All Departments</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#programmeMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/dashboard.png" alt="Programme">Programme</a>
+                    <div id="programmeMenu" class="collapse">
+                        <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Add Programme</a>
+                        <a href="/programme/programme-all" class="list-group-item list-group-item-action bg-dark text-white">All Programmes</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#studentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/student.png" alt="Student">Student</a>
+                    <div id="studentMenu" class="collapse">
+                        <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Add Student</a>
+                        <a href="/student/student-all" class="list-group-item list-group-item-action bg-dark text-white">All Students</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#certificateMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
+                    <div id="certificateMenu" class="collapse">
+                        <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
+                        <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
+                        <a href="/certificate/certificate-verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/user.png" alt="User">User</a>
+                    <div id="userMenu" class="collapse">
+
+                        <a href="/user/add-user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+                        <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
+                    </div>
+                </div>
+                <!-- Add more menu items as needed -->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container mt-5">
+    <div class="card form-container" id="addCertificateFormContainer">
+        <div class="card-body">
+            <h2 class="card-title">Add Certificate</h2>
+            <form id="addCertificateForm" class="certificate-add-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="certificateFile">Certificate File</label>
+                    <input type="file" class="form-control" accept="application/pdf" id="certificateFile" name="certificateFile" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required >
+                </div>
+                <div class="form-group">
+                    <label for="graduateClass">Class</label>
+                    <input type="text" class="form-control" id="graduateClass" name="graduateClass" placeholder="Class" required >
+                </div>
+                <div class="form-group">
+                    <label for="programme">Programme</label>
+                    <select class="form-control" id="programme" name="programme" required>
+                        <option value="">Select Programme</option>
+                    </select>
+                </div>
+<!--                <div class="form-group">-->
+<!--                    <label for="department">Department</label>-->
+<!--                    <input type="text" class="form-control" id="department" name="department" placeholder="Department" required >-->
+<!--                </div>-->
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select class="form-control" id="department" name="department" required>
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="academic-year">Academic Year</label>
+                    <select class="form-control" id="academic-year" name="academicYear" required>
+                        <option value="">Select Academic Year</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="addCertificate">Add Certificate</button>
+<!--                <button type="submit" class="btn btn-primary"  onclick="showUploadForm()">Upload (PDF)</button>-->
+                <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <div class="card form-container" id="uploadCertificateFormContainer">
+            <div class="card-body">
+                <h2 class="card-title">Upload Certificate</h2>
+                <form id="uploadCertificateForm">
+                    <div class="form-group">
+                        <label for="getStudentId">Student ID:</label>
+                        <input type="text" class="form-control" id="getStudentId" name="student" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">Upload Certificate</label>
+                        <input type="file" class="form-control-file" id="file" name="file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">Upload Certificate</button>
+                    <button type="button" class="btn btn-primary" onclick="showAddForm()">Add Certificate</button>
+                    <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
+                </form>
+                <div id="error" class="error"></div>
+                <div id="results" class="results hidden">
+                    <h2>Extracted Data:</h2>
+                    <p><strong>Name:</strong> <span id="name"></span></p>
+                    <p><strong>Programme:</strong> <span id="programme2"></span></p>
+                    <p><strong>Course:</strong> <span id="course"></span></p>
+                    <p><strong>Class:</strong> <span id="classHonours"></span></p>
+                    <button type="submit" id="saveBtn">Save Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <div class="card form-container" id="importCertificateFormContainer">
+            <div class="card-body">
+                <h2 class="card-title">Import Certificate</h2>
+                <form id="importCertificateForm">
+                    <div class="form-group">
+                        <label for="importFile">Upload Certificate</label>
+                        <input type="file" class="form-control-file" id="importFile" name="file" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" >Import (Excel)</button>
+<!--                    <button type="submit" class="btn btn-primary" onclick="showUploadForm()">Upload Certificate</button>-->
+                    <button type="button" class="btn btn-primary"  onclick="showAddForm()">Add Certificate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<!--    Certificates Table-->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="card-title">All Certificates</h5>
+                        <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="certificateTable">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student ID</th>
+                                <th>Certificate Path</th>
+                                <th>Date Added</th>
+                                <th>Date Edited</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
+                            <tr th:each="certificate : ${certificates}">
+                                <td class="faculty-id" th:text="${certificate.id}">ID</td>
+                                <td th:text="${certificate.studentId.studentId}">Student ID</td>
+                                <td th:text="${certificate.certificatePath}">Certificate Path</td>
+                                <td th:text="${certificate.dateAdded}">Date Added</td>
+                                <td th:text="${certificate.dateEdited}">Date Edited</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.id} + ')'">Delete</button>
+                                </td>
+                            </tr>
+                            <!-- Repeat rows as necessary -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination handled by DataTables -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="../static/scripts/dashb.js"></script>
+<script src="../static/scripts/certificate.js"></script>
+</body>
+</html>
