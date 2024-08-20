@@ -99,10 +99,6 @@ document.getElementById('addFacultyForm').addEventListener('submit', async funct
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    attachEditListeners();
-    $('#editFacultyFormModal').on('show.bs.modal', async function (event) {
-        const button = $(event.relatedTarget);
-
         try {
             const response = await fetch('/faculty/all');
             if (response.ok) {
@@ -141,88 +137,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-
-document.getElementById('editFacultyForm').addEventListener('submit', async (event) => {
-    event.preventDefault(); // Prevent default form submission
-
-    const facultyId = document.getElementById('editFacultyId').value;
-    const facultyName = document.getElementById('editFacultyName').value;
-
-    try {
-        const response = await fetch(`/faculties/update/${facultyId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ facultyName })
-        });
-
-        if (response.ok) {
-            await Swal.fire({
-                icon: 'success',
-                title: 'Updated',
-                text: 'Faculty details updated successfully!'
-            });
-
-            // Hide the modal
-            const myModalEl = document.getElementById('editFacultyModal');
-            const modal = bootstrap.Modal.getInstance(myModalEl);
-            modal.hide();
-
-            // Optionally, refresh the table or update the specific row
-            location.reload(); // Reload the page or update the table row dynamically
-        } else {
-            const errorText = await response.text();
-            await Swal.fire({
-                icon: 'error',
-                title: 'Update Error',
-                text: errorText || 'There was an error updating the faculty. Please try again.'
-            });
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Submission Error',
-            text: 'There was an error with the submission. Please try again.'
-        });
-    }
-});
-
-
-function attachEditListeners() {
-    document.querySelectorAll('.btn-info').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const facultyId = event.target.dataset.facultyId;
-
-            try {
-                const response = await fetch(`/faculty/edit/${facultyId}`);
-                if (response.ok) {
-                    const faculty = await response.json();
-
-                    // Pre-fill the form with the existing data
-                    document.getElementById('editFacultyId').value = faculty.facultyId;
-                    document.getElementById('editFacultyName').value = faculty.facultyName;
-
-                    // Show the edit modal
-                    const myModal = new bootstrap.Modal(document.getElementById('editFacultyModal'));
-                    myModal.show();
-                } else {
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Fetch Error',
-                        text: 'There was an error fetching the faculty details. Please try again.'
-                    });
-                }
-            } catch (error) {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Submission Error',
-                    text: 'There was an error with the submission. Please try again.'
-                });
-            }
-        });
-    });
-}
 
 function attachDeleteListeners() {
     document.querySelectorAll('.btn-danger').forEach(button => {
@@ -290,67 +204,171 @@ function attachDeleteListeners() {
     });
 }
 
+
+document.getElementById('editFacultyForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    const facultyId = document.getElementById('editFacultyId').value;
+    const facultyName = document.getElementById('editFacultyName').value;
+
+    try {
+        const response = await fetch(`/faculties/update/${facultyId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ facultyName })
+        });
+
+        if (response.ok) {
+            await Swal.fire({
+                icon: 'success',
+                title: 'Updated',
+                text: 'Faculty details updated successfully!'
+            });
+
+            // Hide the modal
+            const myModalEl = document.getElementById('editFacultyModal');
+            const modal = bootstrap.Modal.getInstance(myModalEl);
+            modal.hide();
+
+            // Optionally, refresh the table or update the specific row
+            location.reload(); // Reload the page or update the table row dynamically
+        } else {
+            const errorText = await response.text();
+            await Swal.fire({
+                icon: 'error',
+                title: 'Update Error',
+                text: errorText || 'There was an error updating the faculty. Please try again.'
+            });
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Submission Error',
+            text: 'There was an error with the submission. Please try again.'
+        });
+    }
+});
+
+function attachEditListeners() {
+    document.querySelectorAll('.btn-info').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const facultyId = event.target.dataset.facultyId;
+
+            try {
+                const response = await fetch(`/faculty/edit/${facultyId}`);
+                if (response.ok) {
+                    const faculty = await response.json();
+
+                    // Pre-fill the form with the existing data
+                    document.getElementById('editFacultyId').value = faculty.facultyId;
+                    document.getElementById('editFacultyName').value = faculty.facultyName;
+
+                    // Show the edit modal
+                    const myModal = new bootstrap.Modal(document.getElementById('editFacultyModal'));
+                    myModal.show();
+                } else {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Fetch Error',
+                        text: 'There was an error fetching the faculty details. Please try again.'
+                    });
+                }
+            } catch (error) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Error',
+                    text: 'There was an error with the submission. Please try again.'
+                });
+            }
+        });
+    });
+}
+
 //FUNCTION IMPORT FACULTIES
 function importFaculties() {
     console.log('Importing');
     const facultyFile = document.getElementById('file');
+    const form = document.getElementById('facultyImportForm');
 
     if (facultyFile.files.length === 0) {
-        alert("Select a file");
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select a file'
+        });
         return false;
     }
-    alert('Faculty imported successfully');
-    return true;
-}
 
-//FUNCTION LOAD FACULTIES
-function loadTableData() {
-    fetch('/faculty/all')
+    facultyFile.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const validMimeTypes = [
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (!validMimeTypes.includes(file.type) && !['xls', 'xlsx'].includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please upload a valid Excel file.'
+                });
+                event.target.value = '';
+            }
+        }
+    });
+
+    const formData = new FormData(form);
+
+    fetch('/faculty/import-faculties', {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
-            if (!Array.isArray(data)) {
-                console.error("Expected an array but got:", data);
-                return;
+            if (data.addedCount > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: `${data.addedCount} faculties have been added successfully.`
+                });
             }
-            const tableBody = document.querySelector('#facultyTable tbody');
-            tableBody.innerHTML = '';
-            data.forEach(faculty => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${faculty.facultyId}</td> 
-                             <td>${faculty.facultyName}</td>
-                             <td>${faculty.dateAdded}</td>
-                             <td>${faculty.dateEdited}</td>
-                             <td>
-                                <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                                <button class="btn btn-sm btn-danger" th:onclick="'deleteFaculty(' + ${faculty.facultyId} + ')'">Delete</button>
-                             </td>`;
-                tableBody.appendChild(row);
-            });
+
+            if (data.notAddedFaculties && Object.keys(data.notAddedFaculties).length > 0) {
+                let message = 'The following faculties were not added:\n\n';
+                for (let [id, reason] of Object.entries(data.notAddedFaculties)) {
+                    message += `Faculty ID ${id}: ${reason}\n`;
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: message
+                });
+            }
+
+            if ((!data.addedCount || data.addedCount === 0) &&
+                (!data.notAddedFaculties || Object.keys(data.notAddedFaculties).length === 0)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Information',
+                    text: 'No faculties were added. The file might be empty.'
+                });
+            }
         })
-        .catch(error => console.error('Error loading table data:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while importing faculties.'
+            });
+        });
+
+    return false; // Prevent form from submitting traditionally
 }
-
-}
-
-
-
-//FUNCTION DELETE FACULTY BASED ON ID
-// function deleteFaculty(id) {
-//     if (confirm('Are you sure you want to delete this faculty?')) {
-//         fetch(`/faculty/delete/${id}`, {
-//             method: 'DELETE'
-//         })
-//             .then(response => {
-//                 if (response.ok) {
-//                     alert("Faculty deleted successfully");
-//                     loadTableData(); // Reload table data
-//                 } else {
-//                     alert('Failed to delete Faculty');
-//                 }
-//             });
-//     }
-// }
-
 
 
 

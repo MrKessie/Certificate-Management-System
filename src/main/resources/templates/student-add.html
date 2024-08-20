@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="../static/styles/dashboard.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -142,18 +143,14 @@
             <div class="card mb-4 form-container">
                 <div class="card-body">
                     <h5 class="card-title">Student Info</h5>
-                    <form id="addStudentForm" action="/student/add" method="post" onsubmit="return validateForm()">
-                        <div class="form-group">
-                            <label for="surname">Surname</label>
-                            <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="otherNames">Other Names</label>
-                            <input type="text" class="form-control" id="otherNames" name="otherNames" placeholder="Other Names" required>
-                        </div>
+                    <form id="addStudentForm">
                         <div class="form-group">
                             <label for="studentId">Student ID</label>
                             <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">Student Name</label>
+                            <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required>
                         </div>
                         <div class="form-group">
                             <label for="academicYear">Academic Year</label>
@@ -194,7 +191,7 @@
             <div class="card mb-4 form-container">
                 <div class="card-body">
                     <h5 class="card-title">Import Student (Excel)</h5>
-                    <form action="/importStudent" method="post" enctype="multipart/form-data">
+                    <form id="studentImportForm" onsubmit="return importStudents()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose File</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
@@ -220,8 +217,7 @@
                         <thead>
                         <tr>
                             <th>Student ID</th>
-                            <th>Surname</th>
-                            <th>Other Names</th>
+                            <th>Student Name</th>
                             <th>Academic Year</th>
                             <th>Faculty</th>
                             <th>Department</th>
@@ -231,12 +227,11 @@
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="studentTableBody">
                         <!-- Sample data, to be replaced by server-side data -->
                         <tr th:each="student : ${students}">
                             <td th:text="${student.studentId}">ID</td>
-                            <td th:text="${student.surname}">Academic Year</td>
-                            <td th:text="${student.otherNames}">Academic Year</td>
+                            <td th:text="${student.studentName}">Student Name</td>
                             <td th:text="${student.academicYear.academicYear}">Academic Year</td>
                             <td th:text="${student.faculty.facultyName}">Academic Year</td>
                             <td th:text="${student.department.departmentName}">Academic Year</td>
@@ -262,6 +257,7 @@
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashb.js"></script>
 <script src="../static/scripts/student.js"></script>
 

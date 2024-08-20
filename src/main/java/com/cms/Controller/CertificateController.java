@@ -69,13 +69,25 @@ public class CertificateController {
 
 
     @PostMapping("/add")
-    public String uploadCertificate(@RequestParam("studentId") int studentId, @RequestParam  String studentName,
-                                    @RequestParam Programme programme, @RequestParam AcademicYear academicYear,
-                                    @RequestParam Department department, @RequestParam String graduateClass,
-                                    @RequestParam("certificateFile") MultipartFile certificateFile) throws IOException {
+    public ResponseEntity<Map<String, String>> uploadCertificate(@RequestParam int certificateId, @RequestParam("studentId") int studentId,
+                                                                 @RequestParam String studentName, @RequestParam Programme programme,
+                                                                 @RequestParam AcademicYear academicYear, @RequestParam Department department,
+                                                                 @RequestParam String graduateClass, @RequestParam("certificateFile") MultipartFile certificateFile) throws IOException {
+
+        Map<String, String> response = new HashMap<>();
+
+        // Check if certificate with the given ID already exists
+        if (certificateService.existsByCertificateId(certificateId)) {
+            response.put("status", "error");
+            response.put("message", "Certificate already exists.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
         Student student = studentService.findByStudentId(studentId);
         if (student == null) {
-            throw new RuntimeException("Student not found");
+            response.put("status", "error");
+            response.put("message", "Student does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         // Save file to XAMPP server
@@ -84,19 +96,17 @@ public class CertificateController {
         String filePath = uploadDir + originalFileName;
         String relativePath = "certificates/" + originalFileName;
         File dest = new File(filePath);
-//        certificateFile.transferTo(dest);
-
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
-
         certificateFile.transferTo(dest);
+
         // Log success
         System.out.println("File saved successfully");
 
-
         // Save certificate record to database
         Certificate certificate = new Certificate();
+        certificate.setCertificateId(certificateId);
         certificate.setCertificatePath(relativePath);
         certificate.setStudentId(student);
         certificate.setStudentName(studentName);
@@ -105,64 +115,30 @@ public class CertificateController {
         certificate.setAcademicYear(academicYear);
         certificate.setGraduateClass(graduateClass);
 
-        certificateService.addCertificate(certificate);
+        Certificate savedCertificate = certificateService.addCertificate(certificate);
 
-        return "redirect:/certificate/certificate-add";
+        if (savedCertificate == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to add certificate. It may already exist.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+        response.put("status", "success");
+        response.put("message", "Certificate added successfully!");
+        return ResponseEntity.ok(response);
     }
 
 
 
-    @PostMapping("/upload")
-    @ResponseBody
-    public Map<String, Object> saveCertificate(@RequestParam("studentId") int studentId,
-                                               @RequestParam String studentName,
-                                               @RequestParam int programmeId,
-                                               @RequestParam int academicYearId,
-                                               @RequestParam int departmentId,
-                                               @RequestParam String graduateClass,
-                                               @RequestParam("certificateFile") MultipartFile certificateFile) throws IOException {
-        Map<String, Object> response = new HashMap<>();
-
+    @PostMapping("/import")
+    public ResponseEntity<List<Map<String, Object>>> importCertificates(@RequestParam("file") MultipartFile file) {
         try {
-            Student student = studentService.findByStudentId(studentId);
-            if (student == null) {
-                throw new RuntimeException("Student not found");
-            }
-
-            Programme programme = programmeService.findById(programmeId);
-            AcademicYear academicYear = academicYearService.findById(academicYearId);
-            Department department = departmentService.findById(departmentId);
-
-            // Save file to XAMPP server
-            String uploadDir = "C:\\xampp\\htdocs\\certificates\\";
-            String originalFileName = certificateFile.getOriginalFilename();
-            String filePath = uploadDir + originalFileName;
-            String relativePath = "certificates/" + originalFileName;
-            File dest = new File(filePath);
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
-            }
-            certificateFile.transferTo(dest);
-
-            // Save certificate record to database
-            Certificate certificate = new Certificate();
-            certificate.setCertificatePath(relativePath);
-            certificate.setStudentId(student);
-            certificate.setStudentName(studentName);
-            certificate.setProgramme(programme);
-            certificate.setDepartment(department);
-            certificate.setAcademicYear(academicYear);
-            certificate.setGraduateClass(graduateClass);
-            certificateService.addCertificate(certificate);
-
-            response.put("success", true);
-            response.put("message", "Certificate saved successfully");
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
+            List<Map<String, Object>> results = certificateService.importCertificates(file);
+            return ResponseEntity.ok(results);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
-        return response;
     }
 
 
@@ -204,38 +180,38 @@ public class CertificateController {
 //        return new Certificate(student, studentName, academicYear, programme, department, graduateClass, certificatePath);
 //    }
 
-    private ExtractedDatas extractData(String pdfText) {
-        String name = extractName(pdfText);
-        String programme = extractProgramme(pdfText);
-        String course = extractDepartment(pdfText);
-        String classHonours = extractClass(pdfText);
-
-        return new ExtractedDatas(name, programme, course, classHonours);
-    }
-
-    private String extractName(String text) {
-        Pattern pattern = Pattern.compile("certify that\\s+([A-Z\\s]+)\\s+having pursued");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find() ? matcher.group(1).trim() : "";
-    }
-
-    private String extractProgramme(String text) {
-        Pattern pattern = Pattern.compile("to the degree of\\s+(Bachelor of [A-Za-z\\s]+)\\s+with");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find() ? matcher.group(1).trim() : "";
-    }
-
-    private String extractDepartment(String text) {
-        Pattern pattern = Pattern.compile("in\\s+([A-Za-z\\s]+Education)");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find() ? matcher.group(1).trim() : "";
-    }
-
-    private String extractClass(String text) {
-        Pattern pattern = Pattern.compile("with\\s+(\\w+\\s+CLASS\\s+HONOURS\\s+\\([^)]+\\))");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find() ? matcher.group(1).trim() : "";
-    }
+//    private ExtractedDatas extractData(String pdfText) {
+//        String name = extractName(pdfText);
+//        String programme = extractProgramme(pdfText);
+//        String course = extractDepartment(pdfText);
+//        String classHonours = extractClass(pdfText);
+//
+//        return new ExtractedDatas(name, programme, course, classHonours);
+//    }
+//
+//    private String extractName(String text) {
+//        Pattern pattern = Pattern.compile("certify that\\s+([A-Z\\s]+)\\s+having pursued");
+//        Matcher matcher = pattern.matcher(text);
+//        return matcher.find() ? matcher.group(1).trim() : "";
+//    }
+//
+//    private String extractProgramme(String text) {
+//        Pattern pattern = Pattern.compile("to the degree of\\s+(Bachelor of [A-Za-z\\s]+)\\s+with");
+//        Matcher matcher = pattern.matcher(text);
+//        return matcher.find() ? matcher.group(1).trim() : "";
+//    }
+//
+//    private String extractDepartment(String text) {
+//        Pattern pattern = Pattern.compile("in\\s+([A-Za-z\\s]+Education)");
+//        Matcher matcher = pattern.matcher(text);
+//        return matcher.find() ? matcher.group(1).trim() : "";
+//    }
+//
+//    private String extractClass(String text) {
+//        Pattern pattern = Pattern.compile("with\\s+(\\w+\\s+CLASS\\s+HONOURS\\s+\\([^)]+\\))");
+//        Matcher matcher = pattern.matcher(text);
+//        return matcher.find() ? matcher.group(1).trim() : "";
+//    }
 
 
     @GetMapping("/student/{studentId}")
@@ -269,29 +245,6 @@ public class CertificateController {
     }
 
 
-//    @GetMapping("/student/{studentId}")
-//    public ResponseEntity<?> getCertificateByStudentId(@PathVariable int studentId) {
-//        Student student = studentService.findByStudentId(studentId);
-//        if (student == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Certificate not found for student ID: " + studentId);
-//        }
-//
-//        Certificate certificate = student.getCertificates().stream().findFirst().orElse(null);
-//        if (certificate == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Certificate not found for student ID: " + studentId);
-//       }
-//
-////        certificateVerifyService.saveVerification(user, student, true);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("studentId", student.getStudentId());
-//        response.put("certificateFile", certificate.getCertificatePath());
-//        response.put("viewLink", "http://localhost/" + certificate.getCertificatePath()); // Assuming fileUrl is the correct URL
-//
-//        return ResponseEntity.ok(response);
-//    }
-
 
     @GetMapping("/verify/bulk")
     public ResponseEntity<?> bulkVerify(@RequestParam("file") MultipartFile file) {
@@ -305,6 +258,27 @@ public class CertificateController {
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file.");
+        }
+    }
+
+
+
+    @GetMapping("/all")
+    @ResponseBody
+    public List<Certificate> facultyList() {
+        return certificateService.allCertificateLis();
+    }
+
+
+
+    //=============METHOD TO DELETE ALL FACULTY BY ID=============//
+    @DeleteMapping("/delete/{certificateId}")
+    public ResponseEntity<String> deleteCertificate(@PathVariable int certificateId) {
+        if (certificateService.existsByCertificateId(certificateId)) {
+            certificateService.deleteCertificate(certificateId);
+            return ResponseEntity.ok("Certificate deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Certificate not found.");
         }
     }
 

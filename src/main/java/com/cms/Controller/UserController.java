@@ -98,25 +98,25 @@ public class UserController {
         return "register";
     }
 
-    @GetMapping("/checkUserId")
-    @ResponseBody
-    public ResponseEntity<Map<String, Boolean>> checkUserId(@RequestParam int userId) {
-        boolean exists = userService.userIdExists(userId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("exists", exists);
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/checkUserId")
+//    @ResponseBody
+//    public ResponseEntity<Map<String, Boolean>> checkUserId(@RequestParam int userId) {
+//        boolean exists = userService.userIdExists(userId);
+//        Map<String, Boolean> response = new HashMap<>();
+//        response.put("exists", exists);
+//        return ResponseEntity.ok(response);
+//    }
 
-    @PostMapping("/change-password")
-    public String changePassword(@RequestParam int userId, @RequestParam String newPassword, @RequestParam String confirmPassword) {
-        boolean success = userService.changePassword(userId, newPassword, confirmPassword);
-        if (success) {
-            return "redirect:/login-2";
-        } else {
-            return "redirect:/user/change-password";
-        }
-//        return "redirect:/login";
-    }
+//    @PostMapping("/change-password")
+//    public String changePassword(@RequestParam int userId, @RequestParam String newPassword, @RequestParam String confirmPassword) {
+//        boolean success = userService.changePassword(userId, newPassword, confirmPassword);
+//        if (success) {
+//            return "redirect:/login-2";
+//        } else {
+//            return "redirect:/user/change-password";
+//        }
+////        return "redirect:/login";
+//    }
 
     @GetMapping("/exists")
     public ResponseEntity<Boolean> userExists(@RequestParam int userId) {

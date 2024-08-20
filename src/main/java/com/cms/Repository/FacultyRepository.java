@@ -12,6 +12,8 @@ public interface FacultyRepository extends JpaRepository<Faculty, Integer> {
     Faculty findByFacultyId(int facultyId);
     boolean existsByFacultyId(int facultyId);
 
+    boolean existsByFacultyName(String facultyName);
+
     Optional<Faculty> getByFacultyId(int facultyId);
 
     Optional<Faculty> findByFacultyIdOrFacultyName(int facultyId, String facultyName);

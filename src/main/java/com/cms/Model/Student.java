@@ -14,10 +14,7 @@ public class Student {
     @Column(unique = true)
     private int studentId;
     @Column(nullable = false)
-    private String surname;
-
-    @Column(nullable = false)
-    private String otherNames;
+    private String studentName;
 
 
     @ManyToOne
@@ -56,24 +53,13 @@ public class Student {
     @CreationTimestamp
     LocalDateTime dateEdited;
 
+    public Student(String studentName, String programmeName, String departmentName, String academicYear) {
+    }
+
+    public Student() {
+    }
 
     // getters and setters
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getOtherNames() {
-        return otherNames;
-    }
-
-    public void setOtherNames(String otherNames) {
-        this.otherNames = otherNames;
-    }
 
     public int getStudentId() {
         return studentId;
@@ -81,6 +67,14 @@ public class Student {
 
     public void setStudentId(int studentId) {
         this.studentId = studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public Faculty getFaculty() {

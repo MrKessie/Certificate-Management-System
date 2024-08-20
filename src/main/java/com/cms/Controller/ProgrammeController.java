@@ -4,19 +4,18 @@ import com.cms.Model.Department;
 import com.cms.Model.Faculty;
 import com.cms.Model.Programme;
 import com.cms.Model.User;
-import com.cms.Service.DepartmentService;
-import com.cms.Service.FacultyService;
-import com.cms.Service.ProgrammeService;
+import com.cms.Service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/programme")
@@ -56,27 +55,48 @@ public class ProgrammeController {
 
 
     @PostMapping("/add")
-    public String addProgramme(@RequestParam int programmeId, @RequestParam String programmeName, @RequestParam Faculty faculty,
-                               @RequestParam Department department, Model model) {
+    public ResponseEntity<String> addProgramme(@RequestParam int programmeId, @RequestParam String programmeName,
+                                               @RequestParam Faculty faculty, @RequestParam Department department) {
+        if (programmeService.existsByProgrammeId(programmeId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Programme ID already exists.");
+        }
+
         Programme programme = programmeService.addProgramme(programmeId, programmeName, faculty, department);
-        model.addAttribute("programme", new Programme());
-        return "redirect:/programme/programme-add";
+
+        if (programme == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+
+        return ResponseEntity.ok("Programme added successfully!");
     }
 
     @GetMapping("/all")
     @ResponseBody
     public List<Programme> programmeList(Model model) {
-        List<Programme> programmes = programmeService.allProgrammes();
-        return programmes;
+        return programmeService.allProgrammes();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteDepartment(@PathVariable int id) {
-        boolean isRemoved = programmeService.deleteProgramme(id);
-        if (!isRemoved) {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/delete/{programmeId}")
+    public ResponseEntity<String> deleteDepartment(@PathVariable int programmeId) {
+        if (programmeService.existsByProgrammeId(programmeId)) {
+            programmeService.deleteProgramme(programmeId);
+            return ResponseEntity.ok("Programme deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Programme not found.");
         }
-        return ResponseEntity.ok().build();
+    }
+
+
+    //=============METHOD TO IMPORT  DEPARTMENT=============//
+    @PostMapping("/import-programmes")
+    public ResponseEntity<?> importProgrammes(@RequestParam("file") MultipartFile file) throws IOException {
+        ProgrammeImportResult result = programmeService.importProgramme(file);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("addedCount", result.getAddedProgrammes().size());
+        response.put("notAddedProgrammes", result.getNotAddedProgrammes());
+
+        return ResponseEntity.ok(response);
     }
 
     public String getFacultyName(int facultyId) {

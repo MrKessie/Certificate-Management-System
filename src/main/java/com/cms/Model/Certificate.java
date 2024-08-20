@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 public class Certificate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int certificateId;
 
     @ManyToOne
     @JoinColumn(name = "student_id", foreignKey = @ForeignKey(name = "fk_student_certificate",
@@ -37,7 +36,6 @@ public class Certificate {
 
     @Column(name = "Class")
     private String graduateClass;
-
 
     private String certificatePath;
 
@@ -68,12 +66,13 @@ public class Certificate {
 //    public Certificate(Student student, String studentName, AcademicYear academicYear, Programme programme, Department department, String graduateClass, String certificatePath) {
 //    }
 
-    public int getId() {
-        return Id;
+
+    public int getCertificateId() {
+        return certificateId;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void setCertificateId(int certificateId) {
+        this.certificateId = certificateId;
     }
 
     public Student getStudentId() {

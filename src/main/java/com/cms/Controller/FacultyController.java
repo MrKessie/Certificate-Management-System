@@ -4,6 +4,8 @@ package com.cms.Controller;
 import com.cms.Model.Faculty;
 import com.cms.Model.User;
 import com.cms.Repository.FacultyRepository;
+import com.cms.Service.DepartmentImportResult;
+import com.cms.Service.FacultyImportResult;
 import com.cms.Service.FacultyService;
 import com.cms.UpdateRequest.FacultyUpdateRequest;
 import jakarta.servlet.http.HttpSession;
@@ -17,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/faculty")
@@ -66,7 +65,7 @@ public class FacultyController {
 
     //=============METHOD TO ADD FACULTY=============//
     @PostMapping("/add")
-    public ResponseEntity<String> addFaculty(@RequestParam int facultyId, @RequestParam String facultyName, Model model, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> addFaculty(@RequestParam int facultyId, @RequestParam String facultyName) {
         if (facultyService.existByFacultyId(facultyId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Faculty ID already exists.");
         }
@@ -97,10 +96,16 @@ public class FacultyController {
 
 
     //=============METHOD TO IMPORT  FACULTY=============//
+    //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-faculties")
-    public String importFaculties(@RequestParam("file") MultipartFile file) throws IOException {
-        facultyService.importFaculty(file);
-        return "redirect:/faculty/faculty-add";
+    public ResponseEntity<?> importFaculties(@RequestParam("file") MultipartFile file) throws IOException {
+        FacultyImportResult result = facultyService.importFaculty(file);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("addedCount", result.getAddedFaculties().size());
+        response.put("notAddedFaculties", result.getNotAddedFaculties());
+
+        return ResponseEntity.ok(response);
     }
 
 

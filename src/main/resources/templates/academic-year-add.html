@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="../static/styles/dashboard.css">
   <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
   <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -134,7 +135,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Add Academic Year</h5>
-                    <form id="academicYearForm" action="/academic-year/add" method="post" onsubmit="return validateForm()">
+                    <form id="academicYearForm">
                         <div class="form-group">
                             <label for="academicYear">Academic Year</label>
                             <input type="text" class="form-control" id="academicYearInput" name="academicYear" placeholder="Academic Year" required>
@@ -151,7 +152,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Import Academic Year (Excel)</h5>
-                    <form action="/academic-year/import-academic-years" method="post" onsubmit="return importAcademicYears()" enctype="multipart/form-data">
+                    <form id="academicYearImportForm" onsubmit="return importAcademicYears()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose File</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
@@ -184,7 +185,7 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody id="tableBody">
+                            <tbody id="academicYearTableBody">
                             <!-- Example data rows -->
                             <tr th:each="academicYear : ${academicYears}">
                                 <td id="academicYearId" class="year-id" th:text="${academicYear.id}">ID</td>
@@ -194,7 +195,7 @@
                                 <td>
                                     <button class="btn btn-sm btn-info" onclick="populateEditForm('${academicYear.id}', '${academicYear.academicYear}')"
                                             data-toggle="modal" data-target="#editModal">Edit</button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteAcademicYear(' + ${academicYear.id} + ')'">Delete</button>
+                                    <button class="btn btn-sm btn-danger">Delete</button>
                                 </td>
                             </tr>
                             <!-- Repeat for other rows -->
@@ -244,6 +245,7 @@
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/academic-year.js"></script>
 <script src="../static/scripts/dashb.js"></script>
 

@@ -15,35 +15,236 @@ $(document).ready(function() {
     $('#programmeTable').DataTable();
 });
 
+document.getElementById('addProgrammeForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
 
-function validateForm() {
+    // Get form data
     const programmeId = document.getElementById('programmeId').value;
     const programmeName = document.getElementById('programmeName').value;
     const faculty = document.getElementById('faculty').value;
     const department = document.getElementById('department').value;
-    const form = document.getElementById('addProgrammeForm')
 
+    // Validate form data
     if (!programmeId || !programmeName || !faculty || !department) {
-        alert("All fields are required.");
-        return false; // Prevent form submission
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Required Fields',
+            text: 'All fields are required.'
+        });
+        return;
     }
 
     if (isNaN(programmeId)) {
-        alert("Programme ID must be a number")
-        return false;
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Programme ID',
+            text: 'Enter a valid Programme ID.'
+        });
+        return;
     }
 
     if (!/^[a-zA-Z\s]+$/.test(programmeName)) {
-        alert("Programme name should only contain alphabets and spaces.");
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Programme Name',
+            text: 'Enter a valid Programme Name'
+        });
+        return;
+    }
+
+    // Prepare data to send
+    const formData = new FormData();
+    formData.append('programmeId', programmeId);
+    formData.append('programmeName', programmeName);
+    formData.append('faculty', faculty);
+    formData.append('department', department);
+
+    try {
+        const response = await fetch('/programme/add', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            // Check response status or JSON if needed
+            const result = await response.text(); // or response.json() if server returns JSON
+
+            // Handle response and display SweetAlert
+            await Swal.fire({
+                icon: 'success',
+                title: 'Programme Added',
+                text: 'Programme has been added successfully!'
+            });
+
+            // Optionally redirect or reset form
+            document.getElementById('addProgrammeForm').reset(); // Reset form
+            window.location.reload(); // Redirect if needed
+        } else {
+            const errorText = await response.text(); // or response.json() if server returns JSON
+
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: errorText || 'There was an error with the submission. Please try again.'
+            });
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Submission Error',
+            text: 'There was an error with the submission. Please try again.'
+        });
+    }
+});
+
+
+function importProgrammes() {
+    console.log('Importing');
+    const programmeFile = document.getElementById('file');
+    const form = document.getElementById('programmeImportForm');
+
+    if (programmeFile.files.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select a file'
+        });
         return false;
     }
 
-        // form.action = "/programme/add"
-        // form.method = "POST"
-        // form.submit();
-        alert("Programme added successfully");
-        return true;
+    programmeFile.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const validMimeTypes = [
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (!validMimeTypes.includes(file.type) && !['xls', 'xlsx'].includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please upload a valid Excel file.'
+                });
+                event.target.value = '';
+            }
+        }
+    });
 
+    const formData = new FormData(form);
+
+    fetch('/programme/import-programmes', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.addedCount > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: `${data.addedCount} programmes have been added successfully.`
+                });
+            }
+
+            if (data.notAddedProgrammes && Object.keys(data.notAddedProgrammes).length > 0) {
+                let message = 'The following programmes were not added:\n\n';
+                for (let [id, reason] of Object.entries(data.notAddedProgrammes)) {
+                    message += `Programme ID ${id}: ${reason}\n`;
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: message
+                });
+            }
+
+            if ((!data.addedCount || data.addedCount === 0) &&
+                (!data.notAddedProgrammes || Object.keys(data.notAddedProgrammes).length === 0)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Information',
+                    text: 'No Programmes were added. The file might be empty.'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while importing programmes.'
+            });
+        });
+
+    return false; // Prevent form from submitting traditionally
+}
+
+function attachDeleteListeners() {
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const programmeId = event.target.dataset.programmeId; // Get the ID from the data attribute
+
+            if (!programmeId || isNaN(programmeId)) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid ID',
+                    text: 'Invalid Programme ID. Please try again.'
+                });
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to delete this Programme?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/programme/delete/${programmeId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: 'Programme has been deleted successfully!'
+                        });
+
+                        // Remove the row from the table
+                        event.target.closest('tr').remove();
+                    } else {
+                        const errorText = await response.text();
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Deletion Error',
+                            text: errorText || 'There was an error deleting the Programme. Please try again.'
+                        });
+                    }
+                } catch (error) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Error',
+                        text: 'There was an error with the submission. Please try again.'
+                    });
+                }
+            } else {
+                // User canceled deletion
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Cancelled',
+                    text: 'Programme deletion was cancelled.'
+                });
+            }
+        });
+    });
 }
 
 function loadFaculties() {
@@ -80,62 +281,50 @@ function loadDepartments() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
-function loadTableData() {
-    console.log("Loading table data");
-    fetch('/programme/all') // Adjust the endpoint to match your actual data source
-        .then(response => response.json())
-        .then(data => {
 
-            console.log("fetch data")
-            // Check if data is an array
-            if (!Array.isArray(data)) {
-                console.error("Expected an array but got:", data);
-                return;
-            }
-            const tableBody = document.querySelector('#programmeTable tbody');
-            tableBody.innerHTML = ''; // Clear existing table rows
 
-            data.forEach(programme => {
+
+// Initial call to load select controls and table when the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", async function () {
+    loadFaculties();
+    loadDepartments()
+
+
+    try {
+        const response = await fetch('/programme/all');
+        if (response.ok) {
+            const programmes = await response.json();
+
+            const tableBody = document.getElementById('programmeTableBody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            programmes.forEach(programme => {
                 const row = document.createElement('tr');
-                // row.setAttribute('data-academic-year-id', department.id);
-                row.innerHTML = `<td>${programme.programmeId}</td>
+                row.innerHTML = `
+                    <td>${programme.programmeId}</td>
                     <td>${programme.programmeName}</td>
-                    <td>${programme.faculty}</td>
-                    <td>${programme.department}</td>
+                    <td>${programme.faculty.facultyName}</td>
+                    <td>${programme.department.departmentName}</td>
                     <td>${programme.dateAdded}</td>
                     <td>${programme.dateEdited}</td>
                     <td>
-                        <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                        <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">Delete</button>
+                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-danger" data-programme-id="${programme.programmeId}">Delete</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
-        })
-        .catch(error => console.error('Error loading table data:', error));
-}
 
-function deleteProgramme(id) {
-    if (confirm('Are you sure you want to delete this programme?')) {
-        fetch(`/programme/delete/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert("Programme deleted successfully")
-                    loadTableData()
-                    // location.reload();
-                    // loadTableData(); // Reload table data
-                } else {
-                    alert('Failed to delete Programme');
-                }
-            });
+            // Attach delete event listeners after populating the table
+            attachDeleteListeners();
+        } else {
+            throw new Error('Failed to fetch Programme data');
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Data Fetch Error',
+            text: 'There was an error fetching Programme data. Please try again.'
+        });
     }
-}
-
-
-// Initial call to load faculties when the DOM is fully loaded
-document.addEventListener("DOMContentLoaded", function() {
-    loadFaculties();
-    loadDepartments()
 });

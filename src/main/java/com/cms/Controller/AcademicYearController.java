@@ -3,9 +3,12 @@ package com.cms.Controller;
 import com.cms.Model.AcademicYear;
 import com.cms.Model.User;
 import com.cms.Repository.AcademicYearRepository;
+import com.cms.Service.AcademicYearImportResult;
 import com.cms.Service.AcademicYearService;
+import com.cms.Service.DepartmentImportResult;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,18 +49,34 @@ public class AcademicYearController {
 
     //=============METHOD TO ADD ACADEMIC YEARS=============//
     @PostMapping("/add")
-    public String addAcademicYear(@RequestParam String academicYear, Model model) {
-        academicYearService.addAcademicYear(academicYear);
-        model.addAttribute("academicYear", new AcademicYear());
-        return "redirect:/academic-year/academic-year-add";
+    public ResponseEntity<String> addAcademicYear(@RequestParam String academicYear, Model model) {
+        if (academicYearService.existsByAcademicYear(academicYear)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Academic Year already exists.");
+        }
+
+        AcademicYear addAcademicYear = academicYearService.addAcademicYear(academicYear);
+
+        if (addAcademicYear == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+
+        return ResponseEntity.ok("Academic Year added successfully!");
     }
 
-    //=============METHOD TO IMPORT  ACADEMIC YEAR=============//
+
+    //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-academic-years")
-    public String importAcademicYears(@RequestParam("file") MultipartFile file) throws IOException {
-        academicYearService.importAcademicYear(file);
-        return "redirect:/academic-year/academic-year-add";
+    public ResponseEntity<?> importAcademicYears(@RequestParam("file") MultipartFile file) throws IOException {
+        AcademicYearImportResult result = academicYearService.importAcademicYear(file);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("addedCount", result.getAddedAcademicYears().size());
+        response.put("notAddedAcademicYears", result.getNotAddedAcademicYears());
+
+        return ResponseEntity.ok(response);
     }
+
+
 
     //=============METHOD TO SHOW ALL ACADEMIC YEARS=============//
     @GetMapping("/all")
@@ -67,19 +86,15 @@ public class AcademicYearController {
     }
 
 
-    @PostMapping("/delete/{id}")
-    public String deleteDepartment(@PathVariable int id) {
-        academicYearService.deleteDepartmentById(id);
-        return "redirect:/departments";
+    @DeleteMapping("/delete/{academicYearId}")
+    public ResponseEntity<String> deleteAcademicYear(@PathVariable int academicYearId) {
+        if (academicYearService.existByAcademicYearId(academicYearId)) {
+            academicYearService.deleteAcademicYear(academicYearId);
+            return ResponseEntity.ok("Academic Year deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Academic Year not found.");
+        }
     }
-
-    //=============METHOD TO EDIT ACADEMIC YEAR BY ID=============//
-//    @GetMapping("delete/{id}")
-//    public String editAcademicYear(@PathVariable int id, Model model) {
-//        AcademicYear academicYear = academicYearService.getById(id);
-//        model.addAttribute("academicYear", academicYear);
-//        return "/academic-year-edit";
-//    }
 
     //=============METHOD TO UPDATE ACADEMIC YEAR=============//
     @PostMapping("/update")
@@ -128,12 +143,6 @@ public class AcademicYearController {
     @PostMapping("/update/{id}")
     public String updateAcademicYear(@PathVariable("id") int id, @ModelAttribute("academicYear") AcademicYear academicYear) {
         academicYearService.update(id, academicYear);
-        return "redirect:/academicYears";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteAcademicYear(@PathVariable("id") int id) {
-        academicYearService.delete(id);
         return "redirect:/academicYears";
     }
 

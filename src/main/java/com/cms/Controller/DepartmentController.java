@@ -3,10 +3,12 @@ package com.cms.Controller;
 import com.cms.Model.Department;
 import com.cms.Model.Faculty;
 import com.cms.Model.User;
+import com.cms.Service.DepartmentImportResult;
 import com.cms.Service.DepartmentService;
 import com.cms.Service.FacultyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/department")
@@ -55,35 +55,49 @@ public class DepartmentController {
 
 
     @PostMapping("/add")
-    public String addDepartment(@RequestParam int departmentId, @RequestParam String departmentName,
+    public ResponseEntity<String> addDepartment(@RequestParam int departmentId, @RequestParam String departmentName,
                                 @RequestParam Faculty faculty, Model model) {
-//        Faculty facultyId = facultyService.getById(faculty);
-        departmentService.addDepartment(departmentId, departmentName, faculty);
-        model.addAttribute("department", new Department());
-        return "redirect:/department/department-add";
+        if (departmentService.existsByDepartmentId(departmentId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Department ID already exists.");
+        }
+
+        Department department = departmentService.addDepartment(departmentId, departmentName, faculty);
+
+        if (department == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+
+        return ResponseEntity.ok("Department added successfully!");
+
     }
 
 
-    //=============METHOD TO IMPORT  FACULTY=============//
+    //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-departments")
-    public String importDepartments(@RequestParam("file") MultipartFile file) throws IOException {
-        departmentService.importDepartment(file);
-        return "redirect:/department/department-add";
+    public ResponseEntity<?> importDepartments(@RequestParam("file") MultipartFile file) throws IOException {
+        DepartmentImportResult result = departmentService.importDepartment(file);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("addedCount", result.getAddedDepartments().size());
+        response.put("notAddedDepartments", result.getNotAddedDepartments());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/all")
     @ResponseBody
-    public List<Department> departmentList(Model model) {
+    public List<Department> departmentList() {
         return departmentService.allDepartments();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteDepartment(@PathVariable int id) {
-        boolean isRemoved = departmentService.deleteDepartment(id);
-        if (!isRemoved) {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/delete/{departmentId}")
+    public ResponseEntity<String> deleteDepartment(@PathVariable int departmentId) {
+        if (departmentService.existsByDepartmentId(departmentId)) {
+            departmentService.deleteDepartment(departmentId);
+            return ResponseEntity.ok("Department deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Department not found.");
         }
-        return ResponseEntity.ok().build();
     }
 
 //    public String getFacultyName(int facultyId) {

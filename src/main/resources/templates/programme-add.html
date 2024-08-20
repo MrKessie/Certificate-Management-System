@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="../static/styles/dashboard.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -130,7 +131,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Add Programme</h5>
-                    <form id="addProgrammeForm" action="/programme/add" method="POST" onsubmit="return validateForm()">
+                    <form id="addProgrammeForm">
                         <div class="form-group">
                             <label for="programmeId">Programme ID</label>
                             <input type="text" class="form-control" id="programmeId" name="programmeId" placeholder="Programme ID" required>
@@ -165,7 +166,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Import Programme (Excel)</h5>
-                    <form action="/importProgramme" method="post" enctype="multipart/form-data">
+                    <form id="programmeImportForm" onsubmit="return importProgrammes()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose File</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
@@ -200,7 +201,7 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="programmeTableBody">
                             <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
 <!--                            <tr>-->
                             <tr th:each="programme : ${programmes}">
@@ -212,7 +213,7 @@
                                 <td th:text="${programme.dateEdited}">Date Edited</td>
                                 <td>
                                     <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">Delete</button>
+                                    <button class="btn btn-sm btn-danger">Delete</button>
                                 </td>
                             </tr>
                             <!-- Repeat rows as necessary -->
@@ -231,6 +232,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashb.js"></script>
 <script src="../static/scripts/programme.js"></script>
 </body>

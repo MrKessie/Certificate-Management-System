@@ -13,7 +13,7 @@ public interface ProgrammeRepository extends JpaRepository<Programme, Integer> {
 
     Programme findByProgrammeId(int programId);
 
-    Programme findProgrammeByProgrammeName(String programName);
+    boolean existsByProgrammeId(int programId);
 
-//    Programme findProgrammeByProgrammeName(String programmeName);
+    boolean existsByProgrammeName(String programmeName);
 }

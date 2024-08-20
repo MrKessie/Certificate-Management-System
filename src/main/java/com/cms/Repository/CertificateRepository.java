@@ -11,9 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Integer> {
     Optional<Certificate> findByStudentId(Student studentId);
-    List<Certificate> findAllByStudentId(Student studentId);
 
+    boolean existsByCertificatePath(String certificatePath);
 
-
-//    Optional<Certificate> findByStudentId(Student student);
+    boolean existsByCertificateId(int certificateId);
 }

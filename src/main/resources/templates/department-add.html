@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="../static/styles/dashboard.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -124,7 +125,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Add Department</h5>
-                    <form id="departmentForm" action="/department/add" method="post" onsubmit="return validateForm()">
+                    <form id="departmentForm">
                         <div class="form-group">
                             <label for="departmentId">Department ID</label>
                             <input type="text" class="form-control" id="departmentId" name="departmentId" placeholder="Department ID" required>
@@ -151,7 +152,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Import Department (Excel)</h5>
-                    <form action="/department/import-departments" method="post" onsubmit="return importDepartments()" enctype="multipart/form-data">
+                    <form id="departmentImportForm" onsubmit="return importDepartments()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose File</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
@@ -185,7 +186,7 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody id="tableBody">
+                            <tbody id="departmentTableBody">
                                     <tr th:each="department : ${departments}">
                                         <td th:text="${department.departmentId}">Department ID</td>
                                         <td th:text="${department.departmentName}">Department Name</td>
@@ -194,7 +195,7 @@
                                         <td th:text="${department.dateEdited}">Date Edited</td>
                                         <td>
                                             <button class="btn btn-sm btn-info" th:onclick="'editDepartment(' + ${department.departmentId} + ')'">Edit</button>
-                                            <button class="btn btn-sm btn-danger" th:onclick="'deleteDepartment(' + ${department.departmentId} + ')'">Delete</button>
+                                            <button class="btn btn-sm btn-danger">Delete</button>
                                         </td>
                                     </tr>
                             </tbody>
@@ -212,6 +213,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashb.js"></script>
 <script src="../static/scripts/department.js"></script>
 

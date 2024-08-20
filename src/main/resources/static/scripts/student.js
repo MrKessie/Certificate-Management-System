@@ -16,22 +16,243 @@ document.getElementById('cancelImport').addEventListener('click', function() {
 });
 
 
-function validateForm() {
+document.getElementById('addStudentForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // Get form data
     const studentId = document.getElementById('studentId').value;
-    const surname = document.getElementById('surname').value;
-    const otherNames = document.getElementById('otherNames').value;
-    const faculty = document.getElementById('faculty').value;
-    const department = document.getElementById('department').value;
+    const studentName = document.getElementById('studentName').value;
     const programme = document.getElementById('programme').value;
     const academicYear = document.getElementById('academicYear').value;
+    const department = document.getElementById('department').value;
+    const faculty = document.getElementById('faculty').value;
 
-    if (studentId === "" || surname === "" || otherNames === "" || faculty === "" || department === "" || programme === "" || academicYear === "") {
-        alert("All fields are required.");
-        return false; // Prevent form submission
+    // Validate form data
+    if (!studentId || !studentName || !programme || !faculty || !department || !academicYear) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Required Fields',
+            text: 'All fields are required.'
+        });
+        return;
     }
 
-    alert("Student added successfully");
-    return true;
+    if (isNaN(studentId)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Student ID',
+            text: 'Enter a valid Student ID.'
+        });
+        return;
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(studentName)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Student Name',
+            text: 'Enter a valid Student Name'
+        });
+        return;
+    }
+
+    // Prepare data to send
+    const formData = new FormData();
+    formData.append('studentId', studentId);
+    formData.append('studentName', studentName);
+    formData.append('academicYear',academicYear);
+    formData.append('faculty', faculty);
+    formData.append('department', department);
+    formData.append('programme', programme);
+
+    try {
+        const response = await fetch('/student/add', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            // Check response status or JSON if needed
+            const result = await response.text(); // or response.json() if server returns JSON
+
+            // Handle response and display SweetAlert
+            await Swal.fire({
+                icon: 'success',
+                title: 'Student Added',
+                text: 'Student has been added successfully!'
+            });
+
+            // Optionally redirect or reset form
+            document.getElementById('addStudentForm').reset(); // Reset form
+            window.location.reload(); // Redirect if needed
+        } else {
+            const errorText = await response.text(); // or response.json() if server returns JSON
+
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: errorText || 'There was an error with the submission. Please try again.'
+            });
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Submission Error',
+            text: 'There was an error with the submission. Please try again.'
+        });
+    }
+});
+
+
+function importStudents() {
+    console.log('Importing');
+    const studentFile = document.getElementById('file');
+    const form = document.getElementById('studentImportForm');
+
+    if (studentFile.files.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select a file'
+        });
+        return false;
+    }
+
+    studentFile.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const validMimeTypes = [
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (!validMimeTypes.includes(file.type) && !['xls', 'xlsx'].includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please upload a valid Excel file.'
+                });
+                event.target.value = '';
+            }
+        }
+    });
+
+    const formData = new FormData(form);
+
+    fetch('/student/import-students', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.addedCount > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: `${data.addedCount} student(s) have been added successfully.`
+                });
+            }
+
+            if (data.notAddedStudents && Object.keys(data.notAddedStudents).length > 0) {
+                let message = 'The following students were not added:\n\n';
+                for (let [id, reason] of Object.entries(data.notAddedStudents)) {
+                    message += `Student ID ${id}: ${reason}\n`;
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: message
+                });
+            }
+
+            if ((!data.addedCount || data.addedCount === 0) &&
+                (!data.notAddedStudents || Object.keys(data.notAddedStudents).length === 0)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Information',
+                    text: 'No students were added. The file might be empty.'
+                });
+            }
+
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while importing students.'
+            });
+        });
+
+    return false; // Prevent form from submitting traditionally
+}
+
+
+function attachDeleteListeners() {
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const studentId = event.target.dataset.studentId; // Get the ID from the data attribute
+
+            if (!studentId || isNaN(studentId)) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid ID',
+                    text: 'Invalid Student ID. Please try again.'
+                });
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to delete this Student?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/student/delete/${studentId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: 'Student has been deleted successfully!'
+                        });
+
+                        // Remove the row from the table
+                        event.target.closest('tr').remove();
+                    } else {
+                        const errorText = await response.text();
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Deletion Error',
+                            text: errorText || 'There was an error deleting the Student. Please try again.'
+                        });
+                    }
+                } catch (error) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Error',
+                        text: 'There was an error with the submission. Please try again.'
+                    });
+                }
+            } else {
+                // User canceled deletion
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Cancelled',
+                    text: 'Student deletion was cancelled.'
+                });
+            }
+        });
+    });
 }
 
 
@@ -103,34 +324,52 @@ function loadAcademicYears() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
-function deleteStudent(id) {
-    if (confirm('Are you sure you want to delete this Student?')) {
-        fetch(`/student/delete/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    const row = document.querySelector(`tr[data-faculty-faculty-id="${id}"]`);
-                    // if (row) {
-                    row.remove();
-                    // }
-                    alert("Student deleted")
-                    location.reload();
-                    // loadTableData(); // Reload table data
-                } else {
-                    alert('Failed to delete Student');
-                }
-            });
-    }
-}
-
 
 // Initial call to load faculties when the DOM is fully loaded
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("Student script loaded")
-    console.log("DOM fully loaded");
+document.addEventListener("DOMContentLoaded", async function () {
     loadFaculties()
     loadDepartments()
     loadProgrammes();
     loadAcademicYears();
+
+
+    try {
+        const response = await fetch('/student/all');
+        if (response.ok) {
+            const students = await response.json();
+
+            const tableBody = document.getElementById('studentTableBody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.studentId}</td>
+                    <td>${student.studentName}</td>
+                    <td>${student.academicYear.academicYear}</td>
+                    <td>${student.faculty.facultyName}</td>
+                    <td>${student.department.departmentName}</td>
+                    <td>${student.programme.programmeName}</td>
+                    <td>${student.dateAdded}</td>
+                    <td>${student.dateEdited}</td>
+                    <td>
+                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-danger" data-student-id="${student.studentId}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Attach delete event listeners after populating the table
+            attachDeleteListeners();
+        } else {
+            throw new Error('Failed to fetch Student data');
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Data Fetch Error',
+            text: 'There was an error fetching Student data. Please try again.'
+        });
+    }
 });

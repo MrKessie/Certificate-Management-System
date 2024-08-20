@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="../static/styles/dashboard.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -139,6 +140,10 @@
                     <input type="file" class="form-control" accept="application/pdf" id="certificateFile" name="certificateFile" required>
                 </div>
                 <div class="form-group">
+                    <label for="certificateId">Certificate ID</label>
+                    <input type="text" class="form-control" id="certificateId" name="certificateId" placeholder="Certificate ID" required>
+                </div>
+                <div class="form-group">
                     <label for="studentId">Student ID</label>
                     <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
                 </div>
@@ -156,10 +161,6 @@
                         <option value="">Select Programme</option>
                     </select>
                 </div>
-<!--                <div class="form-group">-->
-<!--                    <label for="department">Department</label>-->
-<!--                    <input type="text" class="form-control" id="department" name="department" placeholder="Department" required >-->
-<!--                </div>-->
                 <div class="form-group">
                     <label for="department">Department</label>
                     <select class="form-control" id="department" name="department" required>
@@ -174,7 +175,6 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="addCertificate">Add Certificate</button>
-<!--                <button type="submit" class="btn btn-primary"  onclick="showUploadForm()">Upload (PDF)</button>-->
                 <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
             </form>
         </div>
@@ -222,7 +222,6 @@
                         <input type="file" class="form-control-file" id="importFile" name="file" required>
                     </div>
                     <button type="submit" class="btn btn-secondary" >Import (Excel)</button>
-<!--                    <button type="submit" class="btn btn-primary" onclick="showUploadForm()">Upload Certificate</button>-->
                     <button type="button" class="btn btn-primary"  onclick="showAddForm()">Add Certificate</button>
                 </form>
             </div>
@@ -244,25 +243,35 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Academic Year</th>
+                                <th>Programme</th>
+                                <th>Department</th>
+                                <th>Class</th>
                                 <th>Certificate Path</th>
                                 <th>Date Added</th>
                                 <th>Date Edited</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="certificateTableBody">
                             <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-                            <tr th:each="certificate : ${certificates}">
-                                <td class="faculty-id" th:text="${certificate.id}">ID</td>
-                                <td th:text="${certificate.studentId.studentId}">Student ID</td>
-                                <td th:text="${certificate.certificatePath}">Certificate Path</td>
-                                <td th:text="${certificate.dateAdded}">Date Added</td>
-                                <td th:text="${certificate.dateEdited}">Date Edited</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.id} + ')'">Delete</button>
-                                </td>
-                            </tr>
+<!--                            <tr th:each="certificate : ${certificates}">-->
+<!--                                <td class="faculty-id" th:text="${certificate.certificateId}">ID</td>-->
+<!--                                <td th:text="${certificate.studentId.studentId}">Student ID</td>-->
+<!--                                <td th:text="${certificate.studentName}">Student Name</td>-->
+<!--                                <td th:text="${certificate.academicYear.academicYear}">Academic Year</td>-->
+<!--                                <td th:text="${certificate.programme.programmeName}">Programme</td>-->
+<!--                                <td th:text="${certificate.department.departmentName}">Department</td>-->
+<!--                                <td th:text="${certificate.graduateClass}">Class</td>-->
+<!--                                <td th:text="${certificate.certificatePath}">Certificate Path</td>-->
+<!--                                <td th:text="${certificate.dateAdded}">Date Added</td>-->
+<!--                                <td th:text="${certificate.dateEdited}">Date Edited</td>-->
+<!--                                <td>-->
+<!--                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>-->
+<!--                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.certificateId} + ')'">Delete</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
                             <!-- Repeat rows as necessary -->
                             </tbody>
                         </table>
@@ -278,6 +287,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashb.js"></script>
 <script src="../static/scripts/certificate.js"></script>
 </body>

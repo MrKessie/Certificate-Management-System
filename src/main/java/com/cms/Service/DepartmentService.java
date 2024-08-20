@@ -15,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DepartmentService {
@@ -31,6 +28,10 @@ public class DepartmentService {
 
     //=============METHOD TO ADD DEPARTMENT=============//
     public Department addDepartment(int departmentId, String departmentName, Faculty faculty) {
+        if (departmentRepository.existsByDepartmentId(departmentId)) {
+            return null;
+        }
+
         Department department = new Department();
         department.setDepartmentId(departmentId);
         department.setDepartmentName(departmentName);
@@ -39,12 +40,18 @@ public class DepartmentService {
         department.setDateEdited(LocalDateTime.now());
 
         departmentRepository.save(department);
+
         return department;
     }
 
     //=============METHOD TO LIST ALL DEPARTMENTS=============//
     public List<Department> allDepartments() {
         return departmentRepository.findAll();
+    }
+
+
+    public boolean existsByDepartmentId(int departmentId) {
+        return departmentRepository.existsByDepartmentId(departmentId);
     }
 
     //=============METHOD TO DELETE DEPARTMENT=============//
@@ -107,8 +114,30 @@ public class DepartmentService {
     }
 
     //=============METHOD TO IMPORT ACADEMIC YEAR FROM EXCEL FILE=============//
-    public void importDepartment(MultipartFile file) throws IOException {
+    public DepartmentImportResult importDepartment(MultipartFile file) throws IOException {
         List<Department> departments = importExcelFile(file);
-        departmentRepository.saveAll(departments);
+        List<Department> addedDepartments = new ArrayList<>();
+        Map<Integer, String> notAddedDepartments = new HashMap<>();
+
+        for (Department department : departments) {
+            int departmentId = department.getDepartmentId();
+            String departmentName = department.getDepartmentName();
+            Faculty faculty = department.getFaculty();
+
+            if (departmentRepository.existsById(departmentId)) {
+                notAddedDepartments.put(departmentId, "Department ID already exists");
+            } else if (departmentRepository.existsByDepartmentName(departmentName)) {
+                notAddedDepartments.put(departmentId, "Department Name already exists");
+            } else if (faculty == null || !facultyRepository.existsById(faculty.getFacultyId())) {
+                notAddedDepartments.put(departmentId, "Faculty does not exist");
+            } else {
+                departmentRepository.save(department);
+                addedDepartments.add(department);
+            }
+        }
+
+        return new DepartmentImportResult(addedDepartments, notAddedDepartments);
     }
+
 }
+

@@ -7,7 +7,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
     <link rel="stylesheet" href="../static/styles/dashboard.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
@@ -147,7 +146,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Import Faculty (Excel)</h5>
-                    <form action="/faculty/import-faculties" method="post" onsubmit="return importFaculties()" enctype="multipart/form-data">
+                    <form id="facultyImportForm" onsubmit="return importFaculties()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose File</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
