@@ -24,6 +24,32 @@
             max-width: 500px;
             margin: auto;
         }
+
+        /* Sidebar styles */
+        #wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        #sidebar-wrapper {
+            width: 250px;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+        #sidebar-wrapper.collapsed {
+            width: 0;
+        }
+
+        main {
+            flex-grow: 1;
+            padding-left: 250px;
+            transition: padding-left 0.3s;
+        }
+
+        main.collapsed {
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -129,159 +155,160 @@
     </div>
 </nav>
 
-
-<div class="container mt-5">
-    <div class="card form-container" id="addCertificateFormContainer">
-        <div class="card-body">
-            <h2 class="card-title">Add Certificate</h2>
-            <form id="addCertificateForm" class="certificate-add-form" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="certificateFile">Certificate File</label>
-                    <input type="file" class="form-control" accept="application/pdf" id="certificateFile" name="certificateFile" required>
-                </div>
-                <div class="form-group">
-                    <label for="certificateId">Certificate ID</label>
-                    <input type="text" class="form-control" id="certificateId" name="certificateId" placeholder="Certificate ID" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentId">Student ID</label>
-                    <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentName">Student Name</label>
-                    <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required >
-                </div>
-                <div class="form-group">
-                    <label for="graduateClass">Class</label>
-                    <input type="text" class="form-control" id="graduateClass" name="graduateClass" placeholder="Class" required >
-                </div>
-                <div class="form-group">
-                    <label for="programme">Programme</label>
-                    <select class="form-control" id="programme" name="programme" required>
-                        <option value="">Select Programme</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <select class="form-control" id="department" name="department" required>
-                        <option value="">Select Department</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="academic-year">Academic Year</label>
-                    <select class="form-control" id="academic-year" name="academicYear" required>
-                        <option value="">Select Academic Year</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="addCertificate">Add Certificate</button>
-                <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
-            </form>
-        </div>
-    </div>
-
-
+<main id="main-content">
     <div class="container mt-5">
-        <div class="card form-container" id="uploadCertificateFormContainer">
+        <div class="card form-container" id="addCertificateFormContainer">
             <div class="card-body">
-                <h2 class="card-title">Upload Certificate</h2>
-                <form id="uploadCertificateForm">
+                <h2 class="card-title">Add Certificate</h2>
+                <form id="addCertificateForm" class="certificate-add-form" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="getStudentId">Student ID:</label>
-                        <input type="text" class="form-control" id="getStudentId" name="student" required>
+                        <label for="certificateFile">Certificate File</label>
+                        <input type="file" class="form-control" accept="application/pdf" id="certificateFile" name="certificateFile" required>
                     </div>
                     <div class="form-group">
-                        <label for="file">Upload Certificate</label>
-                        <input type="file" class="form-control-file" id="file" name="file" required>
+                        <label for="certificateId">Certificate ID</label>
+                        <input type="text" class="form-control" id="certificateId" name="certificateId" placeholder="Certificate ID" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="uploadBtn">Upload Certificate</button>
-                    <button type="button" class="btn btn-primary" onclick="showAddForm()">Add Certificate</button>
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required >
+                    </div>
+                    <div class="form-group">
+                        <label for="graduateClass">Class</label>
+                        <input type="text" class="form-control" id="graduateClass" name="graduateClass" placeholder="Class" required >
+                    </div>
+                    <div class="form-group">
+                        <label for="programme">Programme</label>
+                        <select class="form-control" id="programme" name="programme" required>
+                            <option value="">Select Programme</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select class="form-control" id="department" name="department" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="academic-year">Academic Year</label>
+                        <select class="form-control" id="academic-year" name="academicYear" required>
+                            <option value="">Select Academic Year</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="addCertificate">Add Certificate</button>
                     <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
                 </form>
-                <div id="error" class="error"></div>
-                <div id="results" class="results hidden">
-                    <h2>Extracted Data:</h2>
-                    <p><strong>Name:</strong> <span id="name"></span></p>
-                    <p><strong>Programme:</strong> <span id="programme2"></span></p>
-                    <p><strong>Course:</strong> <span id="course"></span></p>
-                    <p><strong>Class:</strong> <span id="classHonours"></span></p>
-                    <button type="submit" id="saveBtn">Save Data</button>
-                </div>
             </div>
         </div>
-    </div>
 
 
-    <div class="container mt-5">
-        <div class="card form-container" id="importCertificateFormContainer">
-            <div class="card-body">
-                <h2 class="card-title">Import Certificate</h2>
-                <form id="importCertificateForm">
-                    <div class="form-group">
-                        <label for="importFile">Upload Certificate</label>
-                        <input type="file" class="form-control-file" id="importFile" name="file" required>
-                    </div>
-                    <button type="submit" class="btn btn-secondary" >Import (Excel)</button>
-                    <button type="button" class="btn btn-primary"  onclick="showAddForm()">Add Certificate</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-<!--    Certificates Table-->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-12">
-            <div class="card mb-4">
+        <div class="container mt-5">
+            <div class="card form-container" id="uploadCertificateFormContainer">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h5 class="card-title">All Certificates</h5>
-                        <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+                    <h2 class="card-title">Upload Certificate</h2>
+                    <form id="uploadCertificateForm">
+                        <div class="form-group">
+                            <label for="getStudentId">Student ID:</label>
+                            <input type="text" class="form-control" id="getStudentId" name="student" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="file">Upload Certificate</label>
+                            <input type="file" class="form-control-file" id="file" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="uploadBtn">Upload Certificate</button>
+                        <button type="button" class="btn btn-primary" onclick="showAddForm()">Add Certificate</button>
+                        <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
+                    </form>
+                    <div id="error" class="error"></div>
+                    <div id="results" class="results hidden">
+                        <h2>Extracted Data:</h2>
+                        <p><strong>Name:</strong> <span id="name"></span></p>
+                        <p><strong>Programme:</strong> <span id="programme2"></span></p>
+                        <p><strong>Course:</strong> <span id="course"></span></p>
+                        <p><strong>Class:</strong> <span id="classHonours"></span></p>
+                        <button type="submit" id="saveBtn">Save Data</button>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="certificateTable">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Student ID</th>
-                                <th>Student Name</th>
-                                <th>Academic Year</th>
-                                <th>Programme</th>
-                                <th>Department</th>
-                                <th>Class</th>
-                                <th>Certificate Path</th>
-                                <th>Date Added</th>
-                                <th>Date Edited</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody id="certificateTableBody">
-                            <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-<!--                            <tr th:each="certificate : ${certificates}">-->
-<!--                                <td class="faculty-id" th:text="${certificate.certificateId}">ID</td>-->
-<!--                                <td th:text="${certificate.studentId.studentId}">Student ID</td>-->
-<!--                                <td th:text="${certificate.studentName}">Student Name</td>-->
-<!--                                <td th:text="${certificate.academicYear.academicYear}">Academic Year</td>-->
-<!--                                <td th:text="${certificate.programme.programmeName}">Programme</td>-->
-<!--                                <td th:text="${certificate.department.departmentName}">Department</td>-->
-<!--                                <td th:text="${certificate.graduateClass}">Class</td>-->
-<!--                                <td th:text="${certificate.certificatePath}">Certificate Path</td>-->
-<!--                                <td th:text="${certificate.dateAdded}">Date Added</td>-->
-<!--                                <td th:text="${certificate.dateEdited}">Date Edited</td>-->
-<!--                                <td>-->
-<!--                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>-->
-<!--                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.certificateId} + ')'">Delete</button>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-                            <!-- Repeat rows as necessary -->
-                            </tbody>
-                        </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container mt-5">
+            <div class="card form-container" id="importCertificateFormContainer">
+                <div class="card-body">
+                    <h2 class="card-title">Import Certificate</h2>
+                    <form id="importCertificateForm">
+                        <div class="form-group">
+                            <label for="importFile">Upload Certificate</label>
+                            <input type="file" class="form-control-file" id="importFile" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary" >Import (Excel)</button>
+                        <button type="button" class="btn btn-primary"  onclick="showAddForm()">Add Certificate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    <!--    Certificates Table-->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title">All Certificates</h5>
+                            <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="certificateTable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Academic Year</th>
+                                    <th>Programme</th>
+                                    <th>Department</th>
+                                    <th>Class</th>
+                                    <th>Certificate Path</th>
+                                    <th>Date Added</th>
+                                    <th>Date Edited</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="certificateTableBody">
+                                <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
+    <!--                            <tr th:each="certificate : ${certificates}">-->
+    <!--                                <td class="faculty-id" th:text="${certificate.certificateId}">ID</td>-->
+    <!--                                <td th:text="${certificate.studentId.studentId}">Student ID</td>-->
+    <!--                                <td th:text="${certificate.studentName}">Student Name</td>-->
+    <!--                                <td th:text="${certificate.academicYear.academicYear}">Academic Year</td>-->
+    <!--                                <td th:text="${certificate.programme.programmeName}">Programme</td>-->
+    <!--                                <td th:text="${certificate.department.departmentName}">Department</td>-->
+    <!--                                <td th:text="${certificate.graduateClass}">Class</td>-->
+    <!--                                <td th:text="${certificate.certificatePath}">Certificate Path</td>-->
+    <!--                                <td th:text="${certificate.dateAdded}">Date Added</td>-->
+    <!--                                <td th:text="${certificate.dateEdited}">Date Edited</td>-->
+    <!--                                <td>-->
+    <!--                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>-->
+    <!--                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.certificateId} + ')'">Delete</button>-->
+    <!--                                </td>-->
+    <!--                            </tr>-->
+                                <!-- Repeat rows as necessary -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination handled by DataTables -->
                     </div>
-                    <!-- Pagination handled by DataTables -->
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

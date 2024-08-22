@@ -118,3 +118,29 @@ body {
 .pagination button:hover {
     background-color: #563d7c;
 }
+
+/* Sidebar styles */
+#wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    transition: width 0.3s;
+    overflow: hidden;
+}
+
+#sidebar-wrapper.collapsed {
+    width: 0;
+}
+
+main {
+    flex-grow: 1;
+    padding-left: 250px;
+    transition: padding-left 0.3s;
+}
+
+main.collapsed {
+    padding-left: 20px;
+}

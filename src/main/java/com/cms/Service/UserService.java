@@ -17,9 +17,10 @@ public class UserService {
 
     //Method to add user
     public User addUser(int userId, String fullName, Genders gender, Roles role, String password, String confirmPassword) {
-//        if (userRepository.existsByUserId(userId)) {
-//           return null;
-//        }
+        if (userRepository.existsByUserId(userId)) {
+            return null;
+        }
+
         if (!password.equals(confirmPassword)) {
             throw new IllegalArgumentException("Passwords do not match");
         }
@@ -39,17 +40,15 @@ public class UserService {
 
 
     public List<User> usersList(){
-        List<User> users = (List<User>) userRepository.findAll();
-        return users;
+        return userRepository.findAll();
     }
 
-    public User deleteUser(int userId) {
-        if (userExistByUserId(userId)) {
+    public boolean deleteUser(int userId) {
+        if (userRepository.existsByUserId(userId)) {
             userRepository.deleteById(userId);
-        } else {
-            throw new IllegalArgumentException("User ID does not exist");
+            return true;
         }
-        return null;
+        return false;
     }
 
 //    public boolean userIdExists(int userId) {

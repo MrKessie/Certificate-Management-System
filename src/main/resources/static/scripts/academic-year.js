@@ -1,5 +1,39 @@
 console.log("Academic year Script is loaded successfully");
 
+// Show Import Form
+document.getElementById('showImportForm').addEventListener('click', function() {
+    document.getElementById('addForm').style.display = 'none';
+    document.getElementById('importForm').style.display = 'block';
+});
+
+// Cancel Import
+document.getElementById('cancelImport').addEventListener('click', function() {
+    document.getElementById('addForm').style.display = 'block';
+    document.getElementById('importForm').style.display = 'none';
+});
+
+// Populate Edit Form in Modal
+function populateEditForm(id, year) {
+    document.getElementById('editAcademicYearId').value = id;
+    document.getElementById('editAcademicYear').value = year;
+}
+$(document).ready(function() {
+    // Initialize DataTable
+    $('#academicYearTable').DataTable();
+
+    // Toggle between forms
+    $('#showImportForm').on('click', function() {
+        $('#addForm').hide();
+        $('#importForm').show();
+    });
+
+    $('#cancelImport').on('click', function() {
+        $('#importForm').hide();
+        $('#addForm').show();
+    });
+
+});
+
 
 //FUNCTION VALIDATE FORM CONTROLS
 document.getElementById('academicYearForm').addEventListener('submit', async function(event) {

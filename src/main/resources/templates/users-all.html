@@ -147,91 +147,39 @@
 
 <main id="main-content">
   <div class="container">
-    <div class="header">
-      <h1>Add User</h1>
-    </div>
-  <!--  <div class="content">-->
-      <div class="form-container">
-        <h2>User Info</h2>
-  <!--      <form action="/user/add" method="POST" id="registerForm">-->
-        <form id="registerForm">
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="userId">User ID</label>
-              <input type="text" class="form-control" id="userId" placeholder="User ID" name="userId" required>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="fullName">Full Name</label>
-              <input type="text" class="form-control" id="fullName" placeholder="Full Name" name="fullName" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="gender">Gender</label>
-              <select id="gender" class="form-control" name="gender" required>
-                <option value="">Select Gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="role">Role</label>
-              <select id="role" class="form-control" name="role" required>
-                <option value="">Select Role</option>
-                <option value="ROLE_ADMIN">Admin</option>
-                <option value="ROLE_CLIENT">Client</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="confirmPassword">Confirm Password</label>
-              <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" name="confirmPassword" required>
-            </div>
-          </div>
-          <div class="form-buttons">
-            <button type="submit" class="btn btn-primary" onclick="validateForm()">Save</button>
-            <button type="button" class="btn btn-danger">Cancel</button>
-          </div>
-        </form>
-      </div>
-  </div>
+<!--  <div class="container mt-5">-->
+<!--    <h1 class="mb-4 text-center">Department Table</h1>-->
 
-
-  <!-- User Table -->
-  <div class="row justify-content-center mt-4">
-    <div class="col-md-12">
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-between mb-3">
-            <h5 class="card-title">All Users</h5>
-            <button class="btn btn-primary" onclick="">+ Add new</button>
+    <!-- Users Table -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+              <h5 class="card-title">All Users</h5>
+              <button class="btn btn-primary" onclick="">+ Add new</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered" id="userTable">
+                <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>User Name</th>
+                  <th>Gender</th>
+                  <th>Role</th>
+                  <th>Date Added</th>
+                  <th>Date Edited</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+              </table>
+            </div>
+            <!-- Pagination handled by DataTables -->
           </div>
-          <div class="table-responsive">
-            <table class="table table-bordered" id="userTable">
-              <thead>
-              <tr>
-                <th>User ID</th>
-                <th>User Name</th>
-                <th>Gender</th>
-                <th>Role</th>
-                <th>Date Added</th>
-                <th>Date Edited</th>
-                <th>Action</th>
-              </tr>
-              </thead>
-              <tbody id="userTableBody"></tbody>
-            </table>
-          </div>
-          <!-- Pagination handled by DataTables -->
         </div>
       </div>
     </div>
-  </div>
   </div>
 </main>
 

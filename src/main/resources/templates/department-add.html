@@ -116,97 +116,101 @@
 <!-- /#sidebar-wrapper -->
 <!--======== SIDE BAR ENDS HERE ==========-->
 <!--======== SIDE BAR ENDS HERE ========== -->
-<div class="container mt-5">
-    <h1 class="mb-4 text-center">Department Management</h1>
 
-    <div class="row justify-content-center">
-        <!-- Add Department Form -->
-        <div class="col-md-6" id="addForm">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Add Department</h5>
-                    <form id="departmentForm">
-                        <div class="form-group">
-                            <label for="departmentId">Department ID</label>
-                            <input type="text" class="form-control" id="departmentId" name="departmentId" placeholder="Department ID" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="departmentName">Department Name</label>
-                            <input type="text" class="form-control" id="departmentName" name="departmentName" placeholder="Department Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="faculty">Faculty</label>
-                            <select class="form-control" id="faculty" name="faculty" required>
-                                <option value="">Select Faculty</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
-                    </form>
+
+<main id="main-content">
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Department Management</h1>
+
+        <div class="row justify-content-center">
+            <!-- Add Department Form -->
+            <div class="col-md-6" id="addForm">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Department</h5>
+                        <form id="departmentForm">
+                            <div class="form-group">
+                                <label for="departmentId">Department ID</label>
+                                <input type="text" class="form-control" id="departmentId" name="departmentId" placeholder="Department ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentName">Department Name</label>
+                                <input type="text" class="form-control" id="departmentName" name="departmentName" placeholder="Department Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="faculty">Faculty</label>
+                                <select class="form-control" id="faculty" name="faculty" required>
+                                    <option value="">Select Faculty</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Department (Excel) Form -->
+            <div class="col-md-6" id="importForm" style="display: none;">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Import Department (Excel)</h5>
+                        <form id="departmentImportForm" onsubmit="return importDepartments()" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Choose File</label>
+                                <input type="file" class="form-control-file" id="file" name="file" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Import (Excel)</button>
+                            <button type="button" class="btn btn-secondary" id="cancelImport">Cancel</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Import Department (Excel) Form -->
-        <div class="col-md-6" id="importForm" style="display: none;">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Import Department (Excel)</h5>
-                    <form id="departmentImportForm" onsubmit="return importDepartments()" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="file">Choose File</label>
-                            <input type="file" class="form-control-file" id="file" name="file" required>
+        <!-- Departments Table -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title">All Departments</h5>
+                            <button class="btn btn-primary" onclick="loadPage('/department/department-add')">+ Add new</button>
                         </div>
-                        <button type="submit" class="btn btn-primary">Import (Excel)</button>
-                        <button type="button" class="btn btn-secondary" id="cancelImport">Cancel</button>
-                    </form>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="departmentTable">
+                                <thead>
+                                <tr>
+                                    <th>Department ID</th>
+                                    <th>Department Name</th>
+                                    <th>Faculty</th>
+                                    <th>Date Added</th>
+                                    <th>Date Edited</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="departmentTableBody">
+                                        <tr th:each="department : ${departments}">
+                                            <td th:text="${department.departmentId}">Department ID</td>
+                                            <td th:text="${department.departmentName}">Department Name</td>
+                                            <td th:text="${department.faculty.facultyName}">Faculty</td>
+                                            <td th:text="${department.dateAdded}">Date Added</td>
+                                            <td th:text="${department.dateEdited}">Date Edited</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" th:onclick="'editDepartment(' + ${department.departmentId} + ')'">Edit</button>
+                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination handled by DataTables -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Departments Table -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h5 class="card-title">All Departments</h5>
-                        <button class="btn btn-primary" onclick="loadPage('/department/department-add')">+ Add new</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="departmentTable">
-                            <thead>
-                            <tr>
-                                <th>Department ID</th>
-                                <th>Department Name</th>
-                                <th>Faculty</th>
-                                <th>Date Added</th>
-                                <th>Date Edited</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody id="departmentTableBody">
-                                    <tr th:each="department : ${departments}">
-                                        <td th:text="${department.departmentId}">Department ID</td>
-                                        <td th:text="${department.departmentName}">Department Name</td>
-                                        <td th:text="${department.faculty.facultyName}">Faculty</td>
-                                        <td th:text="${department.dateAdded}">Date Added</td>
-                                        <td th:text="${department.dateEdited}">Date Edited</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-info" th:onclick="'editDepartment(' + ${department.departmentId} + ')'">Edit</button>
-                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                        </td>
-                                    </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Pagination handled by DataTables -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</main>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

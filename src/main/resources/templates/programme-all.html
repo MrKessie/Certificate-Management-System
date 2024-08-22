@@ -121,52 +121,55 @@
 <!-- /#sidebar-wrapper -->
 <!--======== SIDE BAR ENDS HERE ==========-->
 <!--======== SIDE BAR ENDS HERE ========== -->
-<div class="container mt-5">
-    <h1 class="mb-4 text-center">Programme Table</h1>
 
-    <!-- Programmes Table -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h5 class="card-title">All Programmes</h5>
-                        <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="programmeTable">
-                            <thead>
-                            <tr>
-                                <th>Programme ID</th>
-                                <th>Programme Name</th>
-                                <th>Faculty</th>
-                                <th>Department</th>
-                                <th>Date Added</th>
-                                <th>Date Edited</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="programme : ${programmes}">
-                                <td th:text="${programme.programmeId}">ID</td>
-                                <td th:text="${programme.programmeName}">Academic Year</td>
-                                <td th:text="${programme.faculty.facultyName}">Academic Year</td>
-                                <td th:text="${programme.department.departmentName}">Academic Year</td>
-                                <td th:text="${programme.dateAdded}">Date Added</td>
-                                <td th:text="${programme.dateEdited}">Date Edited</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">Delete</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+<main id="main-content">
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Programme Table</h1>
+
+        <!-- Programmes Table -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title">All Programmes</h5>
+                            <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="programmeTable">
+                                <thead>
+                                <tr>
+                                    <th>Programme ID</th>
+                                    <th>Programme Name</th>
+                                    <th>Faculty</th>
+                                    <th>Department</th>
+                                    <th>Date Added</th>
+                                    <th>Date Edited</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="programme : ${programmes}">
+                                    <td th:text="${programme.programmeId}">ID</td>
+                                    <td th:text="${programme.programmeName}">Academic Year</td>
+                                    <td th:text="${programme.faculty.facultyName}">Academic Year</td>
+                                    <td th:text="${programme.department.departmentName}">Academic Year</td>
+                                    <td th:text="${programme.dateAdded}">Date Added</td>
+                                    <td th:text="${programme.dateEdited}">Date Edited</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                                        <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">Delete</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <!-- Scripts -->
 

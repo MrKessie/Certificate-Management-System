@@ -24,7 +24,18 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping()
+
+    @GetMapping("/all-users")
+    public String showUserAllPage(HttpSession session, Model model) {
+        model.addAttribute("users", userService.usersList());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "users-all";
+    }
+
+
+
+    @GetMapping("/add-user")
     public String registerPage(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
@@ -38,8 +49,8 @@ public class UserController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<String> addUser(@RequestParam int userId, @RequestParam String fullName, @RequestParam Genders gender, @RequestParam Roles role,
-                          @RequestParam String password, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> addUser(@RequestParam int userId, @RequestParam String fullName, @RequestParam Genders gender,
+                                          @RequestParam Roles role, @RequestParam String password, @RequestParam String confirmPassword) {
         if (userService.userExistByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
@@ -54,24 +65,22 @@ public class UserController {
     }
 
 
-//    @GetMapping("/all")
-//    public String usersList() {
-//        List<User> users = userService.usersList();
-//        return "register";
-//    }
 
     @GetMapping("/all")
-    public String usersList(Model model) {
-        List<User> users = userService.usersList();
-        model.addAttribute("users", users);
-        return "register";
+    @ResponseBody
+    public List<User> usersList() {
+        return userService.usersList();
     }
 
 
-    @PostMapping("/delete")
-    public String deleteUser(int userId) {
-        User user = userService.deleteUser(userId);
-        return "register";
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable int userId) {
+        if (userService.userExistByUserId(userId)) {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok("User deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
     }
 
 
@@ -80,8 +89,5 @@ public class UserController {
         boolean exists = userService.userExistByUserId(userId);
         return ResponseEntity.ok(exists);
     }
-
-
-
 
 }

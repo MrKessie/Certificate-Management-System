@@ -1,128 +1,213 @@
 console.log("Script is loaded successfully");
-// function validateForm() {
-//
-//     console.log("Script is loaded successfully");
-//     // event.preventDefault();
-//
-//     //Get form fields value
-//     const userId = document.getElementById("userId").value;
-//     const userName = document.getElementById("fullName").value;
-//     const password = document.getElementById("password").value;
-//     const confirmPassword = document.getElementById("confirmPassword").value;
-//     const gender = document.getElementById("gender").value;
-//     const role = document.getElementById("role").value;
-//
-//     //Check if any field empty
-//     if (!userId || !userName || !password || !confirmPassword || !gender || !role) {
-//         console.log("C1")
-//         alert("Please fill all the fields");
-//         return false;
-//     }
-//
-//     //Check if ID field is not a number
-//     else if (isNaN(userId)) {
-//         console.log("C2")
-//         alert("User ID must be a number");
-//         return false;
-//     }
-//
-//
-//     else if (!/^[a-zA-Z\s]+$/.test(userName.value)) {
-//         console.log("C3")
-//         alert("Enter a valid username");
-//         return false;
-//     }
-//
-//     //Check if passwords mismatch
-//
-//     else if (password !== confirmPassword) {
-//         console.log("C4")
-//         alert("Passwords do not match");
-//         return false;
-//     }
-//     else {
-//         alert("User added successfully");
-//         return true;
-//     }
-//
-//     //Check if user exists
-//     // checkUserIdExists(userId);
-//     //
-//     // Function to check if userId exists in the database using AJAX
-// }
-
-document.getElementById('registerForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    var userId = document.getElementById('userId').value;
-
-    // Check if the user ID exists
-    fetch('/user/exists?userId=' + userId)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                alert('User ID already exists. Please enter a new one.');
-            } else {
-                // If the user ID does not exist, submit the form
-                var formData = new FormData(document.getElementById('registerForm'));
-
-                fetch('/user/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams(formData)
-                })
-                    .then(response => response.text())
-                    .then(message => {
-                        alert(message);
-                        if (message.includes("successfully")) {
-                            document.getElementById('registerForm').reset();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while adding the user.');
-                    });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while checking the user ID.');
-        });
+$(document).ready(function() {
+    $('#userTable').DataTable();
 });
-function checkUserIdExists(userId) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/user/checkUserId?userId=" + userId, true);
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.exists()) {
-                alert("User ID already exists");
-            } else {
-                document.getElementById("registerForm").submit();
-                alert("User added successfully");
-            }
-        }
-    };
-    xhr.send();
 
-    alert("User added successfully");
-    return true;
+document.getElementById('registerForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // Get form data
+    const userId = document.getElementById('userId').value;
+    const userName = document.getElementById('fullName').value;
+    const gender = document.getElementById('gender').value;
+    const role = document.getElementById('role').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Validate form data
+    if (!userId || !userName || !gender || !role || !password || !confirmPassword) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Required Fields',
+            text: 'All fields are required.'
+        });
+        return;
+    }
+
+    if (isNaN(userId)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid User ID',
+            text: 'Enter a valid User ID.'
+        });
+        return;
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(userName)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid User Name',
+            text: 'Enter a valid User Name'
+        });
+        return;
+    }
+
+    // Prepare data to send
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('fullName', userName);
+    formData.append('gender', gender);
+    formData.append('role', role);
+    formData.append('password', password);
+    formData.append('confirmPassword', confirmPassword);
+
+    try {
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Please wait while we add the User.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        const response = await fetch('/user/add', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            // Check response status or JSON if needed
+            const result = await response.text(); // or response.json() if server returns JSON
+
+            Swal.close();
+
+            // Handle response and display SweetAlert
+            await Swal.fire({
+                icon: 'success',
+                title: 'User Added',
+                text: 'User has been added successfully!'
+            });
+
+            // Optionally redirect or reset form
+            document.getElementById('registerForm').reset(); // Reset form
+            window.location.reload(); // Redirect if needed
+        } else {
+            const errorText = await response.text(); // or response.json() if server returns JSON
+
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: errorText || 'There was an error with the submission. Please try again.'
+            });
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Submission Error',
+            text: 'There was an error with the submission. Please try again.'
+        });
+    }
+});
+
+
+function attachDeleteListeners() {
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const userId = event.target.dataset.userId; // Get the ID from the data attribute
+
+            if (!userId || isNaN(userId)) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid ID',
+                    text: 'Invalid User ID. Please try again.'
+                });
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to delete this User?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/user/delete/${userId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: 'User has been deleted successfully!'
+                        });
+
+                        // Remove the row from the table
+                        event.target.closest('tr').remove();
+                    } else {
+                        const errorText = await response.text();
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Deletion Error',
+                            text: errorText || 'There was an error deleting the User. Please try again.'
+                        });
+                    }
+                } catch (error) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Error',
+                        text: 'There was an error with the submission. Please try again.'
+                    });
+                }
+            } else {
+                // User canceled deletion
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Cancelled',
+                    text: 'User deletion was cancelled.'
+                });
+            }
+        });
+    });
 }
 
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const submitButton = document.getElementById("submitButton");
-//     if (submitButton) {
-//         submitButton.addEventListener("click", validateForm);
-//         const form = document.getElementById("registerForm");
-//         form.action = "/user/add";
-//         form.method = "POST";
-//         form.submit();
-//     }
-//     else {
-//         console.log("Submit button not found");
-//     }
-// })
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/user/all');
+        if (response.ok) {
+            const users = await response.json();
+
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.userId}</td>
+                    <td>${user.fullName}</td>
+                    <td>${user.gender}</td>
+                    <td>${user.role}</td>
+                    <td>${user.dateAdded}</td>
+                    <td>${user.dateEdited}</td>
+                    <td>
+                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-danger" data-user-id="${user.userId}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Attach delete event listeners after populating the table
+            attachDeleteListeners();
+        } else {
+            throw new Error('Failed to fetch User data');
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Data Fetch Error',
+            text: 'There was an error fetching User data. Please try again.'
+        });
+    }
+});
+
 

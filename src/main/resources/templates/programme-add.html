@@ -122,110 +122,113 @@
 <!-- /#sidebar-wrapper -->
 <!--======== SIDE BAR ENDS HERE ==========-->
 <!--======== SIDE BAR ENDS HERE ========== -->
-<div class="container mt-5">
-    <h1 class="mb-4 text-center">Programme Management</h1>
 
-    <div class="row justify-content-center">
-        <!-- Add Programme Form -->
-        <div class="col-md-6" id="addForm">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Add Programme</h5>
-                    <form id="addProgrammeForm">
-                        <div class="form-group">
-                            <label for="programmeId">Programme ID</label>
-                            <input type="text" class="form-control" id="programmeId" name="programmeId" placeholder="Programme ID" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="programmeName">Programme Name</label>
-                            <input type="text" class="form-control" id="programmeName" name="programmeName" placeholder="Programme Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="faculty">Faculty</label>
-                            <select class="form-control" id="faculty" name="faculty" required>
-                                <option value="">Select Faculty</option>
-                                <!-- Add options here -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="department">Department</label>
-                            <select class="form-control" id="department" name="department" required>
-                                <option value="">Select Department</option>
-                                <!-- Add options here -->
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
-                    </form>
+<main id="main-content">
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Programme Management</h1>
+
+        <div class="row justify-content-center">
+            <!-- Add Programme Form -->
+            <div class="col-md-6" id="addForm">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Programme</h5>
+                        <form id="addProgrammeForm">
+                            <div class="form-group">
+                                <label for="programmeId">Programme ID</label>
+                                <input type="text" class="form-control" id="programmeId" name="programmeId" placeholder="Programme ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="programmeName">Programme Name</label>
+                                <input type="text" class="form-control" id="programmeName" name="programmeName" placeholder="Programme Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="faculty">Faculty</label>
+                                <select class="form-control" id="faculty" name="faculty" required>
+                                    <option value="">Select Faculty</option>
+                                    <!-- Add options here -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Department</label>
+                                <select class="form-control" id="department" name="department" required>
+                                    <option value="">Select Department</option>
+                                    <!-- Add options here -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Programme (Excel) Form -->
+            <div class="col-md-6" id="importForm" style="display: none;">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Import Programme (Excel)</h5>
+                        <form id="programmeImportForm" onsubmit="return importProgrammes()" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Choose File</label>
+                                <input type="file" class="form-control-file" id="file" name="file" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Import (Excel)</button>
+                            <button type="button" class="btn btn-secondary" id="cancelImport">Cancel</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Import Programme (Excel) Form -->
-        <div class="col-md-6" id="importForm" style="display: none;">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Import Programme (Excel)</h5>
-                    <form id="programmeImportForm" onsubmit="return importProgrammes()" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="file">Choose File</label>
-                            <input type="file" class="form-control-file" id="file" name="file" required>
+        <!-- Programmes Table -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title">All Programmes</h5>
+                            <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
                         </div>
-                        <button type="submit" class="btn btn-primary">Import (Excel)</button>
-                        <button type="button" class="btn btn-secondary" id="cancelImport">Cancel</button>
-                    </form>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="programmeTable">
+                                <thead>
+                                <tr>
+                                    <th>Programme ID</th>
+                                    <th>Programme Name</th>
+                                    <th>Faculty</th>
+                                    <th>Department</th>
+                                    <th>Date Added</th>
+                                    <th>Date Edited</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="programmeTableBody">
+                                <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
+    <!--                            <tr>-->
+                                <tr th:each="programme : ${programmes}">
+                                    <td th:text="${programme.programmeId}">ID</td>
+                                    <td th:text="${programme.programmeName}">Academic Year</td>
+                                    <td th:text="${programme.faculty.facultyName}">Academic Year</td>
+                                    <td th:text="${programme.department.departmentName}">Academic Year</td>
+                                    <td th:text="${programme.dateAdded}">Date Added</td>
+                                    <td th:text="${programme.dateEdited}">Date Edited</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                                <!-- Repeat rows as necessary -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination handled by DataTables -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Programmes Table -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h5 class="card-title">All Programmes</h5>
-                        <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="programmeTable">
-                            <thead>
-                            <tr>
-                                <th>Programme ID</th>
-                                <th>Programme Name</th>
-                                <th>Faculty</th>
-                                <th>Department</th>
-                                <th>Date Added</th>
-                                <th>Date Edited</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody id="programmeTableBody">
-                            <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-<!--                            <tr>-->
-                            <tr th:each="programme : ${programmes}">
-                                <td th:text="${programme.programmeId}">ID</td>
-                                <td th:text="${programme.programmeName}">Academic Year</td>
-                                <td th:text="${programme.faculty.facultyName}">Academic Year</td>
-                                <td th:text="${programme.department.departmentName}">Academic Year</td>
-                                <td th:text="${programme.dateAdded}">Date Added</td>
-                                <td th:text="${programme.dateEdited}">Date Edited</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                            <!-- Repeat rows as necessary -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Pagination handled by DataTables -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</main>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
