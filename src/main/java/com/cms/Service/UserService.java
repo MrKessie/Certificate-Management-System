@@ -17,8 +17,8 @@ public class UserService {
 
     //Method to add user
     public User addUser(int userId, String fullName, Genders gender, Roles role, String password, String confirmPassword) {
-//        if (userIdExists(userId)) {
-//            throw new IllegalArgumentException("User ID already exists");
+//        if (userRepository.existsByUserId(userId)) {
+//           return null;
 //        }
         if (!password.equals(confirmPassword)) {
             throw new IllegalArgumentException("Passwords do not match");
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public User deleteUser(int userId) {
-        if (userExists(userId)) {
+        if (userExistByUserId(userId)) {
             userRepository.deleteById(userId);
         } else {
             throw new IllegalArgumentException("User ID does not exist");
@@ -57,7 +57,7 @@ public class UserService {
 //    }
 
 
-    public boolean userExists(int userId) {
+    public boolean userExistByUserId(int userId) {
         return userRepository.existsById(userId);
     }
 }

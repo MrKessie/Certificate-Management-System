@@ -1,11 +1,9 @@
 package com.cms.Service;
 
-import com.cms.Model.Certificate;
-import com.cms.Model.CertificateVerify;
-import com.cms.Model.Student;
-import com.cms.Model.User;
+import com.cms.CertificateVerificationResult;
+import com.cms.Model.*;
+import com.cms.Repository.CertificateIssueRepository;
 import com.cms.Repository.CertificateRepository;
-import com.cms.Repository.CertificateVerifyRepository;
 import com.cms.Repository.StudentRepository;
 import com.cms.Repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
@@ -18,10 +16,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class CertificateVerifyService {
+public class CertificateIssueService {
 
     @Autowired
-    CertificateVerifyRepository certificateVerifyRepository;
+    CertificateIssueRepository certificateIssueRepository;
 
     @Autowired
     CertificateRepository certificateRepository;
@@ -32,50 +30,49 @@ public class CertificateVerifyService {
     @Autowired
     StudentRepository studentRepository;
 
-    public CertificateVerify saveVerificationDetails(Student student, String employer, String organization) {
-        if (!studentRepository.existsByStudentId(student.getStudentId())) {
+
+    public CertificateIssue saveIssueDetails(Student studentId) {
+        if (!studentRepository.existsByStudentId(studentId.getStudentId())) {
             return null;
         }
 
-            CertificateVerify verification = new CertificateVerify();
+        CertificateIssue issue = new CertificateIssue();
+//        issue.setIssuer(issuer);
+        issue.setStudentId(studentId);
+        issue.setIssueStatus("Issued");
+        issue.setDateIssued(LocalDateTime.now());
+        issue.setDateEdited(LocalDateTime.now());
 
-            verification.setStudent(student);
-            verification.setEmployer(employer);
-            verification.setOrganization(organization);
-            verification.setStatus("Verified");
-            verification.setDateVerified(LocalDateTime.now());
-            verification.setDateEdited(LocalDateTime.now());
+        certificateIssueRepository.save(issue);
 
-            certificateVerifyRepository.save(verification);
-
-            return verification;
+        return issue;
     }
 
 
-    public List<CertificateVerify> verifyList() {
-        return certificateVerifyRepository.findAll();
+    public List<CertificateIssue> issueListList() {
+        return certificateIssueRepository.findAll();
     }
 
 
-    public boolean existsByVerificationId(int verificationId) {
-        return certificateVerifyRepository.existsById(verificationId);
+    public boolean existsByIssueId(int issueId) {
+        return certificateIssueRepository.existsById(issueId);
     }
 
 
-    public boolean deleteVerification(int verificationId) {
-        if (certificateVerifyRepository.existsById(verificationId)) {
-            certificateVerifyRepository.deleteById(verificationId);
+    public boolean deleteIssueDetail(int issueId) {
+        if (certificateIssueRepository.existsById(issueId)) {
+            certificateIssueRepository.deleteById(issueId);
             return true;
         }
         return false;
     }
 
-    public Optional<CertificateVerify> findByStudentId(Student studentId) {
-        return certificateVerifyRepository.findByStudent(studentId);
+    public Optional<CertificateIssue> findByStudentId(Student studentId) {
+        return certificateIssueRepository.findByStudentId(studentId);
     }
 
 
-    public List<Map<String, Object>> verifyBulkCertificates(MultipartFile file) throws IOException {
+    public List<Map<String, Object>> issueBulkCertificates(MultipartFile file) throws IOException {
         List<Map<String, Object>> results = new ArrayList<>();
 
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
@@ -119,6 +116,9 @@ public class CertificateVerifyService {
                 }
 
                 results.add(response);
+
+//                CertificateIssue certificateIssue = new CertificateIssue();
+//                certificateIssue.setStudentId(studentId);
             }
         }
 

@@ -33,6 +33,7 @@
       <button type="submit" class="btn btn-primary btn-block">Login</button>
       <a href="#" class="forgot-password">Forgot password?</a>
     </form>
+    <div th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></div>
   </div>
 </div>
 

@@ -288,68 +288,6 @@ function importDepartments() {
     return false; // Prevent form from submitting traditionally
 }
 
-// function loadTableData() {
-//     fetch('/department/all')
-//         .then(response => response.json())
-//         .then(data => {
-//             if (!Array.isArray(data)) {
-//                 console.error("Expected an array but got:", data);
-//                 return;
-//             }
-//             const tableBody = document.querySelector('#departmentTable tbody');
-//             tableBody.innerHTML = '';
-//             data.forEach(department => {
-//                 const row = document.createElement('tr');
-//                 row.innerHTML = `<td>${department.departmentId}</td>
-//                              <td>${department.departmentName}</td>
-//                              <td>${department.faculty}</td>
-//                              <td>${department.dateAdded}</td>
-//                              <td>${department.dateEdited}</td>
-//                              <td>
-//                                 <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-//                                 <button class="btn btn-sm btn-danger" th:onclick="'deleteDepartment(' + ${department.departmentId} + ')'">Delete</button>
-//                              </td>`;
-//                 tableBody.appendChild(row);
-//             });
-//         })
-//         .catch(error => console.error('Error loading table data:', error));
-//
-// }
-
-// function loadTableData() {
-//     console.log("Loading table data");
-//     fetch('/department/all') // Adjust the endpoint to match your actual data source
-//         .then(response => response.json())
-//         .then(data => {
-//
-//             console.log("fetch data")
-//             // Check if data is an array
-//             if (!Array.isArray(data)) {
-//                 console.error("Expected an array but got:", data);
-//                 return;
-//             }
-//             const tableBody = document.querySelector('#departmentTable tbody');
-//             tableBody.innerHTML = ''; // Clear existing table rows
-//
-//             console.log("for each data")
-//             data.forEach(department => {
-//                 const row = document.createElement('tr');
-//                 // row.setAttribute('data-academic-year-id', department.id);
-//                 row.innerHTML = `<td>${department.id}</td>
-//                                  <td>${department.departmentId}</td>
-//                                  <td>${department.departmentName}</td>
-//                                  <td>${department.facultyId}</td>
-//                                  <td>${department.dateAdded}</td>
-//                                  <td>${department.dateEdited}</td>
-//                                  <td>
-//                                    <button class="btn btn-sm btn-info" th:onclick="'editDepartment(' + ${department.id} + ')'">Edit</button>
-//                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteDepartment(' + ${department.id} + ')'">Delete</button>
-//                                  </td>`;
-//                 tableBody.appendChild(row);
-//             });
-//         })
-//         .catch(error => console.error('Error loading table data:', error));
-// }
 
 function deleteDepartment(id) {
     if (confirm('Are you sure you want to delete this Department?')) {

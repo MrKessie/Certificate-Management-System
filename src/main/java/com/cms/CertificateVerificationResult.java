@@ -1,7 +1,12 @@
 package com.cms;
 
+import com.cms.Model.AcademicYear;
+import com.cms.Model.Department;
+import com.cms.Model.Programme;
+import com.cms.Model.Student;
+
 public class CertificateVerificationResult {
-    private String studentId;
+    private int studentId;
     private String status;
     private String name;
     private String programme;
@@ -10,13 +15,14 @@ public class CertificateVerificationResult {
     private String graduateClass;
     private String certificatePath;
 
+    public CertificateVerificationResult(String studentId, String verified, String studentName, Programme programme, Department department, AcademicYear academicYear, String graduateClass) {
+    }
 
-
-    public String getStudentId() {
+    public int getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
+    public void setStudentId(int studentId) {
         this.studentId = studentId;
     }
 

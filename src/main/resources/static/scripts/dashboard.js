@@ -1,31 +1,21 @@
+console.log("Dashboard script loaded successfully")
+
 function toggleSidebar() {
-    var sidebar = document.getElementById("sidebar");
-    var mainContent = document.getElementById("main-content");
-    sidebar.classList.toggle("collapsed");
-    mainContent.classList.toggle("collapsed");
+    var sidebar = document.getElementById('sidebar-wrapper');
+    var mainContent = document.getElementById('main-content');
+
+    // Toggle the 'collapsed' class on both sidebar and main content
+    sidebar.classList.toggle('collapsed');
+    mainContent.classList.toggle('collapsed');
 }
 
-function toggleSubmenu(element) {
-    var submenu = element.querySelector(".submenu");
-    submenu.style.display = submenu.style.display === "block" ? "none" : "block";
-}
+document.getElementById('menu-toggle').addEventListener('click', toggleSidebar);
 
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    const dropdownBtns = document.querySelectorAll(".dropdown-btn");
-
-    dropdownBtns.forEach(btn => {
-        btn.addEventListener("click", function () {
-            this.classList.toggle("active");
-            const submenu = this.nextElementSibling;
-            if (submenu.style.display === "block") {
-                submenu.style.display = "none";
-            } else {
-                submenu.style.display = "block";
-            }
-        });
-    });
-});
-
-
+// function loadPage(url) {
+//     // console.log('Add btn clicked')
+//     $.get(url, function(data) {
+//         $('#main-content').html(data);
+//         history.pushState(null,'', url);
+//     });
+// }

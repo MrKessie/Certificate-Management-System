@@ -13,25 +13,24 @@ public class CertificateVerify {
     private int verificationId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_verify",
-            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "student_id", foreignKey = @ForeignKey(name = "fk_student_verify",
             foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES student(student_id) ON UPDATE CASCADE ON DELETE CASCADE"))
     private Student student;
 
 //    @Column(nullable = false)
-//    private String employer;
-//    private String organization;
+    private String employer;
+    private String organization;
 
     @Column(nullable = false)
-    private boolean verified = true;
+    private String status;
 
     @Column(nullable = false, updatable = false)
     @UpdateTimestamp
     private LocalDateTime dateVerified;
+
+    @Column(nullable = false, updatable = false)
+    @UpdateTimestamp
+    private LocalDateTime dateEdited;
 
 
     public int getVerificationId() {
@@ -50,36 +49,28 @@ public class CertificateVerify {
         this.student = student;
     }
 
-//    public String getEmployer() {
-//        return employer;
-//    }
-//
-//    public void setEmployer(String employer) {
-//        this.employer = employer;
-//    }
-//
-//    public String getOrganization() {
-//        return organization;
-//    }
-//
-//    public void setOrganization(String organization) {
-//        this.organization = organization;
-//    }
-
-    public User getUser() {
-        return user;
+    public String getEmployer() {
+        return employer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEmployer(String employer) {
+        this.employer = employer;
     }
 
-    public boolean isVerified() {
-        return verified;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setVerified(boolean verified) {
-        this.verified = verified;
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDateTime getDateVerified() {
@@ -88,5 +79,14 @@ public class CertificateVerify {
 
     public void setDateVerified(LocalDateTime dateVerified) {
         this.dateVerified = dateVerified;
+    }
+
+
+    public LocalDateTime getDateEdited() {
+        return dateEdited;
+    }
+
+    public void setDateEdited(LocalDateTime dateEdited) {
+        this.dateEdited = dateEdited;
     }
 }
