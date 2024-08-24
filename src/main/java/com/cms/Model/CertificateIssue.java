@@ -12,12 +12,22 @@ public class CertificateIssue {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int issueId;
 
+    private String collectorName;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_issue",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    private User userId;
+
     @ManyToOne
     @JoinColumn(name = "student_id", foreignKey = @ForeignKey(name = "fk_student_issue",
             foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES student(student_id) ON UPDATE CASCADE ON DELETE CASCADE"))
     private Student studentId;
 
-    String issueStatus;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] signature;
 
     @Column(nullable = false, updatable = false)
     @UpdateTimestamp
@@ -44,13 +54,37 @@ public class CertificateIssue {
         this.studentId = studentId;
     }
 
-    public String getIssueStatus() {
-        return issueStatus;
+    public String getCollectorName() {
+        return collectorName;
     }
 
-    public void setIssueStatus(String issueStatus) {
-        this.issueStatus = issueStatus;
+    public void setCollectorName(String collectorName) {
+        this.collectorName = collectorName;
     }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public byte[] getSignature() {
+        return signature;
+    }
+
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
+    }
+
+    //    public String getIssueStatus() {
+//        return issueStatus;
+//    }
+//
+//    public void setIssueStatus(String issueStatus) {
+//        this.issueStatus = issueStatus;
+//    }
 
     public LocalDateTime getDateIssued() {
         return dateIssued;

@@ -15,10 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/certificate/issue")
@@ -80,33 +77,60 @@ public class CertificateIssueController {
 //    }
 
 
-    @GetMapping("/student/{studentId}")
-    public ResponseEntity<Map<String, Object>> getCertificate(@PathVariable Student studentId) {
+    @PostMapping("/student/{studentId}")
+    public ResponseEntity<Map<String, Object>> getCertificate(@PathVariable Student studentId, @RequestParam("userId") User userId,
+                                                              @RequestParam("collectorName") String collectorName, @RequestParam("signature") String signatureBase64) {
+
         Optional<Certificate> certificate = certificateService.findByStudentId(studentId);
         Map<String, Object> response = new HashMap<>();
 
         if (certificate.isPresent()) {
-            response.put("exists", true);
-            response.put("studentId", certificate.get().getStudentId());
-            response.put("name", certificate.get().getStudentName());
-            response.put("programme", certificate.get().getProgramme());
-            response.put("department", certificate.get().getDepartment());
-            response.put("academicYear", certificate.get().getAcademicYear());
-            response.put("classHonours", certificate.get().getGraduateClass());
-
-            String relativePath = certificate.get().getCertificatePath(); // e.g., "certificates/nameOfFile"
-            String baseUrl = "http://localhost/"; // Adjust as necessary
-            String fullUrl = baseUrl + relativePath;
-            response.put("viewLink", fullUrl); // Replace with actual path
+            // Convert base64 signature to byte array
+            byte[] signatureBytes = Base64.getDecoder().decode(signatureBase64);
 
             // Save the certificate issuance details
-            CertificateIssue issueDetails = certificateIssueService.saveIssueDetails(studentId);
+            CertificateIssue issueDetails = certificateIssueService.saveIssueDetails(studentId, userId, collectorName, signatureBytes);
 
+            if (issueDetails != null) {
+                response.put("success", true);
+                response.put("message", "Certificate issued successfully");
+                response.put("issueId", issueDetails.getIssueId());
+                response.put("name", certificate.get().getStudentName());
+                response.put("programme", certificate.get().getProgramme());
+                response.put("department", certificate.get().getDepartment());
+                response.put("academicYear", certificate.get().getAcademicYear());
+                response.put("classHonours", certificate.get().getGraduateClass());
+                response.put("viewLink", "http://localhost/" + certificate.get().getCertificatePath());
+            } else {
+                response.put("success", false);
+                response.put("message", "Failed to issue certificate");
+            }
         } else {
-            response.put("exists", false);
+            response.put("success", false);
+            response.put("message", "Certificate not found");
         }
 
         return ResponseEntity.ok(response);
+
+//            response.put("exists", true);
+//            response.put("studentId", certificate.get().getStudentId());
+//            response.put("name", certificate.get().getStudentName());
+//            response.put("programme", certificate.get().getProgramme());
+//            response.put("department", certificate.get().getDepartment());
+//            response.put("academicYear", certificate.get().getAcademicYear());
+//            response.put("classHonours", certificate.get().getGraduateClass());
+//
+//            String relativePath = certificate.get().getCertificatePath(); // e.g., "certificates/nameOfFile"
+//            String baseUrl = "http://localhost/"; // Adjust as necessary
+//            String fullUrl = baseUrl + relativePath;
+//            response.put("viewLink", fullUrl); // Replace with actual path
+//
+//
+//        } else {
+//            response.put("exists", false);
+//        }
+//
+//        return ResponseEntity.ok(response);
     }
 
 
@@ -114,7 +138,6 @@ public class CertificateIssueController {
     public ResponseEntity<List<Map<String, Object>>> verifyBulkCertificates(@RequestParam("file") MultipartFile file) {
         try {
             List<Map<String, Object>> results = certificateIssueService.issueBulkCertificates(file);
-//            certificateIssueService.saveIssueDetails((Student) results);
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             e.printStackTrace(); // Log the error

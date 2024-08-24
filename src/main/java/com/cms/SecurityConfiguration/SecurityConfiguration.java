@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/client/**").hasRole("CLIENT") // Client access only
                         .anyRequest().authenticated() // All other URLs require authentication
                 )
-//                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
                         .loginPage("/login") // Custom login page
                         .loginProcessingUrl("/perform_login")
@@ -70,11 +70,14 @@ public class SecurityConfiguration {
                                                 }
                                             }
                         })
+                        .failureUrl("/login?error=true") // Redirect to login page with error
                 )
                 .logout(logout -> logout
-                        .permitAll() // Allow everyone to perform logout
-                        .logoutUrl("/logout") // Custom logout URL, optional
-                        .logoutSuccessUrl("/login?logout") // Redirect to login page after logout, optional
+                        .logoutUrl("/logout")  // URL to trigger the logout
+                        .logoutSuccessUrl("/login?logout")  // Redirect to login page after logout
+                        .invalidateHttpSession(true)  // Invalidate session
+                        .deleteCookies("JSESSIONID")  // Delete session cookies
+                        .permitAll()
                 );
 
         return http.build();

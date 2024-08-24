@@ -54,9 +54,9 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
       <div class="d-flex align-items-center">
-        <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+        <span class="navbar-text text-white mr-3" id="userName">Full Name</span>
         <span class="navbar-text text-white mr-3">||</span>
-        <span class="navbar-text text-white mr-3" id="role" th:text="${loggedInUser.role}">Role</span>
+        <span class="navbar-text text-white mr-3" id="role">Role</span>
         <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
         <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
       </div>
@@ -132,15 +132,14 @@
             <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
             <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
             <a href="/certificate/issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
-            <a href="/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+            <a href="certificate/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
           </div>
         </div>
         <div class="dropdown">
-          <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-            <img src="../static/images/user.png" alt="User">User</a>
+          <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/user.png" alt="User">User</a>
           <div id="userMenu" class="collapse">
 
-            <a href="/user/add-user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+            <a href="/register" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
             <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
           </div>
         </div>
@@ -161,14 +160,31 @@
   <div class="card form-container" id="getCertificateFormContainer">
     <div class="card-body">
       <h2 class="card-title">Issue Certificate</h2>
-      <form id="getCertificateForm">
-        <div class="form-group">
-          <label for="getStudentId">Student ID:</label>
-          <input type="text" class="form-control" id="getStudentId" name="studentId" required>
-        </div>
-        <button type="submit" class="btn btn-primary" id="getBtn">Get Certificate</button>
-        <button type="button" class="btn btn-secondary" id="showVerifyForm">Bulk Verification</button>
-      </form>
+        <form id="getCertificateForm">
+          <div>
+            <div class="form-group">
+              <label for="getStudentId">Student ID:</label>
+              <input type="text" class="form-control" id="getStudentId" name="studentId" required>
+            </div>
+            <div class="form-group">
+              <label for="userId">User ID:</label>
+              <input type="text" class="form-control" id="userId" name="userId" required>
+            </div>
+            <div class="form-group">
+              <label for="collectorName">Collector Name:</label>
+              <input type="text" class="form-control" id="collectorName" name="collectorName" required>
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label for="signatureCanvas">Signature:</label>
+              <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000;"></canvas>
+              <button type="button" id="clearSignature">Clear Signature</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="getBtn">Get Certificate</button>
+          <button type="button" class="btn btn-secondary" id="showVerifyForm">Bulk Verification</button>
+        </form>
       <div id="errorGet" class="error"></div>
       <div id="resultsGet" class="results hidden">
         <h2>Results:</h2>
@@ -238,6 +254,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script src="../static/scripts/dashboard.js"></script>
 <script src="../static/scripts/certificate-issue.js"></script>
 

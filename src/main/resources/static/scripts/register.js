@@ -13,7 +13,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const gender = document.getElementById('gender').value;
     const role = document.getElementById('role').value;
     const password = document.getElementById('password').value;
-    const username = document.getElementById('username').value;
+    const username = document.getElementById('usernames').value;
 
     // Validate form data
     if (!userId || !userName || !gender || !role || !password || !username) {
@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 row.innerHTML = `
                     <td>${user.userId}</td>
                     <td>${user.fullName}</td>
+                    <td>${user.username}</td>
                     <td>${user.gender}</td>
                     <td>${user.role}</td>
                     <td>${user.dateAdded}</td>

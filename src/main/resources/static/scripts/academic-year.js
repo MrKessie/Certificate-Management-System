@@ -19,8 +19,6 @@ document.getElementById('cancelImport').addEventListener('click', function() {
 // }
 $(document).ready(function() {
     console.log('Document is ready');
-    // Initialize DataTable
-    $('#academicYearTable').DataTable();
 
     // Toggle between forms
     $('#showImportForm').on('click', function() {
@@ -32,6 +30,33 @@ $(document).ready(function() {
         $('#importForm').hide();
         $('#addForm').show();
     });
+
+    // Initialize DataTable
+    $('#academicYearTable').DataTable();
+        // {
+    //     "processing": true,
+    //     "serverSide": true,
+    //     "ajax": {
+    //         "url": "/academic-year/all",
+    //         "type": "GET",
+    //         "dataSrc": ""
+    //     },
+    //     "columns": [
+    //         { "data": "id" },
+    //         { "data": "academicYear" },
+    //         { "data": "dateAdded" },
+    //         { "data": "dateEdited" },
+    //         {
+    //             "data": null,
+    //             "defaultContent": `
+    //                 <button class="btn btn-sm btn-info">Edit</button>
+    //                 <button class="btn btn-sm btn-danger">Delete</button>
+    //             `,
+    //             "orderable": false
+    //         }
+    //     ]
+    //
+    // });
 
 });
 
@@ -72,7 +97,7 @@ document.getElementById('academicYearForm').addEventListener('submit', async fun
             // Handle response and display SweetAlert
             await Swal.fire({
                 icon: 'success',
-                title: 'Faculty Added',
+                title: 'Academic Year Added',
                 text: 'Academic Year has been added successfully!'
             });
 

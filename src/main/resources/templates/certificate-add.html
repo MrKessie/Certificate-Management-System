@@ -60,9 +60,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
-                <span class="navbar-text text-white mr-3" id="userName" th:text="${loggedInUser.fullName}">Full Name</span>
+                <span class="navbar-text text-white mr-3" id="userName">Full Name</span>
                 <span class="navbar-text text-white mr-3">||</span>
-                <span class="navbar-text text-white mr-3" id="role" th:text="${loggedInUser.role}">Role</span>
+                <span class="navbar-text text-white mr-3" id="role">Role</span>
                 <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
                 <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
             </div>
@@ -138,14 +138,14 @@
                         <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
                         <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
                         <a href="/certificate/issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
+                        <a href="certificate/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
                     </div>
                 </div>
                 <div class="dropdown">
-                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/user.png" alt="User">User</a>
+                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/user.png" alt="User">User</a>
                     <div id="userMenu" class="collapse">
 
-                        <a href="/user/add-user" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
+                        <a href="/register" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
                         <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
                     </div>
                 </div>

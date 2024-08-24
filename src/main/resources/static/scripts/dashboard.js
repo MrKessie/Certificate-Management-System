@@ -12,6 +12,20 @@ function toggleSidebar() {
 document.getElementById('menu-toggle').addEventListener('click', toggleSidebar);
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Loading user profile...")
+
+    fetch('/info/user-info')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('userName').textContent = data.fullName;
+            document.getElementById('role').textContent = data.role;
+        })
+        .catch(error => {
+            console.error('Error fetching user info:', error);
+        });
+});
+
 // function loadPage(url) {
 //     // console.log('Add btn clicked')
 //     $.get(url, function(data) {

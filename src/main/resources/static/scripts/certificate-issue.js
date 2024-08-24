@@ -1,6 +1,7 @@
 console.log("Verify script loaded successfully")
 
 let verifiedCertificates = [];
+let signaturePad;
 $('#showVerifyForm').on('click', function() {
     $('#getCertificateFormContainer').hide();
     $('#verifyCertificateFormContainer').show();
@@ -17,13 +18,14 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     event.preventDefault();
     console.log("Verifying certificate")
 
-    // const currentUser = {userId: document.getElementById("issuer").value};
     const studentId = document.getElementById("getStudentId").value ;
+    const userId = document.getElementById("userId").value
+    const collectorName = document.getElementById("collectorName").value
     const resultsContainer = document.getElementById("resultsGet");
     const errorContainer = document.getElementById("errorGet");
     const printButton = document.getElementById("printVerifiedBtn")
 
-    if (!studentId) {
+    if (!studentId || !userId || !collectorName) {
         await Swal.fire({
             icon: 'warning',
             title: 'Required Fields',
@@ -41,9 +43,34 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
         return;
     }
 
+    if (!/^[a-zA-Z\s]+$/.test(collectorName)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Collector Name',
+            text: 'Enter a valid Collector Name'
+        });
+        return;
+    }
+
     const formData = new FormData();
     // formData.append('issuer', issuer);
     formData.append('studentId', studentId);
+    formData.append('userId', userId);
+    formData.append('collectorName', collectorName);
+
+
+    // Get signature data
+    if (signaturePad.isEmpty()) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Signature Required',
+            text: 'Please provide a signature.'
+        });
+        return;
+    }
+
+    const signatureBase64 = signaturePad.toDataURL().split(',')[1];
+    formData.append('signature', signatureBase64);
 
     Swal.fire({
         title: 'Processing...',
@@ -56,12 +83,23 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
         }
     });
 
-    fetch(`/certificate/issue/student/${studentId}`, {method: 'GET'})
+    fetch(`/certificate/issue/student/${studentId}`, {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
 
-            if (data.exists) {
-                Swal.close();
+            Swal.close();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message
+                });
+
+                // if (data.exists) {
+                //     Swal.close();
                 // Populate the results if the certificate exists
                 document.getElementById("statusGet").textContent = "Certificate Found";
                 document.getElementById("studentIdGet").textContent = studentId;
@@ -75,20 +113,27 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
                 resultsContainer.classList.remove("hidden");
                 errorContainer.textContent = "";
             } else {
-                Swal.close();
-                // Display "N/A" if the certificate does not exist
-                document.getElementById("statusGet").textContent = "N/A";
-                document.getElementById("studentIdGet").textContent = "N/A";
-                document.getElementById("nameGet").textContent = "N/A";
-                document.getElementById("programmeGet").textContent = "N/A";
-                document.getElementById("departmentGet").textContent = "N/A";
-                document.getElementById("academicYearGet").textContent = "N/A";
-                document.getElementById("classHonoursGet").textContent = "N/A";
-                document.getElementById("viewCertificateGet").removeAttribute("href");
-                resultsContainer.classList.remove("hidden");
-                errorContainer.textContent = "Certificate not found.";
-            }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message
+                });
+                    // Swal.close();
+                    // Display "N/A" if the certificate does not exist
+                    document.getElementById("statusGet").textContent = "N/A";
+                    document.getElementById("studentIdGet").textContent = "N/A";
+                    document.getElementById("nameGet").textContent = "N/A";
+                    document.getElementById("programmeGet").textContent = "N/A";
+                    document.getElementById("departmentGet").textContent = "N/A";
+                    document.getElementById("academicYearGet").textContent = "N/A";
+                    document.getElementById("classHonoursGet").textContent = "N/A";
+                    document.getElementById("viewCertificateGet").removeAttribute("href");
+                    resultsContainer.classList.remove("hidden");
+                    errorContainer.textContent = "Certificate not found.";
+                }
+
         })
+
         .catch(error => {
             console.error('Error:', error);
             errorContainer.textContent = "An error occurred while fetching the certificate.";
@@ -113,7 +158,7 @@ document.getElementById('bulkIssueForm').addEventListener('submit', function(e) 
 
     Swal.fire({
         title: 'Processing...',
-        text: 'Please wait while we verify the certificates.',
+        text: 'Please wait while we get the certificates.',
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,
@@ -152,7 +197,7 @@ function displayResults(results) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${result.studentId || 'N/A'}</td>
-            <td>${result.exists ? 'Verified' : 'Not Found'}</td>
+            <td>${result.exists ? 'Found' : 'Not Found'}</td>
             <td>${result.name || 'N/A'}</td>
             <td>${result.programme || 'N/A'}</td>
             <td>${result.department || 'N/A'}</td>
@@ -199,7 +244,7 @@ function printVerifiedCertificates() {
         <head>
             <title>Verified Certificates</title>
             <style>
-                body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; }
+                body { font-family: Arial, sans-serif; margin: 20px }
                 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                 th { background-color: #f2f2f2; }
@@ -207,11 +252,11 @@ function printVerifiedCertificates() {
         </head>
         <body>
             <h1>Verified Certificates</h1>
-            ${verifiedCertificates.map(cert => `
                 <table>
                   <thead>
                   <tr>
                     <th>Student ID</th>
+                    <th>Status</th>
                     <th>Student Name</th>
                     <th>Programme</th>
                     <th>Department</th>
@@ -219,19 +264,20 @@ function printVerifiedCertificates() {
                     <th>Action</th>
                   </tr>
                   </thead>
-                
                   <tbody>
+                  ${verifiedCertificates.map(cert => `
                   <tr>
                     <td>${cert.studentId}</td>
+                    <td>Found</td>
                     <td>${cert.name}</td>
                     <td>${cert.programme}</td>
                     <td>${cert.department}</td>
                     <td>${cert.academicYear}</td>
                     <td>${cert.classHonours}</td>
                   </tr>
+                  `).join('')}
                   </tbody>
                 </table>
-            `).join('')}
         </body>
         </html>
     `);
@@ -241,35 +287,107 @@ function printVerifiedCertificates() {
 
 
 // New function to print PDF certificates
+// function printCertificatesPdf() {
+//     // Create an invisible iframe
+//     const iframe = document.createElement('iframe');
+//     iframe.style.display = 'none';
+//     document.body.appendChild(iframe);
+//
+//     let printCount = 0;
+//
+//     function printNext() {
+//         if (printCount < verifiedCertificates.length) {
+//             const cert = verifiedCertificates[printCount];
+//             iframe.src = cert.viewLink; // Assuming viewLink is the URL to the PDF
+//             iframe.onload = function() {
+//                 setTimeout(() => {
+//                     iframe.contentWindow.print();
+//                     printCount++;
+//                     setTimeout(printNext, 1000); // Wait for 1 second before printing next
+//                 }, 1000); // Wait for 1 second to ensure PDF is loaded
+//             };
+//         } else {
+//             document.body.removeChild(iframe);
+//         }
+//     }
+//     printNext();
+// }
+
+// function printCertificatesPdf() {
+//     verifiedCertificates.forEach(cert => {
+//         fetch(cert.viewLink)
+//             .then(response => response.arrayBuffer())
+//             .then(buffer => {
+//                 const loadingTask = pdfjsLib.getDocument({ data: buffer });
+//                 loadingTask.promise.then(pdf => {
+//                     pdf.getPage(1).then(page => {
+//                         const scale = 1.5;
+//                         const viewport = page.getViewport({ scale: scale });
+//                         const canvas = document.createElement('canvas');
+//                         const context = canvas.getContext('2d');
+//                         canvas.height = viewport.height;
+//                         canvas.width = viewport.width;
+//                         const renderContext = {
+//                             canvasContext: context,
+//                             viewport: viewport
+//                         };
+//                         page.render(renderContext).promise.then(() => {
+//                             const printWindow = window.open('', '_blank');
+//                             printWindow.document.write(`
+//                                 <html lang="en">
+//                                 <head>
+//                                     <title>Print PDF</title>
+//                                 </head>
+//                                 <body>
+//                                     ${canvas.outerHTML}
+//                                 </body>
+//                                 </html>
+//                             `);
+//                             printWindow.document.close();
+//                             printWindow.print();
+//                         });
+//                     });
+//                 });
+//             });
+//     });
+// }
+
+// function printCertificatesPdf() {
+//     verifiedCertificates.forEach(cert => {
+//         const proxyUrl = `/proxy/certificates?pdfPath=${encodeURIComponent(cert.viewLink)}`;
+//         const newWindow = window.open(proxyUrl, '_blank');
+//         if (newWindow) {
+//             newWindow.print();
+//         } else {
+//             alert("Unable to open PDF for printing. Please check your browser settings.");
+//         }
+//     });
+// }
 function printCertificatesPdf() {
-    // Create an invisible iframe
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
 
-    let printCount = 0;
-
-    function printNext() {
-        if (printCount < verifiedCertificates.length) {
-            const cert = verifiedCertificates[printCount];
-            iframe.src = cert.viewLink; // Assuming viewLink is the URL to the PDF
-            iframe.onload = function() {
-                setTimeout(() => {
-                    iframe.contentWindow.print();
-                    printCount++;
-                    setTimeout(printNext, 1000); // Wait for 1 second before printing next
-                }, 1000); // Wait for 1 second to ensure PDF is loaded
-            };
-        } else {
-            document.body.removeChild(iframe);
-        }
-    }
-
-    printNext();
+    verifiedCertificates.forEach(cert => {
+        const proxyUrl = `/proxy/pdf?url=${encodeURIComponent(cert.viewLink)}`;
+        iframe.src = proxyUrl;
+        iframe.onload = function() {
+            setTimeout(() => {
+                iframe.contentWindow.print();
+            }, 1000); // Wait for PDF to load
+        };
+    });
 }
 
 document.getElementById('printVerifiedBtn').addEventListener('click', printVerifiedCertificates);
 document.getElementById('printCertificatesPdfBtn').addEventListener('click', printCertificatesPdf);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('signatureCanvas');
+    signaturePad = new SignaturePad(canvas);
+});
+
 
 
 // document.addEventListener('DOMContentLoaded', function() {

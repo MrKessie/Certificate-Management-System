@@ -31,15 +31,16 @@ public class CertificateIssueService {
     StudentRepository studentRepository;
 
 
-    public CertificateIssue saveIssueDetails(Student studentId) {
+    public CertificateIssue saveIssueDetails(Student studentId, User userId, String collectorName, byte[] signature) {
         if (!studentRepository.existsByStudentId(studentId.getStudentId())) {
             return null;
         }
 
         CertificateIssue issue = new CertificateIssue();
-//        issue.setIssuer(issuer);
+        issue.setUserId(userId);
         issue.setStudentId(studentId);
-        issue.setIssueStatus("Issued");
+        issue.setCollectorName(collectorName);
+        issue.setSignature(signature);
         issue.setDateIssued(LocalDateTime.now());
         issue.setDateEdited(LocalDateTime.now());
 
@@ -78,15 +79,14 @@ public class CertificateIssueService {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
-
-
             for (Row row : sheet) {
-                Cell cell = row.getCell(0);
-                int studentId = (int) cell.getNumericCellValue();
+//                Cell cell = row.getCell(0);
+                int studentId = (int) row.getCell(0).getNumericCellValue();
+                int userId = (int) row.getCell(1).getNumericCellValue();
+                String collectorName = row.getCell(2).getStringCellValue();
 
                 // Find the Student entity first
                 Optional<Student> student = studentRepository.findById(studentId);
-
                 Map<String, Object> response = new HashMap<>();
 
                 if (student.isPresent()) {
@@ -106,6 +106,23 @@ public class CertificateIssueService {
                         String baseUrl = "http://localhost/"; // Adjust as necessary
                         String fullUrl = baseUrl + relativePath;
                         response.put("viewLink", fullUrl);
+
+                        CertificateIssue certificateIssue = new CertificateIssue();
+                        Optional<User> userOptional = Optional.ofNullable(userRepository.findById(userId));
+                        if (userOptional.isPresent()) {
+                            User user = userOptional.get();
+                            certificateIssue.setUserId(user);
+                        } else {
+                            throw new RuntimeException("User not found");
+                        }
+//                        certificateIssue.setUserId(userRepository.findById(userId).orElseThrow());
+                        certificateIssue.setStudentId(student.get());
+                        certificateIssue.setCollectorName(collectorName);
+                        certificateIssue.setSignature(certificateIssue.getSignature());
+                        certificateIssue.setDateIssued(LocalDateTime.now());
+                        certificateIssue.setDateEdited(LocalDateTime.now());
+                        certificateIssueRepository.save(certificateIssue);
+
                     } else {
                         response.put("exists", false);
                         response.put("studentId", studentId);
@@ -118,12 +135,8 @@ public class CertificateIssueService {
                 }
 
                 results.add(response);
-
-//                CertificateIssue certificateIssue = new CertificateIssue();
-//                certificateIssue.setStudentId(studentId);
             }
         }
-
         return results;
     }
 

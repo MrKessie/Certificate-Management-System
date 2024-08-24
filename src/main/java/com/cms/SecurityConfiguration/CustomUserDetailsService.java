@@ -18,10 +18,22 @@ public class CustomUserDetailsService implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserId(Integer.parseInt(username));
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+//        User user = userRepository.findByUserId(Integer.parseInt(userId));
+//        if (user == null) {
+//            throw new UsernameNotFoundException("User not found");
+//        }
+
+        int id;
+        try {
+            id = Integer.parseInt(userId);
+        } catch (NumberFormatException e) {
+            throw new UsernameNotFoundException("Invalid userId: " + userId);
+        }
+
+        User user = userRepository.findByUserId(id);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User not found with userId: " + userId);
         }
 
         return new org.springframework.security.core.userdetails.User(
@@ -29,5 +41,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()))
         );
+    }
+
+    public User getUserByUserId(int userId) {
+        return userRepository.findByUserId(userId);
     }
 }
