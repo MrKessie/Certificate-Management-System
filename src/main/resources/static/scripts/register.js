@@ -1,10 +1,11 @@
-console.log("Script is loaded successfully");
+console.log("Register script is loaded successfully");
 $(document).ready(function() {
     $('#userTable').DataTable();
 });
 
 document.getElementById('registerForm').addEventListener('submit', async function(event) {
     event.preventDefault();
+    console.log("Register form reached");
 
     // Get form data
     const userId = document.getElementById('userId').value;
@@ -12,10 +13,10 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const gender = document.getElementById('gender').value;
     const role = document.getElementById('role').value;
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const username = document.getElementById('username').value;
 
     // Validate form data
-    if (!userId || !userName || !gender || !role || !password || !confirmPassword) {
+    if (!userId || !userName || !gender || !role || !password || !username) {
         await Swal.fire({
             icon: 'warning',
             title: 'Required Fields',
@@ -49,7 +50,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     formData.append('gender', gender);
     formData.append('role', role);
     formData.append('password', password);
-    formData.append('confirmPassword', confirmPassword);
+    formData.append('username', username);
 
     try {
         Swal.fire({
@@ -63,10 +64,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             }
         });
 
-        const response = await fetch('/user/add', {
+        const response = await fetch('/register/user', {
             method: 'POST',
             body: formData
         });
+        console.log("After fetching");
 
         if (response.ok) {
             // Check response status or JSON if needed
@@ -171,6 +173,7 @@ function attachDeleteListeners() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log("DOM is loaded")
     try {
         const response = await fetch('/user/all');
         if (response.ok) {

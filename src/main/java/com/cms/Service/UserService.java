@@ -4,6 +4,7 @@ import com.cms.Enum.*;
 import com.cms.Model.User;
 import com.cms.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,23 +16,22 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     //Method to add user
-    public User addUser(int userId, String fullName, Genders gender, Roles role, String password, String confirmPassword) {
+    public User addUser(int userId, String fullName, String username, Genders gender, Roles role, String password) {
         if (userRepository.existsByUserId(userId)) {
             return null;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            throw new IllegalArgumentException("Passwords do not match");
         }
 
         User user = new User();
         user.setUserId(userId);
         user.setFullName(fullName);
+        user.setUsername(username);
         user.setGender(gender);
         user.setRole(role);
-        user.setPassword(password);
-        user.setConfirmPassword(confirmPassword);
+        user.setPassword(passwordEncoder.encode(password));
         user.setStatus(0);
         user.setDateAdded(LocalDateTime.now());
         user.setDateEdited(LocalDateTime.now());
@@ -51,9 +51,9 @@ public class UserService {
         return false;
     }
 
-//    public boolean userIdExists(int userId) {
-//        return userRepository.findByUserId(userId).isPresent();
-//    }
+    public User findById(int userId) {
+        return userRepository.findById(userId);
+    }
 
 
     public boolean userExistByUserId(int userId) {

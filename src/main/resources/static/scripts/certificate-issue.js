@@ -1,5 +1,6 @@
 console.log("Verify script loaded successfully")
 
+let verifiedCertificates = [];
 $('#showVerifyForm').on('click', function() {
     $('#getCertificateFormContainer').hide();
     $('#verifyCertificateFormContainer').show();
@@ -20,7 +21,7 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     const studentId = document.getElementById("getStudentId").value ;
     const resultsContainer = document.getElementById("resultsGet");
     const errorContainer = document.getElementById("errorGet");
-    const getBtn = document.getElementById("getBtn")
+    const printButton = document.getElementById("printVerifiedBtn")
 
     if (!studentId) {
         await Swal.fire({
@@ -145,6 +146,7 @@ document.getElementById('bulkIssueForm').addEventListener('submit', function(e) 
 function displayResults(results) {
     const tableBody = document.querySelector('#resultsTable tbody');
     tableBody.innerHTML = '';
+    verifiedCertificates = [];
 
     results.forEach(result => {
         const row = document.createElement('tr');
@@ -163,9 +165,23 @@ function displayResults(results) {
             </td>
         `;
         tableBody.appendChild(row);
+
+        if (result.exists) {
+            verifiedCertificates.push(result);
+        }
     });
 
     document.getElementById('resultsVerify').style.display = 'block';
+
+    const printButton = document.getElementById('printVerifiedBtn');
+    const printPdfBtn = document.getElementById('printCertificatesPdfBtn');
+
+    if (printButton && printPdfBtn) {
+        const hasVerifiedCertificates = verifiedCertificates.length > 0;
+        printButton.style.display = hasVerifiedCertificates ? 'inline-block' : 'none';
+        printPdfBtn.style.display = hasVerifiedCertificates ? 'inline-block' : 'none';
+    }
+
 }
 
 function showError(message) {
@@ -173,6 +189,87 @@ function showError(message) {
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
 }
+
+
+// Add this new function for printing
+function printVerifiedCertificates() {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html lang="en">
+        <head>
+            <title>Verified Certificates</title>
+            <style>
+                body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            <h1>Verified Certificates</h1>
+            ${verifiedCertificates.map(cert => `
+                <table>
+                  <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Programme</th>
+                    <th>Department</th>
+                    <th>Academic Year</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                
+                  <tbody>
+                  <tr>
+                    <td>${cert.studentId}</td>
+                    <td>${cert.name}</td>
+                    <td>${cert.programme}</td>
+                    <td>${cert.department}</td>
+                    <td>${cert.academicYear}</td>
+                    <td>${cert.classHonours}</td>
+                  </tr>
+                  </tbody>
+                </table>
+            `).join('')}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+
+// New function to print PDF certificates
+function printCertificatesPdf() {
+    // Create an invisible iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    let printCount = 0;
+
+    function printNext() {
+        if (printCount < verifiedCertificates.length) {
+            const cert = verifiedCertificates[printCount];
+            iframe.src = cert.viewLink; // Assuming viewLink is the URL to the PDF
+            iframe.onload = function() {
+                setTimeout(() => {
+                    iframe.contentWindow.print();
+                    printCount++;
+                    setTimeout(printNext, 1000); // Wait for 1 second before printing next
+                }, 1000); // Wait for 1 second to ensure PDF is loaded
+            };
+        } else {
+            document.body.removeChild(iframe);
+        }
+    }
+
+    printNext();
+}
+
+document.getElementById('printVerifiedBtn').addEventListener('click', printVerifiedCertificates);
+document.getElementById('printCertificatesPdfBtn').addEventListener('click', printCertificatesPdf);
 
 
 // document.addEventListener('DOMContentLoaded', function() {

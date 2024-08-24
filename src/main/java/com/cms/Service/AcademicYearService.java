@@ -128,14 +128,29 @@ public class AcademicYearService {
     }
 
     //=============METHOD TO UPDATE ACADEMIC YEAR=============//
-    public void update(int id, AcademicYear updatedAcademicYear) {
+    public void update(int id, String updatedAcademicYear) {
         AcademicYear existingAcademicYear = findById(id);
-        existingAcademicYear.setAcademicYear(updatedAcademicYear.getAcademicYear());
-        existingAcademicYear.setDateAdded(updatedAcademicYear.getDateAdded());
+        existingAcademicYear.setAcademicYear(updatedAcademicYear);
+//        existingAcademicYear.setDateAdded(updatedAcademicYear.getDateAdded());
         existingAcademicYear.setDateEdited(LocalDateTime.now());
         academicYearRepository.save(existingAcademicYear);
     }
 
+
+    public void updateAcademicYear(AcademicYear academicYear) {
+        // Fetch the existing record from the database
+        AcademicYear existingAcademicYear = academicYearRepository.findById(academicYear.getId())
+                .orElseThrow(() -> new RuntimeException("Academic Year not found"));
+
+        // Update the fields with the new values
+        existingAcademicYear.setAcademicYear(academicYear.getAcademicYear());
+
+        // Update the dateEdited to the current time
+        existingAcademicYear.setDateEdited(LocalDateTime.now());
+
+        // Save the updated entity back to the database
+        academicYearRepository.save(existingAcademicYear);
+    }
 
     public void delete(int id) {
         academicYearRepository.deleteById(id);

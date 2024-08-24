@@ -5,7 +5,6 @@ import com.cms.Model.User;
 import com.cms.Repository.AcademicYearRepository;
 import com.cms.Service.AcademicYearImportResult;
 import com.cms.Service.AcademicYearService;
-import com.cms.Service.DepartmentImportResult;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -97,23 +95,23 @@ public class AcademicYearController {
     }
 
     //=============METHOD TO UPDATE ACADEMIC YEAR=============//
-    @PostMapping("/update")
-    public String updateItem(@RequestParam int academicYearId, Model model) {
-        try {
-            AcademicYear academicYear = academicYearRepository.findById(academicYearId).get();
-            model.addAttribute("academicYear",academicYear);
-
-            AcademicYear newAcademicyear = new AcademicYear();
-            newAcademicyear.setAcademicYear(academicYear.getAcademicYear());
-            newAcademicyear.setDateEdited(LocalDateTime.now());
-            model.addAttribute("newAcademicYear",newAcademicyear);
-        }
-        catch (Exception ex) {
-            System.out.println("Exception: " + ex.getMessage());
-            return "redirect:/academic-year/academic-year-add";
-        }
-        return "redirect:/academic-year/academic-year-edit";
-    }
+//    @PostMapping("/update")
+//    public String updateItem(@RequestParam int academicYearId, Model model) {
+//        try {
+//            AcademicYear academicYear = academicYearRepository.findById(academicYearId).get();
+//            model.addAttribute("academicYear",academicYear);
+//
+//            AcademicYear newAcademicyear = new AcademicYear();
+//            newAcademicyear.setAcademicYear(academicYear.getAcademicYear());
+//            newAcademicyear.setDateEdited(LocalDateTime.now());
+//            model.addAttribute("newAcademicYear",newAcademicyear);
+//        }
+//        catch (Exception ex) {
+//            System.out.println("Exception: " + ex.getMessage());
+//            return "redirect:/academic-year/academic-year-add";
+//        }
+//        return "redirect:/academic-year/academic-year-edit";
+//    }
 
     //=============METHOD TO GET ACADEMIC YEAR=============//
     @GetMapping("/all/academic-years")
@@ -140,10 +138,20 @@ public class AcademicYearController {
     }
 
     //=============METHOD TO UPDATE ACADEMIC YEAR BY ID=============//
-    @PostMapping("/update/{id}")
-    public String updateAcademicYear(@PathVariable("id") int id, @ModelAttribute("academicYear") AcademicYear academicYear) {
-        academicYearService.update(id, academicYear);
-        return "redirect:/academicYears";
+//    @PutMapping("/update/{id}")
+//    public String updateAcademicYear(@PathVariable("id") int id, @RequestParam("academicYear") String academicYear) {
+//        AcademicYear updatedAcademicYear = new AcademicYear();
+//        updatedAcademicYear.setAcademicYear(academicYear);
+//        academicYearService.update(id, academicYear);
+//        return "redirect:/academicYears";
+//    }
+
+
+    @PutMapping("/update/{academicYearId}")
+    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @RequestParam AcademicYear academicYear) {
+        // Your logic to update the academic year in the database
+        academicYearService.update(academicYear);
+        return ResponseEntity.ok().build();
     }
 
 

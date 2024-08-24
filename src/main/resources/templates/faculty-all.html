@@ -128,7 +128,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
               <h5 class="card-title">All Faculties</h5>
-              <button class="btn btn-primary" onclick="loadPage('/faculty/faculty-add')">+ Add new</button>
+              <a href="/faculty/faculty-add"><button class="btn btn-primary">+ Add new</button></a>
             </div>
             <div class="table-responsive">
               <table class="table table-bordered" id="facultyTable">
@@ -141,16 +141,16 @@
                   <th>Action</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="facultyTableBody">
                 <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-                <tr>
+                <!--                            <tr>-->
                 <tr th:each="faculty : ${faculties}">
-                  <td class="faculty-id" th:text="${faculty.facultyId}">ID</td>
-                  <td th:text="${faculty.facultyName}">Academic Year</td>
+                  <td class="faculty-id" th:text="${faculty.facultyId}">Faculty ID</td>
+                  <td th:text="${faculty.facultyName}">Faculty Name</td>
                   <td th:text="${faculty.dateAdded}">Date Added</td>
                   <td th:text="${faculty.dateEdited}">Date Edited</td>
                   <td>
-                    <button class="btn btn-sm btn-info">Edit</button>
+                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#editModal">Edit</button>
                     <button class="btn btn-sm btn-danger">Delete</button>
                   </td>
                 </tr>
@@ -205,7 +205,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashboard.js"></script>
-<script src="../static/scripts/faculty.js"></script>
+<script src="../static/scripts/faculty-edit.js"></script>
 
 </body>
 </html>

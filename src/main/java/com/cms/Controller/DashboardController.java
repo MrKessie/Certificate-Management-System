@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
 
-    @GetMapping("/admin-dashboard")
+    @GetMapping("/admin/dashboard")
     public String showDashboard(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         return "/admin-dashboard";
     }
 
-    @GetMapping("/client-dashboard")
+    @GetMapping("/client/dashboard")
     public String showDashboardPage() {
         return "/dashboard-client";
     }

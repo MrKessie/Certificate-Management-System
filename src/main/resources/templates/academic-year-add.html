@@ -6,7 +6,7 @@
   <title>Academic Year Management</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="../static/styles/dashboard.css">
   <link rel="stylesheet" href="../static/styles/pages/pages-all.css">
@@ -166,7 +166,7 @@
                         <h5 class="card-title">Add Academic Year</h5>
                         <form id="academicYearForm">
                             <div class="form-group">
-                                <label for="academicYear">Academic Year</label>
+                                <label for="academicYearInput">Academic Year</label>
                                 <input type="text" class="form-control" id="academicYearInput" name="academicYear" placeholder="Academic Year" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -214,21 +214,7 @@
                                     <th>Action</th>
                                 </tr>
                                 </thead>
-                                <tbody id="academicYearTableBody">
-                                <!-- Example data rows -->
-                                <tr th:each="academicYear : ${academicYears}">
-                                    <td id="academicYearId" class="year-id" th:text="${academicYear.id}">ID</td>
-                                    <td id="academicYear" th:text="${academicYear.academicYear}">Academic Year</td>
-                                    <td th:text="${academicYear.dateAdded}">Date Added</td>
-                                    <td th:text="${academicYear.dateEdited}">Date Edited</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-info" onclick="populateEditForm('${academicYear.id}', '${academicYear.academicYear}')"
-                                                data-toggle="modal" data-target="#editModal">Edit</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <!-- Repeat for other rows -->
-                                </tbody>
+                                <tbody id="academicYearTableBody"></tbody>
                             </table>
                         </div>
                         <!-- Pagination handled by DataTables -->
@@ -278,9 +264,31 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/academic-year.js"></script>
 <script src="../static/scripts/dashboard.js"></script>
+
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        console.log('Document is ready');-->
+<!--        // Initialize DataTable-->
+<!--        $('#academicYearTable').DataTable();-->
+
+<!--        // Toggle between forms-->
+<!--        $('#showImportForm').on('click', function() {-->
+<!--            $('#addForm').hide();-->
+<!--            $('#importForm').show();-->
+<!--        });-->
+
+<!--        $('#cancelImport').on('click', function() {-->
+<!--            $('#importForm').hide();-->
+<!--            $('#addForm').show();-->
+<!--        });-->
+
+<!--    });-->
+<!--</script>-->
+
 </body>
 </html>

@@ -1,4 +1,6 @@
-
+$(document).ready(function() {
+    $('#programmeTable').DataTable();
+});
 
 // Toggle between forms
 document.getElementById('showImportForm').addEventListener('click', function() {

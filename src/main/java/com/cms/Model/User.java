@@ -17,6 +17,9 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Genders gender;
@@ -30,8 +33,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String confirmPassword;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
@@ -91,12 +92,12 @@ public class User {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public String getUsername() {
+        return username;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDateTime getDateAdded() {

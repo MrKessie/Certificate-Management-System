@@ -13,11 +13,12 @@ document.getElementById('cancelImport').addEventListener('click', function() {
 });
 
 // Populate Edit Form in Modal
-function populateEditForm(id, year) {
-    document.getElementById('editAcademicYearId').value = id;
-    document.getElementById('editAcademicYear').value = year;
-}
+// function populateEditForm(id, year) {
+//     document.getElementById('editAcademicYearId').value = id;
+//     document.getElementById('editAcademicYear').value = year;
+// }
 $(document).ready(function() {
+    console.log('Document is ready');
     // Initialize DataTable
     $('#academicYearTable').DataTable();
 
@@ -35,7 +36,7 @@ $(document).ready(function() {
 });
 
 
-//FUNCTION VALIDATE FORM CONTROLS
+//FUNCTION VALIDATE FORM CONTROLS AMD SUBMIT
 document.getElementById('academicYearForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -98,6 +99,7 @@ document.getElementById('academicYearForm').addEventListener('submit', async fun
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM content');
     try {
         const response = await fetch('/academic-year/all');
         if (response.ok) {
@@ -109,13 +111,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             faculties.forEach(academicYear => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${academicYear.academicYearId}</td>
+                    <td>${academicYear.id}</td>
                     <td>${academicYear.academicYear}</td>
                     <td>${academicYear.dateAdded}</td>
                     <td>${academicYear.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-academic-year-id="${academicYear.academicYearId}">Delete</button>
+                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#editModal" onclick="editAcademicYear(${academicYear.id}, '${academicYear.academicYear}')">Edit</button>
+                    <button class="btn btn-sm btn-danger" data-academic-year-id="${academicYear.id}">Delete</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -139,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function attachDeleteListeners() {
     document.querySelectorAll('.btn-danger').forEach(button => {
         button.addEventListener('click', async (event) => {
-            const academicYearId = event.target.dataset.academicYearId; // Get the ID from the data attribute
+            const academicYearId = event.target.dataset.id; // Get the ID from the data attribute
 
             if (!academicYearId) {
                 await Swal.fire({
@@ -287,3 +289,57 @@ function importAcademicYears() {
     return false; // Prevent form from submitting traditionally
 }
 
+
+
+function editAcademicYear(id, year) {
+    // Set the values in the modal
+    const academicYearId = document.getElementById('editAcademicYearId').value = id;
+    const academicYear = document.getElementById('editAcademicYear').value = year;
+
+    console.log("Academic Year ID:", academicYearId);
+    console.log("Academic Year:", academicYear);
+
+    // Show the modal
+    $('#editModal').modal('show');
+}
+
+
+async function submitEditForm() {
+    const academicYearId = document.getElementById('editAcademicYearId').value;
+    const academicYear = document.getElementById('editAcademicYear').value;
+
+    const data = {
+        // academicYearId: academicYearId,
+        academicYear: academicYear
+    };
+
+    try {
+        const response = await fetch('/academic-year/update/${academicYearId}', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            $('#editModal').modal('hide');
+            await Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: 'Academic Year has been updated.'
+            });
+
+            // Optionally, refresh the table to reflect the changes
+            document.location.reload();
+        } else {
+            throw new Error('Failed to update academic year');
+        }
+    } catch (error) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Update Error',
+            text: 'There was an error updating the academic year. Please try again.'
+        });
+    }
+}

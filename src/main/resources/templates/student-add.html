@@ -139,34 +139,38 @@
 <main id="main-content">
     <div class="container mt-5">
         <h1 class="mb-4 text-center">Add Student</h1>
-        <div class="row justify-content-center">
+        <div class="row ">
             <!-- Add Student Form -->
             <div class="col-md-12">
                 <div class="card mb-4 form-container">
                     <div class="card-body">
                         <h5 class="card-title">Student Info</h5>
                         <form id="addStudentForm">
-                            <div class="form-group">
-                                <label for="studentId">Student ID</label>
-                                <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
+                            <div class="makeRow">
+                                <div class="form-group">
+                                    <label for="studentId">Student ID</label>
+                                    <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Student ID" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studentName">Student Name</label>
+                                    <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="studentName">Student Name</label>
-                                <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Student Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="academicYear">Academic Year</label>
-                                <select class="form-control" id="academicYear" name="academicYear" required>
-                                    <option value="">Select Academic Year</option>
-                                    <!-- Add options here -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="faculty">Faculty</label>
-                                <select class="form-control" id="faculty" name="faculty" required>
-                                    <option value="">Select Faculty</option>
-                                    <!-- Add options here -->
-                                </select>
+                            <div class="makeRow">
+                                <div class="form-group">
+                                    <label for="academicYear">Academic Year</label>
+                                    <select class="form-control" id="academicYear" name="academicYear" required>
+                                        <option value="">Select Academic Year</option>
+                                        <!-- Add options here -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="faculty">Faculty</label>
+                                    <select class="form-control" id="faculty" name="faculty" required>
+                                        <option value="">Select Faculty</option>
+                                        <!-- Add options here -->
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="department">Department</label>
@@ -185,6 +189,14 @@
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
                         </form>
+                        <style>
+                            .makeRow{
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                gap: 1em;
+                            }
+                        </style>
                     </div>
                 </div>
             </div>
@@ -207,10 +219,11 @@
         </div>
 
         <!-- Students Table -->
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-12">
+        <div class="row justify-content-center  w-100 mt-5">
+            <div class="row justify-content-center  w-100 mt-5">
+            <div class="col-md-12 w-100">
                 <div class="card mb-4">
-                    <div class="card-body">
+                    <div class="card-body w-100">
                         <div class="d-flex justify-content-between mb-3">
                             <h5 class="card-title">All Students</h5>
                             <button class="btn btn-primary" onclick="loadPage('/student/student-add')">+ Add new</button>
@@ -240,10 +253,19 @@
                                 <td th:text="${student.programme.programmeName}">Academic Year</td>
                                 <td th:text="${student.dateAdded}">Date Added</td>
                                 <td th:text="${student.dateEdited}">Date Edited</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info">Edit</button>
+                                <td class="modifyAction">
+                                    <button class="btn  btn-sm btn-info">Edit</button>
                                     <button class="btn btn-sm btn-danger">Delete</button>
                                 </td>
+
+                                <style>
+                                    .modifyAction{
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        gap: 1em;
+                                    }
+                                </style>
                             </tr>
                             <!-- Repeat for other rows -->
                             </tbody>
