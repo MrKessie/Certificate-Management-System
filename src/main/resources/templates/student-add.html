@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management</title>
+    <title>Certificate Management System</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -71,48 +71,16 @@
         <!-- Sidebar -->
         <div class="bg-dark border-right" id="sidebar-wrapper">
             <div class="list-group list-group-flush" id="sidebar-content">
-                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                    <img src="../static/images/home.png" alt="home">
-                    Dashboard</a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/home.png" alt="home">Dashboard</a>
                 <div class="dropdown">
-                    <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/calendar.png" alt="dashboard">
-                        Academic Year</a>
+                    <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/calendar.png" alt="dashboard">Setup</a>
                     <div id="academicYearMenu" class="collapse">
-                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Add Academic Year</a>
-                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-all">All Academic Years</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <a href="#facultyMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/dashboard.png" alt="Faculty">Faculty</a>
-                    <div id="facultyMenu" class="collapse">
-                        <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Add Faculty</a>
-                        <a href="/faculty/faculty-all" class="list-group-item list-group-item-action bg-dark text-white">All Faculties</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <a href="#departmentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/dashboard.png" alt="Department">Department</a>
-                    <div id="departmentMenu" class="collapse">
-                        <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Add Department</a>
-                        <a href="/department/department-all" class="list-group-item list-group-item-action bg-dark text-white">All Departments</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <a href="#programmeMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/dashboard.png" alt="Programme">Programme</a>
-                    <div id="programmeMenu" class="collapse">
-                        <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Add Programme</a>
-                        <a href="/programme/programme-all" class="list-group-item list-group-item-action bg-dark text-white">All Programmes</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <a href="#studentMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/student.png" alt="Student">Student</a>
-                    <div id="studentMenu" class="collapse">
-                        <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Add Student</a>
-                        <a href="/student/student-all" class="list-group-item list-group-item-action bg-dark text-white">All Students</a>
+                        <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Academic Year</a>
+                        <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Faculty</a>
+                        <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Department</a>
+                        <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Programme</a>
+                        <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Student</a>
+                        <a href="/register" class="list-group-item list-group-item-action bg-dark text-white">Users</a>
                     </div>
                 </div>
                 <div class="dropdown">
@@ -120,19 +88,20 @@
                         <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
                     <div id="certificateMenu" class="collapse">
                         <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
-                        <a href="/certificate/certificate-all" class="list-group-item list-group-item-action bg-dark text-white">All Certificates</a>
-                        <a href="/certificate/issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
-                        <a href="certificate/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+                        <a href="/certificate-issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
+                        <a href="/certificate/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
+                        <a href="/certificate-issue/all-issued" class="list-group-item list-group-item-action bg-dark text-white">Issued Table</a>
+                        <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
                     </div>
                 </div>
                 <div class="dropdown">
-                    <a href="#userMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/user.png" alt="User">User</a>
-                    <div id="userMenu" class="collapse">
-                        <a href="/register" class="list-group-item list-group-item-action bg-dark text-white">Add User</a>
-                        <a href="/user/all-users" class="list-group-item list-group-item-action bg-dark text-white">All Users</a>
+                    <a href="#reportMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
+                        <img src="../static/images/report.png" alt="Certificate">Report</a>
+                    <div id="reportMenu" class="collapse">
+                        <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="userActivityReportButton">User Activity</a>
+                        <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="tableStatsReportButton">Table Statistics</a>
                     </div>
                 </div>
-                <!-- Add more menu items as needed -->
             </div>
         </div>
     </div>

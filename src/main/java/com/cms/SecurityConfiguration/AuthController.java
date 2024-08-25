@@ -35,19 +35,6 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/perform_login")
-//    public String performLogin(@RequestParam(value = "error", required = false) String error,
-//                                @RequestParam(value = "logout", required = false) String logout,
-//                                Model model) {
-//        if (error != null) {
-//            model.addAttribute("error", "Invalid Credentials");
-//        }
-//        if (logout != null) {
-//            model.addAttribute("message", "You have been logged out successfully");
-//        }
-//
-//        return "login";
-//    }
 
 
     @PostMapping("/register/user")
