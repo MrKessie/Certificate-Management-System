@@ -16,7 +16,7 @@
             padding: 0.5em 1em;
         }
         .form-container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
         }
         .form-group {
@@ -27,6 +27,12 @@
         }
         .table-controls {
             margin-bottom: 1rem;
+        }
+        .makeRow{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
         }
     </style>
 </head>
@@ -171,31 +177,33 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="department">Department</label>
-                                <select class="form-control" id="department" name="department" required>
-                                    <option value="">Select Department</option>
-                                    <!-- Add options here -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="programme">Programme</label>
-                                <select class="form-control" id="programme" name="programme" required>
-                                    <option value="">Select Programme</option>
-                                    <!-- Add options here -->
-                                </select>
+                            <div class="makeRow">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <select class="form-control" id="department" name="department" required>
+                                        <option value="">Select Department</option>
+                                        <!-- Add options here -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="programme">Programme</label>
+                                    <select class="form-control" id="programme" name="programme" required>
+                                        <option value="">Select Programme</option>
+                                        <!-- Add options here -->
+                                    </select>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-secondary" id="showImportForm">Import (Excel)</button>
                         </form>
-                        <style>
-                            .makeRow{
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                gap: 1em;
-                            }
-                        </style>
+<!--                        <style>-->
+<!--                            .makeRow{-->
+<!--                                display: flex;-->
+<!--                                justify-content: center;-->
+<!--                                align-items: center;-->
+<!--                                gap: 1em;-->
+<!--                            }-->
+<!--                        </style>-->
                     </div>
                 </div>
             </div>
@@ -218,7 +226,7 @@
         </div>
 
         <!-- Students Table -->
-        <div class="row justify-content-center  w-100 mt-5">
+        <div class="row justify-content-center  w-100 mt-1">
             <div class="row justify-content-center  w-100 mt-5">
             <div class="col-md-12 w-100">
                 <div class="card mb-4">

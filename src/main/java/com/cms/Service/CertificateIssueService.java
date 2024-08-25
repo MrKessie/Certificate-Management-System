@@ -50,7 +50,7 @@ public class CertificateIssueService {
     }
 
 
-    public List<CertificateIssue> issueListList() {
+    public List<CertificateIssue> issueList() {
         return certificateIssueRepository.findAll();
     }
 

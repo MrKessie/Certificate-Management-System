@@ -83,7 +83,7 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
         }
     });
 
-    fetch(`/certificate/issue/student/${studentId}`, {
+    fetch(`/certificate-issue/student/${studentId}`, {
         method: 'POST',
         body: formData
     })
@@ -98,8 +98,6 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
                     text: data.message
                 });
 
-                // if (data.exists) {
-                //     Swal.close();
                 // Populate the results if the certificate exists
                 document.getElementById("statusGet").textContent = "Certificate Found";
                 document.getElementById("studentIdGet").textContent = studentId;
@@ -120,20 +118,18 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
                 });
                     // Swal.close();
                     // Display "N/A" if the certificate does not exist
-                    document.getElementById("statusGet").textContent = "N/A";
-                    document.getElementById("studentIdGet").textContent = "N/A";
-                    document.getElementById("nameGet").textContent = "N/A";
-                    document.getElementById("programmeGet").textContent = "N/A";
-                    document.getElementById("departmentGet").textContent = "N/A";
-                    document.getElementById("academicYearGet").textContent = "N/A";
-                    document.getElementById("classHonoursGet").textContent = "N/A";
-                    document.getElementById("viewCertificateGet").removeAttribute("href");
-                    resultsContainer.classList.remove("hidden");
-                    errorContainer.textContent = "Certificate not found.";
-                }
-
+                document.getElementById("statusGet").textContent = "N/A";
+                document.getElementById("studentIdGet").textContent = "N/A";
+                document.getElementById("nameGet").textContent = "N/A";
+                document.getElementById("programmeGet").textContent = "N/A";
+                document.getElementById("departmentGet").textContent = "N/A";
+                document.getElementById("academicYearGet").textContent = "N/A";
+                document.getElementById("classHonoursGet").textContent = "N/A";
+                document.getElementById("viewCertificateGet").removeAttribute("href");
+                resultsContainer.classList.remove("hidden");
+                errorContainer.textContent = "Certificate not found.";
+            }
         })
-
         .catch(error => {
             console.error('Error:', error);
             errorContainer.textContent = "An error occurred while fetching the certificate.";
@@ -167,7 +163,7 @@ document.getElementById('bulkIssueForm').addEventListener('submit', function(e) 
         }
     });
 
-    fetch('/certificate/issue/bulk', {
+    fetch('/certificate-issue/bulk', {
         method: 'POST',
         body: formData
     })
@@ -242,7 +238,7 @@ function printVerifiedCertificates() {
     printWindow.document.write(`
         <html lang="en">
         <head>
-            <title>Verified Certificates</title>
+            <title>Existing Certificates</title>
             <style>
                 body { font-family: Arial, sans-serif; margin: 20px }
                 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }

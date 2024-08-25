@@ -1,4 +1,5 @@
 let verifiedCertificates = [];
+let signaturePad;
 
 $('#showVerifyForm').on('click', function() {
     $('#getCertificateFormContainer').hide();
@@ -16,13 +17,14 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     event.preventDefault();
 
     const studentId = document.getElementById("verifyStudentId").value ;
+    const userId = document.getElementById("userId").value ;
     const employer = document.getElementById("employer").value;
     const organization = document.getElementById("organization").value
     const resultsContainer = document.getElementById("resultsGet");
     const errorContainer = document.getElementById("errorGet");
     const getBtn = document.getElementById("getBtn")
 
-    if (!studentId || !employer || !organization) {
+    if (!studentId || !employer || !organization || !userId) {
         await Swal.fire({
             icon: 'warning',
             title: 'Required Fields',
@@ -36,6 +38,15 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
             icon: 'warning',
             title: 'Invalid Student ID',
             text: 'Enter a valid Student ID.'
+        });
+        return;
+    }
+
+    if (isNaN(userId)) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Invalid User ID',
+            text: 'Enter a valid User ID.'
         });
         return;
     }
@@ -60,8 +71,22 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
 
     const formData = new FormData();
     formData.append('studentId', studentId);
+    formData.append('userId', userId);
     formData.append('employer', employer);
     formData.append('organization', organization);
+
+    // Get signature data
+    if (signaturePad.isEmpty()) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Signature Required',
+            text: 'Please provide a signature.'
+        });
+        return;
+    }
+
+    const signatureBase64 = signaturePad.toDataURL().split(',')[1];
+    formData.append('signature', signatureBase64);
 
     Swal.fire({
         title: 'Processing...',
@@ -74,11 +99,21 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
         }
     });
 
-    fetch(`/certificate/verify/student/${studentId}?employer=${employer}&organization=${organization}`, {method: 'GET'})
+    fetch(`/certificate/verify/student/${studentId}`, {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
-            if (data.exists) {
-                Swal.close();
+
+            Swal.close();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message
+                });
+
                 // Populate the results if the certificate exists
                 document.getElementById("statusGet").textContent = "Certificate Found";
                 document.getElementById("studentIdGet").textContent = studentId;
@@ -92,7 +127,11 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
                 resultsContainer.classList.remove("hidden");
                 errorContainer.textContent = "";
             } else {
-                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message
+                });
                 // Display "N/A" if the certificate does not exist
                 document.getElementById("statusGet").textContent = "N/A";
                 document.getElementById("studentIdGet").textContent = "N/A";
@@ -215,7 +254,7 @@ function printVerifiedCertificates() {
         <head>
             <title>Verified Certificates</title>
             <style>
-                body { font-family: Arial, sans-serif; }
+                body { font-family: Arial, sans-serif; margin: 20px; }
                 table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                 th { background-color: #f2f2f2; }
@@ -223,16 +262,32 @@ function printVerifiedCertificates() {
         </head>
         <body>
             <h1>Verified Certificates</h1>
-            ${verifiedCertificates.map(cert => `
                 <table>
-                    <tr><th>Student ID</th><td>${cert.studentId}</td></tr>
-                    <tr><th>Name</th><td>${cert.name}</td></tr>
-                    <tr><th>Programme</th><td>${cert.programme}</td></tr>
-                    <tr><th>Department</th><td>${cert.department}</td></tr>
-                    <tr><th>Academic Year</th><td>${cert.academicYear}</td></tr>
-                    <tr><th>Class</th><td>${cert.classHonours}</td></tr>
+                  <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Status</th>
+                    <th>Student Name</th>
+                    <th>Programme</th>
+                    <th>Department</th>
+                    <th>Academic Year</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  ${verifiedCertificates.map(cert => `
+                  <tr>
+                    <td>${cert.studentId}</td>
+                    <td>Found</td>
+                    <td>${cert.name}</td>
+                    <td>${cert.programme}</td>
+                    <td>${cert.department}</td>
+                    <td>${cert.academicYear}</td>
+                    <td>${cert.classHonours}</td>
+                  </tr>
+                  `).join('')}
+                  </tbody>
                 </table>
-            `).join('')}
         </body>
         </html>
     `);
@@ -271,3 +326,9 @@ function printCertificatesPdf() {
 
 document.getElementById('printVerifiedBtn').addEventListener('click', printVerifiedCertificates);
 document.getElementById('printCertificatesPdfBtn').addEventListener('click', printCertificatesPdf);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('signatureCanvas');
+    signaturePad = new SignaturePad(canvas);
+});

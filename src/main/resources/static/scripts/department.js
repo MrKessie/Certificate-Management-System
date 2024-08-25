@@ -102,12 +102,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch('/department/all');
         if (response.ok) {
-            const faculties = await response.json();
+            const departments = await response.json();
 
             const tableBody = document.getElementById('departmentTableBody');
             tableBody.innerHTML = ''; // Clear any existing rows
 
-            faculties.forEach(department => {
+            departments.forEach(department => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${department.departmentId}</td>

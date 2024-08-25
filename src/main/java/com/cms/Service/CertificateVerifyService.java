@@ -1,9 +1,6 @@
 package com.cms.Service;
 
-import com.cms.Model.Certificate;
-import com.cms.Model.CertificateVerify;
-import com.cms.Model.Student;
-import com.cms.Model.User;
+import com.cms.Model.*;
 import com.cms.Repository.CertificateRepository;
 import com.cms.Repository.CertificateVerifyRepository;
 import com.cms.Repository.StudentRepository;
@@ -32,7 +29,7 @@ public class CertificateVerifyService {
     @Autowired
     StudentRepository studentRepository;
 
-    public CertificateVerify saveVerificationDetails(Student student, String employer, String organization) {
+    public CertificateVerify saveVerificationDetails(Student student, User userId, String employer, String organization, byte[] signature) {
         if (!studentRepository.existsByStudentId(student.getStudentId())) {
             return null;
         }
@@ -40,9 +37,10 @@ public class CertificateVerifyService {
             CertificateVerify verification = new CertificateVerify();
 
             verification.setStudent(student);
+            verification.setUserId(userId);
             verification.setEmployer(employer);
             verification.setOrganization(organization);
-            verification.setStatus("Verified");
+            verification.setSignature(signature);
             verification.setDateVerified(LocalDateTime.now());
             verification.setDateEdited(LocalDateTime.now());
 
@@ -82,12 +80,14 @@ public class CertificateVerifyService {
             Sheet sheet = workbook.getSheetAt(0);
 
             for (Row row : sheet) {
-                Cell cell = row.getCell(0);
-                int studentId = (int) cell.getNumericCellValue();
+//                Cell cell = row.getCell(0);
+                int studentId = (int) row.getCell(0).getNumericCellValue();
+                int userId = (int) row.getCell(1).getNumericCellValue();
+                String employerName = row.getCell(2).getStringCellValue();
+                String organizationName = row.getCell(3).getStringCellValue();
 
                 // Find the Student entity first
                 Optional<Student> student = studentRepository.findById(studentId);
-
                 Map<String, Object> response = new HashMap<>();
 
                 if (student.isPresent()) {
@@ -107,21 +107,39 @@ public class CertificateVerifyService {
                         String baseUrl = "http://localhost/"; // Adjust as necessary
                         String fullUrl = baseUrl + relativePath;
                         response.put("viewLink", fullUrl);
+
+
+                        CertificateVerify certificateVerify = new CertificateVerify();
+                        Optional<User> userOptional = Optional.ofNullable(userRepository.findById(userId));
+                        if (userOptional.isPresent()) {
+                            User user = userOptional.get();
+                            certificateVerify.setUserId(user);
+                        } else {
+                            throw new RuntimeException("User not found");
+                        }
+
+                        certificateVerify.setStudent(student.get());
+                        certificateVerify.setEmployer(employerName);
+                        certificateVerify.setOrganization(organizationName);
+                        certificateVerify.setSignature(certificateVerify.getSignature());
+                        certificateVerify.setDateVerified(LocalDateTime.now());
+                        certificateVerify.setDateEdited(LocalDateTime.now());
+                        certificateVerifyRepository.save(certificateVerify);
+
                     } else {
                         response.put("exists", false);
                         response.put("studentId", studentId);
                         response.put("message", "Certificate not found for existing student");
                     }
+
                 } else {
                     response.put("exists", false);
                     response.put("studentId", studentId);
                     response.put("message", "Student not found");
                 }
-
                 results.add(response);
             }
         }
-
         return results;
     }
 

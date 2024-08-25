@@ -24,6 +24,9 @@
             max-width: 500px;
             margin: auto;
         }
+        .container {
+            max-width: 900px;
+        }
 
         /* Sidebar styles */
         #wrapper {
@@ -49,6 +52,17 @@
 
         main.collapsed {
             padding-left: 20px;
+        }
+
+        .mother-div {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .make-row {
+            display: flex;
         }
     </style>
 </head>
@@ -154,19 +168,11 @@
         </div>
     </div>
 </nav>
-
+<!--mother-div-->
 <main id="main-content">
-    <style>
-        .mother-div {
-            justify-content: center;
-            align-items: center;
-            display: flex ;
-            flex-direction: column;
-        }
-    </style>
-    <div class="container mt-5 mother-div">
-        <div class="card overall-container" id="addCertificateFormContainer">
-            <div class="card-body">
+    <div class="container mt-5 ">
+        <div class="card " id="addCertificateFormContainer">
+            <div class="card-body ">
                 <h2 class="card-title">Add Certificate</h2>
                 <form id="addCertificateForm" class="certificate-add-form" enctype="multipart/form-data">
                     <div class="make-row">
@@ -219,14 +225,6 @@
                     <button type="submit" class="btn btn-primary" id="addCertificate">Add Certificate</button>
                     <button type="submit" class="btn btn-secondary" onclick="showImportForm()">Import (Excel)</button>
                 </form>
-                <style>
-                    .make-row {
-                        display: flex;
-                        /*justify-content: center;*/
-                        /*align-items: center;*/
-                        /*gap: 1em;*/
-                    }
-                </style>
             </div>
         </div>
 
