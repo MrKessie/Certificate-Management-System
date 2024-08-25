@@ -168,4 +168,8 @@ public class StudentService {
         return academicYearRepository.findAll();
     }
 
+    public long totalStudents() {
+        return studentRepository.count();
+    }
+
 }

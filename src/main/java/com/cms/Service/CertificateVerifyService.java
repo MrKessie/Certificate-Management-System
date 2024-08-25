@@ -143,4 +143,9 @@ public class CertificateVerifyService {
         return results;
     }
 
+
+    public long totalVerifiedCertificates() {
+        return certificateVerifyRepository.count();
+    }
+
 }

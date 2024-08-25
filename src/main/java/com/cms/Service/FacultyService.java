@@ -126,4 +126,8 @@ public class FacultyService {
     }
 
 
+    public long totalFaculties() {
+        return facultyRepository.count();
+    }
+
 }

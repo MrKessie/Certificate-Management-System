@@ -81,7 +81,7 @@
     <!-- Sidebar -->
     <div class="bg-dark border-right" id="sidebar-wrapper">
       <div class="list-group list-group-flush" id="sidebar-content">
-        <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/home.png" alt="home">Dashboard</a>
+        <a href="/dashboard/homepage" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/home.png" alt="home">Dashboard</a>
         <div class="dropdown">
           <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/calendar.png" alt="dashboard">Setup</a>
           <div id="academicYearMenu" class="collapse">
@@ -101,7 +101,7 @@
             <a href="/certificate-issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
             <a href="/certificate/verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
             <a href="/certificate-issue/all-issued" class="list-group-item list-group-item-action bg-dark text-white">Issued Table</a>
-            <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
+            <a href="/certificate/verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
           </div>
         </div>
         <div class="dropdown">
@@ -125,35 +125,40 @@
 <!--======== MAIN CONTENT STARTS HERE ========== -->
 <main id="main-content">
   <div class="container mt-5">
-    <div class="card form-container" id="getCertificateFormContainer">
+    <h1 class="mb-4 text-center">Certificate Verification</h1>
+    <div class="card form-container" id="getCertificateFormContainer" style="max-width: 1000px; margin: auto;">
       <div class="card-body">
-        <h2 class="card-title">Verify Certificate</h2>
+        <h2 class="card-title">Verification Details</h2>
         <form id="getCertificateForm">
-          <div class="form-group">
-            <label for="verifyStudentId">Student ID:</label>
-            <input type="text" class="form-control" id="verifyStudentId" name="studentId" required>
-          </div>
-          <div class="form-group">
-            <label for="userId">User ID:</label>
-            <input type="text" class="form-control" id="userId" name="userId" required>
-          </div>
-          <div class="form-group">
-            <label for="employer">Employer Name:</label>
-            <input type="text" class="form-control" id="employer" name="employer" required>
-          </div>
-          <div class="form-group">
-            <label for="organization">Organization:</label>
-            <input type="text" class="form-control" id="organization" name="organization" required>
-          </div>
-          <div>
-            <div class="form-group">
-              <label for="signatureCanvas">Signature:</label>
-              <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000;"></canvas>
-              <button type="button" id="clearSignature">Clear Signature</button>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="verifyStudentId">Student ID:</label>
+                <input type="text" class="form-control" id="verifyStudentId" name="studentId" required>
+              </div>
+              <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="text" class="form-control" id="userId" name="userId" required>
+              </div>
+              <div class="form-group">
+                <label for="employer">Employer Name:</label>
+                <input type="text" class="form-control" id="employer" name="employer" required>
+              </div>
+              <div class="form-group">
+                <label for="organization">Organization:</label>
+                <input type="text" class="form-control" id="organization" name="organization" required>
+              </div>
+              <button type="submit" class="btn btn-primary mt-3" id="getBtn">Verify Certificate</button>
+              <button type="button" class="btn btn-secondary mt-3 ml-2" id="showVerifyForm">Bulk Verification</button>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="signatureCanvas">Signature:</label>
+                <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000; display: block; width: 100%;"></canvas>
+                <button type="button" id="clearSignature" class="btn btn-sm btn-outline-secondary mt-2">Clear Signature</button>
+              </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" id="getBtn">Verify Certificate</button>
-          <button type="button" class="btn btn-secondary" id="showVerifyForm">Bulk Verification</button>
         </form>
         <div id="errorGet" class="error"></div>
         <div id="resultsGet" class="results hidden">
@@ -170,6 +175,53 @@
       </div>
     </div>
   </div>
+
+<!--  <div class="container mt-5">-->
+<!--    <div class="card form-container" id="getCertificateFormContainer">-->
+<!--      <div class="card-body">-->
+<!--        <h2 class="card-title">Verify Certificate</h2>-->
+<!--        <form id="getCertificateForm">-->
+<!--          <div class="form-group">-->
+<!--            <label for="verifyStudentId">Student ID:</label>-->
+<!--            <input type="text" class="form-control" id="verifyStudentId" name="studentId" required>-->
+<!--          </div>-->
+<!--          <div class="form-group">-->
+<!--            <label for="userId">User ID:</label>-->
+<!--            <input type="text" class="form-control" id="userId" name="userId" required>-->
+<!--          </div>-->
+<!--          <div class="form-group">-->
+<!--            <label for="employer">Employer Name:</label>-->
+<!--            <input type="text" class="form-control" id="employer" name="employer" required>-->
+<!--          </div>-->
+<!--          <div class="form-group">-->
+<!--            <label for="organization">Organization:</label>-->
+<!--            <input type="text" class="form-control" id="organization" name="organization" required>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <div class="form-group">-->
+<!--              <label for="signatureCanvas">Signature:</label>-->
+<!--              <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000;"></canvas>-->
+<!--              <button type="button" id="clearSignature">Clear Signature</button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <button type="submit" class="btn btn-primary" id="getBtn">Verify Certificate</button>-->
+<!--          <button type="button" class="btn btn-secondary" id="showVerifyForm">Bulk Verification</button>-->
+<!--        </form>-->
+<!--        <div id="errorGet" class="error"></div>-->
+<!--        <div id="resultsGet" class="results hidden">-->
+<!--          <h2>Results:</h2>-->
+<!--          <p><strong>Status:</strong> <span id="statusGet"></span></p>-->
+<!--          <p><strong>Student Id:</strong> <span id="studentIdGet"></span></p>-->
+<!--          <p><strong>Name:</strong> <span id="nameGet"></span></p>-->
+<!--          <p><strong>Programme:</strong> <span id="programmeGet"></span></p>-->
+<!--          <p><strong>Department:</strong> <span id="departmentGet"></span></p>-->
+<!--          <p><strong>Academic Year:</strong> <span id="academicYearGet"></span></p>-->
+<!--          <p><strong>Class:</strong> <span id="classHonoursGet"></span></p>-->
+<!--          <a type="submit" id="viewCertificateGet" target="_blank">View Certificate</a>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
   <div class="card form-container mt-4" id="verifyCertificateFormContainer" style="display: none;">
     <div class="card-body">

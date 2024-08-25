@@ -25,46 +25,6 @@ public class UserController {
     UserService userService;
 
 
-//    @GetMapping("/all-users")
-//    public String showUserAllPage(HttpSession session, Model model) {
-//        model.addAttribute("users", userService.usersList());
-//        User loggedInUser = (User) session.getAttribute("loggedInUser");
-//        model.addAttribute("loggedInUser", loggedInUser);
-//        return "users-all";
-//    }
-//
-//
-//
-//    @GetMapping("/add-user")
-//    public String registerPage(HttpSession session, Model model) {
-//        User loggedInUser = (User) session.getAttribute("loggedInUser");
-//        model.addAttribute("loggedInUser", loggedInUser);
-//        return "register";
-//    }
-//    @GetMapping("/change-password")
-//    public String showChangePwPage() {
-//        return "password-change";
-//    }
-//
-//
-//
-//    @PostMapping("/add")
-//    public ResponseEntity<String> addUser(@RequestParam int userId, @RequestParam String fullName, @RequestParam String username,
-//                                          @RequestParam Genders gender, @RequestParam Roles role, @RequestParam String password) {
-//        if (userService.userExistByUserId(userId)) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
-//        }
-//
-//        User user = userService.addUser(userId, fullName, username, gender, role, password);
-//
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
-//        }
-//
-//        return ResponseEntity.ok("User added successfully!");
-//    }
-
-
 
     @GetMapping("/all")
     @ResponseBody
@@ -83,10 +43,5 @@ public class UserController {
     }
 
 
-//    @GetMapping("/exists")
-//    public ResponseEntity<Boolean> userExists(@RequestParam int userId) {
-//        boolean exists = userService.userExistByUserId(userId);
-//        return ResponseEntity.ok(exists);
-//    }
 
 }

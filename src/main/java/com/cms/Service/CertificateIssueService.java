@@ -140,4 +140,8 @@ public class CertificateIssueService {
         return results;
     }
 
+    public long totalCertificatesIssued() {
+        return certificateIssueRepository.count();
+    }
+
 }

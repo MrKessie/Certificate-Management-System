@@ -134,4 +134,8 @@ public class ProgrammeService {
         }
         return programmes;
     }
+
+    public long totalProgrammes() {
+        return programmeRepository.count();
+    }
 }

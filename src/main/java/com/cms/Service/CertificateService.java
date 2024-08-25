@@ -165,4 +165,8 @@ public class CertificateService {
     }
 
 
+    public long totalCertificates() {
+        return certificateRepository.count();
+    }
+
 }

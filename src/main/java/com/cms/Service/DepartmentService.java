@@ -139,5 +139,10 @@ public class DepartmentService {
         return new DepartmentImportResult(addedDepartments, notAddedDepartments);
     }
 
+
+    public long totalDepartments() {
+        return departmentRepository.count();
+    }
+
 }
 

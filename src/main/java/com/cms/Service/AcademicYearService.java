@@ -157,4 +157,8 @@ public class AcademicYearService {
     }
 
 
+    public long totalAcademicYears() {
+        return academicYearRepository.count();
+    }
+
 }

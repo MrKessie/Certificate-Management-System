@@ -16,7 +16,7 @@ import java.util.*;
 
 
 @Controller
-@RequestMapping("/certificate-verify")
+@RequestMapping("/certificate/verify")
 public class CertificateVerifyController {
     @Autowired
     CertificateVerifyService certificateVerifyService;
