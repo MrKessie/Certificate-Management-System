@@ -29,8 +29,8 @@ public class CertificateIssueController {
     UserRepository userRepository;
 
     @GetMapping
-    public String showCertificateAddForm(HttpSession session, Model model) {
-//        model.addAttribute("certificatesIssued", certificateIssueService.issueList());
+    public String showCertificateIssueForm(HttpSession session, Model model) {
+        model.addAttribute("certificatesIssued", certificateIssueService.issueList());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         return "certificate-issue";
@@ -42,6 +42,22 @@ public class CertificateIssueController {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         return "certificate-issue-all";
+    }
+
+    @GetMapping("/client-certificate-issue")
+    public String showClientCertificateIssueForm(HttpSession session, Model model) {
+        model.addAttribute("certificatesIssued", certificateIssueService.issueList());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "client-certificate-issue";
+    }
+
+    @GetMapping("/client-all-issued")
+    public String showClientCertificateAllForm(HttpSession session, Model model) {
+        model.addAttribute("certificatesIssued", certificateIssueService.issueList());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "client-certificate-issue-all";
     }
 
 

@@ -99,7 +99,7 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
         }
     });
 
-    fetch(`/certificate/verify/student/${studentId}`, {
+    fetch(`/certificate-verify/student/${studentId}`, {
         method: 'POST',
         body: formData
     })
@@ -177,7 +177,7 @@ document.getElementById('verifyCertificateForm').addEventListener('submit', func
         }
     });
 
-    fetch('/certificate/verify/bulk', {
+    fetch('/certificate-verify/bulk', {
         method: 'POST',
         body: formData
     })

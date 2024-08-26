@@ -16,7 +16,7 @@ import java.util.*;
 
 
 @Controller
-@RequestMapping("/certificate/verify")
+@RequestMapping("/certificate-verify")
 public class CertificateVerifyController {
     @Autowired
     CertificateVerifyService certificateVerifyService;
@@ -39,6 +39,22 @@ public class CertificateVerifyController {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         return "certificate-verify-all";
+    }
+
+    @GetMapping("/client-certificate-verify")
+    public String showClientCertificateVerifyForm(HttpSession session, Model model) {
+        model.addAttribute("certificates", certificateVerifyService.verifyList());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "client-certificate-verify";
+    }
+
+    @GetMapping("/client-all-verified")
+    public String showClientCertificateAllForm(HttpSession session, Model model) {
+        model.addAttribute("certificates", certificateVerifyService.verifyList());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "client-certificate-verify-all";
     }
 
 

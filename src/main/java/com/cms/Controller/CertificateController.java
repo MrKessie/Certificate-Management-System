@@ -54,6 +54,14 @@ public class CertificateController {
         return "certificate-add";
     }
 
+    @GetMapping("/client-certificate-add")
+    public String showClientCertificateAddForm(HttpSession session, Model model) {
+        model.addAttribute("certificates", certificateService.allCertificateLis());
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        return "client-certificate-add";
+    }
+
 
     @GetMapping("/bulk")
     public String showBulkVerifyForm() {
