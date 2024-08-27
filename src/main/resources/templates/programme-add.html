@@ -136,6 +136,11 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Import Programme (Excel)</h5>
+                        <p><strong>NOTE:</strong>To import Programmes from an Excel file, the details should follow the following format:</p>
+                        <p><strong>COLUMN A: </strong>Programme ID</p>
+                        <p><strong>COLUMN B: </strong>Programme Name</p>
+                        <p><strong>COLUMN C: </strong>Faculty ID</p>
+                        <p><strong>COLUMN D: </strong>Department ID</p>
                         <form id="programmeImportForm" onsubmit="return importProgrammes()" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="file">Choose File</label>
@@ -205,6 +210,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashboard.js"></script>
-<script src="../static/scripts/programme-edit.js"></script>
+<script src="../static/scripts/programme.js"></script>
 </body>
 </html>
