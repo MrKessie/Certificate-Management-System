@@ -266,6 +266,22 @@ function loadFaculties() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function loadEditFaculties() {
+    return fetch('/faculty/all/faculties')
+        .then(response => response.json())
+        .then(faculties => {
+            const editFaculty = document.getElementById('editFaculty');
+            editFaculty.innerHTML = '<option value="">Select Faculty</option>';
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty.facultyId;
+                option.textContent = faculty.facultyName;
+                editFaculty.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading faculties:', error));
+}
+
 function loadDepartments() {
     console.log("Loading departments...")
     fetch('/department/all/departments')
@@ -283,6 +299,22 @@ function loadDepartments() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function loadEditDepartments() {
+    return fetch('/department/all/departments')
+        .then(response => response.json())
+        .then(departments => {
+            const editDepartment = document.getElementById('editDepartment');
+            editDepartment.innerHTML = '<option value="">Select Department</option>';
+            departments.forEach(department => {
+                const option = document.createElement('option');
+                option.value = department.departmentId;
+                option.textContent = department.departmentName;
+                editDepartment.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading Departments:', error));
+}
+
 
 
 
@@ -290,6 +322,7 @@ function loadDepartments() {
 document.addEventListener("DOMContentLoaded", async function () {
     loadFaculties();
     loadDepartments()
+    showEditForm();
 
 
     try {
@@ -303,14 +336,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             programmes.forEach(programme => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${programme.programmeId}</td>
+                    <td class="programme-id">${programme.programmeId}</td>
                     <td>${programme.programmeName}</td>
                     <td>${programme.faculty.facultyName}</td>
                     <td>${programme.department.departmentName}</td>
                     <td>${programme.dateAdded}</td>
                     <td>${programme.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-info">Edit</button>
                     <button class="btn btn-sm btn-danger" data-programme-id="${programme.programmeId}">Delete</button>
                     </td>
                 `;
@@ -330,3 +363,86 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 });
+
+
+function showEditForm() {
+    const programmeTable = document.getElementById('programmeTableBody');
+    const editModal = document.getElementById('editModal');
+    const editProgrammeId = document.getElementById('editProgrammeId');
+    const editProgrammeName = document.getElementById('editProgrammeName');
+    const editDepartment = document.getElementById('editDepartment');
+    const editFaculty = document.getElementById('editFaculty');
+
+    programmeTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-info')) {
+            const row = e.target.closest('tr');
+            const programmeId = row.querySelector('.programme-id').textContent;
+            const programmeName = row.querySelector('td:nth-child(2)').textContent;
+            const facultyName = row.querySelector('td:nth-child(3)').textContent
+            const departmentName = row.querySelector('td:nth-child(4)').textContent
+
+            editProgrammeId.value = programmeId;
+            editProgrammeName.value = programmeName;
+
+            loadEditFaculties().then(() => {
+                const facultyOption = Array.from(editFaculty.options).find(option => option.text === facultyName);
+                if (facultyOption) {
+                    editFaculty.value = facultyOption.value;
+                }
+            });
+
+            loadEditDepartments().then(() => {
+                const departmentOption = Array.from(editDepartment.options).find(option => option.text === departmentName);
+                if (departmentOption) {
+                    editDepartment.value = departmentOption.value;
+                }
+            });
+
+            $(editModal).modal('show');
+        }
+    });
+}
+
+function submitEditForm() {
+    const formData = {
+        programmeId: document.getElementById('editProgrammeId').value,
+        programmeName: document.getElementById('editProgrammeName').value,
+        faculty: {facultyId: parseInt(document.getElementById('editFaculty').value, 10)},
+        department: {departmentId: parseInt(document.getElementById('editDepartment').value, 10)}
+    };
+
+    fetch('/programme/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Programme Update',
+                    text: data.message
+                });
+                location.reload(); // Reload the page to show updated data
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Update Error',
+                    text: data.message
+                });
+            }
+        })
+        .catch(async (error) => {
+            console.error('Error:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: 'There was an error with the submission. Please try again.'
+            });
+        });
+
+    $(editModal).modal('hide');
+}

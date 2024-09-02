@@ -33,30 +33,6 @@ $(document).ready(function() {
 
     // Initialize DataTable
     $('#academicYearTable').DataTable();
-        // {
-    //     "processing": true,
-    //     "serverSide": true,
-    //     "ajax": {
-    //         "url": "/academic-year/all",
-    //         "type": "GET",
-    //         "dataSrc": ""
-    //     },
-    //     "columns": [
-    //         { "data": "id" },
-    //         { "data": "academicYear" },
-    //         { "data": "dateAdded" },
-    //         { "data": "dateEdited" },
-    //         {
-    //             "data": null,
-    //             "defaultContent": `
-    //                 <button class="btn btn-sm btn-info">Edit</button>
-    //                 <button class="btn btn-sm btn-danger">Delete</button>
-    //             `,
-    //             "orderable": false
-    //         }
-    //     ]
-    //
-    // });
 
 });
 
@@ -124,6 +100,7 @@ document.getElementById('academicYearForm').addEventListener('submit', async fun
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    showEditForm()
     console.log('DOM content');
     try {
         const response = await fetch('/academic-year/all');
@@ -136,12 +113,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             faculties.forEach(academicYear => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${academicYear.id}</td>
+                    <td class="academic-year-id">${academicYear.id}</td>
                     <td>${academicYear.academicYear}</td>
                     <td>${academicYear.dateAdded}</td>
                     <td>${academicYear.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#editModal" onclick="editAcademicYear(${academicYear.id}, '${academicYear.academicYear}')">Edit</button>
+                    <button class="btn btn-sm btn-info">Edit</button>
                     <button class="btn btn-sm btn-danger" data-academic-year-id="${academicYear.id}">Delete</button>
                     </td>
                 `;
@@ -314,57 +291,65 @@ function importAcademicYears() {
     return false; // Prevent form from submitting traditionally
 }
 
+function showEditForm() {
+    const academicYearTable = document.getElementById('academicYearTableBody');
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const editAcademicYearId = document.getElementById('editAcademicYearId');
+    const editAcademicYear = document.getElementById('editAcademicYear');
 
+    academicYearTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-info')) {
+            const row = e.target.closest('tr');
+            const academicYearId = row.querySelector('.academic-year-id').textContent;
+            const academicYear = row.querySelector('td:nth-child(2)').textContent;
 
-function editAcademicYear(id, year) {
-    // Set the values in the modal
-    const academicYearId = document.getElementById('editAcademicYearId').value = id;
-    const academicYear = document.getElementById('editAcademicYear').value = year;
+            editAcademicYearId.value = academicYearId;
+            editAcademicYear.value = academicYear;
 
-    console.log("Academic Year ID:", academicYearId);
-    console.log("Academic Year:", academicYear);
-
-    // Show the modal
-    $('#editModal').modal('show');
+            $(editModal).modal('show');
+        }
+    });
 }
 
-
-async function submitEditForm() {
-    const academicYearId = document.getElementById('editAcademicYearId').value;
-    const academicYear = document.getElementById('editAcademicYear').value;
-
-    const data = {
-        // academicYearId: academicYearId,
-        academicYear: academicYear
+function submitEditForm() {
+    const formData = {
+        facultyId: document.getElementById('editAcademicYearId').value,
+        facultyName: document.getElementById('editAcademicYear').value
     };
 
-    try {
-        const response = await fetch('/academic-year/update/${academicYearId}', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            $('#editModal').modal('hide');
+    fetch('/academic-year/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Academic Year Update',
+                    text: data.message
+                });
+                location.reload(); // Reload the page to show updated data
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Updating Error',
+                    text: data.message
+                });
+            }
+        })
+        .catch(async (error) => {
+            console.error('Error:', error);
             await Swal.fire({
-                icon: 'success',
-                title: 'Updated!',
-                text: 'Academic Year has been updated.'
+                icon: 'error',
+                title: 'Submission Error',
+                text: 'There was an error with the submission. Please try again.'
             });
-
-            // Optionally, refresh the table to reflect the changes
-            document.location.reload();
-        } else {
-            throw new Error('Failed to update academic year');
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Update Error',
-            text: 'There was an error updating the academic year. Please try again.'
         });
-    }
+
+    $(editModal).modal('hide');
 }

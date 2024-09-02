@@ -1,14 +1,19 @@
 package com.cms.Controller;
 
 import com.cms.Model.AcademicYear;
+import com.cms.Model.Faculty;
 import com.cms.Model.User;
 import com.cms.Repository.AcademicYearRepository;
 import com.cms.Service.AcademicYearImportResult;
 import com.cms.Service.AcademicYearService;
+import com.cms.Service.UserActivityService;
+import com.cms.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +32,12 @@ public class AcademicYearController {
     @Autowired
     AcademicYearRepository academicYearRepository;
 
-    //=============METHOD TO SHOW ACADEMIC YEAR ALL PAGE=============//
-    @GetMapping("/academic-year-all")
-    public String showAllAcademicYearPage(HttpSession session, Model model) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        model.addAttribute("academicYears", academicYearService.academicYearList());
-        return "/academic-year-all";
-    }
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserActivityService userActivityService;
+
 
     //=============METHOD TO SHOW ACADEMIC YEAR ADD PAGE=============//
     @GetMapping("/academic-year-add")
@@ -45,19 +48,33 @@ public class AcademicYearController {
         return "academic-year-add";
     }
 
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findById(Integer.parseInt(username));
+    }
+
     //=============METHOD TO ADD ACADEMIC YEARS=============//
     @PostMapping("/add")
     public ResponseEntity<String> addAcademicYear(@RequestParam String academicYear, Model model) {
+        User currentUser = getCurrentUser();
+
         if (academicYearService.existsByAcademicYear(academicYear)) {
+            userActivityService.logActivity(currentUser, "ADD_ACADEMIC_YEAR_FAILED",
+                    "Attempted to add existing academic year: " + academicYear);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Academic Year already exists.");
         }
 
         AcademicYear addAcademicYear = academicYearService.addAcademicYear(academicYear);
 
         if (addAcademicYear == null) {
+            userActivityService.logActivity(currentUser, "ADD_ACADEMIC_YEAR_ERROR",
+                    "Error occurred while adding academic year: " + academicYear);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
 
+        userActivityService.logActivity(currentUser, "ADD_ACADEMIC_YEAR_SUCCESS",
+                "Added new academic year: " + academicYear);
         return ResponseEntity.ok("Academic Year added successfully!");
     }
 
@@ -65,13 +82,30 @@ public class AcademicYearController {
     //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-academic-years")
     public ResponseEntity<?> importAcademicYears(@RequestParam("file") MultipartFile file) throws IOException {
-        AcademicYearImportResult result = academicYearService.importAcademicYear(file);
-
+        User currentUser = getCurrentUser();
         Map<String, Object> response = new HashMap<>();
-        response.put("addedCount", result.getAddedAcademicYears().size());
-        response.put("notAddedAcademicYears", result.getNotAddedAcademicYears());
 
-        return ResponseEntity.ok(response);
+        userActivityService.logActivity(currentUser, "IMPORT_ACADEMIC_YEARS_START",
+                "Started importing academic years from file: " + file.getOriginalFilename());
+        try {
+            AcademicYearImportResult result = academicYearService.importAcademicYear(file);
+
+            response.put("addedCount", result.getAddedAcademicYears().size());
+            response.put("notAddedAcademicYears", result.getNotAddedAcademicYears());
+
+            userActivityService.logActivity(currentUser, "IMPORT_ACADEMIC_YEARS_SUCCESS",
+                    String.format("Successfully imported academic years. Added: %d, Not added: %d",
+                            result.getAddedAcademicYears().size(),
+                            result.getNotAddedAcademicYears().size()));
+            return ResponseEntity.ok(response);
+
+        } catch (IOException e) {
+            userActivityService.logActivity(currentUser, "IMPORT_ACADEMIC_YEARS_ERROR",
+                    "Error occurred while importing academic years: " + e.getMessage());
+
+            response.put("error", "An error occurred while importing academic years: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 
@@ -86,32 +120,18 @@ public class AcademicYearController {
 
     @DeleteMapping("/delete/{academicYearId}")
     public ResponseEntity<String> deleteAcademicYear(@PathVariable int academicYearId) {
+        User currentUser = getCurrentUser();
         if (academicYearService.existByAcademicYearId(academicYearId)) {
             academicYearService.deleteAcademicYear(academicYearId);
+            userActivityService.logActivity(currentUser, "DELETE_ACADEMIC_YEAR_SUCCESS",
+                    "Deleted academic year with ID: " + academicYearId);
             return ResponseEntity.ok("Academic Year deleted successfully!");
         } else {
+            userActivityService.logActivity(currentUser, "DELETE_ACADEMIC_YEAR_FAILED",
+                    "Attempted to delete non-existent academic year with ID: " + academicYearId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Academic Year not found.");
         }
     }
-
-    //=============METHOD TO UPDATE ACADEMIC YEAR=============//
-//    @PostMapping("/update")
-//    public String updateItem(@RequestParam int academicYearId, Model model) {
-//        try {
-//            AcademicYear academicYear = academicYearRepository.findById(academicYearId).get();
-//            model.addAttribute("academicYear",academicYear);
-//
-//            AcademicYear newAcademicyear = new AcademicYear();
-//            newAcademicyear.setAcademicYear(academicYear.getAcademicYear());
-//            newAcademicyear.setDateEdited(LocalDateTime.now());
-//            model.addAttribute("newAcademicYear",newAcademicyear);
-//        }
-//        catch (Exception ex) {
-//            System.out.println("Exception: " + ex.getMessage());
-//            return "redirect:/academic-year/academic-year-add";
-//        }
-//        return "redirect:/academic-year/academic-year-edit";
-//    }
 
     //=============METHOD TO GET ACADEMIC YEAR=============//
     @GetMapping("/all/academic-years")
@@ -138,21 +158,29 @@ public class AcademicYearController {
     }
 
     //=============METHOD TO UPDATE ACADEMIC YEAR BY ID=============//
-//    @PutMapping("/update/{id}")
-//    public String updateAcademicYear(@PathVariable("id") int id, @RequestParam("academicYear") String academicYear) {
-//        AcademicYear updatedAcademicYear = new AcademicYear();
-//        updatedAcademicYear.setAcademicYear(academicYear);
-//        academicYearService.update(id, academicYear);
-//        return "redirect:/academicYears";
-//    }
-
-
-    @PutMapping("/update/{academicYearId}")
-    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @RequestParam AcademicYear academicYear) {
-        // Your logic to update the academic year in the database
-        academicYearService.update(academicYear);
-        return ResponseEntity.ok().build();
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAcademicYear(@RequestBody AcademicYear academicYear) {
+        User currentUser = getCurrentUser();
+        try {
+            AcademicYear updatedAcademicYear = academicYearService.updateAcademicYear(academicYear);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Academic Year updated successfully");
+            response.put("data", updatedAcademicYear);
+            userActivityService.logActivity(currentUser, "UPDATE_ACADEMIC_YEAR_SUCCESS",
+                    "Updated academic year: " + updatedAcademicYear.getAcademicYear());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Error updating Academic Year: " + e.getMessage());
+            userActivityService.logActivity(currentUser, "UPDATE_ACADEMIC_YEAR_ERROR",
+                    "Error updating academic year: " + academicYear.getAcademicYear() + ". Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
+
+
 
 
 }

@@ -172,4 +172,53 @@ public class StudentService {
         return studentRepository.count();
     }
 
+    public Student updateStudent(Student student) {
+        Student editedStudent = studentRepository.findById(student.getStudentId())
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // Update the programme name
+        editedStudent.setStudentName(student.getStudentName());
+
+        // Update the faculty if provided
+        if (student.getFaculty() != null && student.getFaculty().getFacultyId() != 0) {
+            Faculty faculty = facultyRepository.findById(student.getFaculty().getFacultyId())
+                    .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + student.getFaculty().getFacultyId()));
+            editedStudent.setFaculty(faculty);
+        } else {
+            throw new RuntimeException("Invalid faculty data provided");
+        }
+
+        // Update the department if provided
+        if (student.getDepartment() != null && student.getDepartment().getDepartmentId() != 0) {
+            Department department = departmentRepository.findById(student.getDepartment().getDepartmentId())
+                    .orElseThrow(() -> new RuntimeException("Department not found with id: " + student.getDepartment().getDepartmentId()));
+            editedStudent.setDepartment(department);
+        } else {
+            throw new RuntimeException("Invalid department data provided");
+        }
+
+        // Update the programme if provided
+        if (student.getProgramme() != null && student.getProgramme().getProgrammeId() != 0) {
+            Programme programme = programmeRepository.findById(student.getProgramme().getProgrammeId())
+                    .orElseThrow(() -> new RuntimeException("Programme not found with id: " + student.getProgramme().getProgrammeId()));
+            editedStudent.setProgramme(programme);
+        } else {
+            throw new RuntimeException("Invalid programme data provided");
+        }
+
+        if (student.getAcademicYear() != null && student.getAcademicYear().getId() != 0) {
+            AcademicYear academicYear = academicYearRepository.findById(student.getAcademicYear().getId())
+                    .orElseThrow(() -> new RuntimeException("Academic Year not found with id: " + student.getAcademicYear().getId()));
+            editedStudent.setAcademicYear(academicYear);
+        } else {
+            throw new RuntimeException("Invalid academic year data provided");
+        }
+
+        // Update the dateEdited
+        editedStudent.setDateEdited(LocalDateTime.now());
+
+        // Save the updated programme
+        return studentRepository.save(editedStudent);
+    }
+
 }

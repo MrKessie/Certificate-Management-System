@@ -19,13 +19,13 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     console.log("Verifying certificate")
 
     const studentId = document.getElementById("getStudentId").value ;
-    const userId = document.getElementById("userId").value
+    // const userId = document.getElementById("userId").value
     const collectorName = document.getElementById("collectorName").value
     const resultsContainer = document.getElementById("resultsGet");
     const errorContainer = document.getElementById("errorGet");
     const printButton = document.getElementById("printVerifiedBtn")
 
-    if (!studentId || !userId || !collectorName) {
+    if (!studentId || !collectorName) {
         await Swal.fire({
             icon: 'warning',
             title: 'Required Fields',
@@ -55,7 +55,7 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     const formData = new FormData();
     // formData.append('issuer', issuer);
     formData.append('studentId', studentId);
-    formData.append('userId', userId);
+    // formData.append('userId', userId);
     formData.append('collectorName', collectorName);
 
 

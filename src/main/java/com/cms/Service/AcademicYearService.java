@@ -136,22 +136,6 @@ public class AcademicYearService {
         academicYearRepository.save(existingAcademicYear);
     }
 
-
-    public void updateAcademicYear(AcademicYear academicYear) {
-        // Fetch the existing record from the database
-        AcademicYear existingAcademicYear = academicYearRepository.findById(academicYear.getId())
-                .orElseThrow(() -> new RuntimeException("Academic Year not found"));
-
-        // Update the fields with the new values
-        existingAcademicYear.setAcademicYear(academicYear.getAcademicYear());
-
-        // Update the dateEdited to the current time
-        existingAcademicYear.setDateEdited(LocalDateTime.now());
-
-        // Save the updated entity back to the database
-        academicYearRepository.save(existingAcademicYear);
-    }
-
     public void delete(int id) {
         academicYearRepository.deleteById(id);
     }
@@ -159,6 +143,17 @@ public class AcademicYearService {
 
     public long totalAcademicYears() {
         return academicYearRepository.count();
+    }
+
+
+    public AcademicYear updateAcademicYear(AcademicYear academicYear) {
+        AcademicYear editeAcademicYear = academicYearRepository.findById(academicYear.getId())
+                .orElseThrow(() -> new RuntimeException("Academic Year not found"));
+
+        academicYear.setAcademicYear(academicYear.getAcademicYear());
+        academicYear.setDateEdited(LocalDateTime.now());
+
+        return academicYearRepository.save(academicYear);
     }
 
 }

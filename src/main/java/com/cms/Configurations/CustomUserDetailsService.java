@@ -1,4 +1,4 @@
-package com.cms.SecurityConfiguration;
+package com.cms.Configurations;
 
 import com.cms.Model.User;
 import com.cms.Repository.UserRepository;
@@ -19,11 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-//        User user = userRepository.findByUserId(Integer.parseInt(userId));
-//        if (user == null) {
-//            throw new UsernameNotFoundException("User not found");
-//        }
-
         int id;
         try {
             id = Integer.parseInt(userId);

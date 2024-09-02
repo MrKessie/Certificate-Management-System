@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,12 @@ public class CertificateController {
     @Autowired
     AcademicYearService academicYearService;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserActivityService userActivityService;
+
 
 
     @GetMapping("/certificate-add")
@@ -68,6 +76,12 @@ public class CertificateController {
         return "test";
     }
 
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findById(Integer.parseInt(username));
+    }
+
 
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> uploadCertificate(@RequestParam int certificateId, @RequestParam("studentId") int studentId,
@@ -75,12 +89,15 @@ public class CertificateController {
                                                                  @RequestParam AcademicYear academicYear, @RequestParam Department department,
                                                                  @RequestParam String graduateClass, @RequestParam("certificateFile") MultipartFile certificateFile) throws IOException {
 
+        User currentUser = getCurrentUser();
         Map<String, String> response = new HashMap<>();
 
         // Check if certificate with the given ID already exists
         if (certificateService.existsByCertificateId(certificateId)) {
             response.put("status", "error");
             response.put("message", "Certificate already exists.");
+            userActivityService.logActivity(currentUser, "ADD_CERTIFICATE_FAILED",
+                    "Attempted to add existing certificate: " + certificateId);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
@@ -88,6 +105,8 @@ public class CertificateController {
         if (student == null) {
             response.put("status", "error");
             response.put("message", "Student does not exist.");
+            userActivityService.logActivity(currentUser, "ADD_CERTIFICATE_FAILED",
+                    "Attempted to add existing certificate: " + certificateId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
@@ -121,11 +140,15 @@ public class CertificateController {
         if (savedCertificate == null) {
             response.put("status", "error");
             response.put("message", "Failed to add certificate. It may already exist.");
+            userActivityService.logActivity(currentUser, "ADD_CERTIFICATE_FAILED",
+                    "Attempted to add existing certificate: " + certificateId);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
         response.put("status", "success");
         response.put("message", "Certificate added successfully!");
+        userActivityService.logActivity(currentUser, "ADD_CERTIFICATE_SUCCESS",
+                "Attempted to add existing certificate: " + certificateId);
         return ResponseEntity.ok(response);
     }
 
@@ -133,6 +156,7 @@ public class CertificateController {
 
     @PostMapping("/import")
     public ResponseEntity<List<Map<String, Object>>> importCertificates(@RequestParam("file") MultipartFile file) {
+        User currentUser = getCurrentUser();
         try {
             List<Map<String, Object>> results = certificateService.importCertificates(file);
             return ResponseEntity.ok(results);
@@ -247,10 +271,15 @@ public class CertificateController {
     //=============METHOD TO DELETE ALL FACULTY BY ID=============//
     @DeleteMapping("/delete/{certificateId}")
     public ResponseEntity<String> deleteCertificate(@PathVariable int certificateId) {
+        User currentUser = getCurrentUser();
         if (certificateService.existsByCertificateId(certificateId)) {
             certificateService.deleteCertificate(certificateId);
+            userActivityService.logActivity(currentUser, "DELETE_CERTIFICATE_SUCCESS",
+                    "Deleted certificate with ID: " + certificateId);
             return ResponseEntity.ok("Certificate deleted successfully!");
         } else {
+            userActivityService.logActivity(currentUser, "DELETE_CERTIFICATE_FAILED",
+                    "Attempted to delete non-existent certificate ID: " + certificateId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Certificate not found.");
         }
     }

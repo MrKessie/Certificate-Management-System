@@ -1,6 +1,7 @@
 package com.cms.Model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ public class UserActivity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_activity",
@@ -18,16 +19,11 @@ public class UserActivity {
 
     private String action;
     private String details;
+
+    @Column(nullable = false, updatable = false)
+    @UpdateTimestamp
     private LocalDateTime timestamp;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;
@@ -59,5 +55,24 @@ public class UserActivity {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "UserActivity{" +
+                "id=" + id +
+                ", user=" + user +
+                ", action='" + action + '\'' +
+                ", details='" + details + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

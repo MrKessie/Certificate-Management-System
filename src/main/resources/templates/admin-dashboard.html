@@ -5,12 +5,14 @@
     <title>Certificate Management System</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="../static/styles/dashboard.css">
-<!--  <link rel="stylesheet" href="../static/styles/pages/pages-all.css">-->
-<!--  <link rel="stylesheet" href="../static/styles/pages/pages-add.css">-->
-<!--  <link rel="stylesheet" href="../static/styles/dashboard/dashboard-page.css">-->
   <link rel="stylesheet" href="../static/styles/main-homepage.css">
 </head>
 <body>
+<!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
 <!--======== HEADER STARTS HERE ========== -->
 <!--======== HEADER STARTS HERE ========== -->
 <!-- Header -->
@@ -21,7 +23,6 @@
         <span class="navbar-text text-white mr-3" id="userName">Full Name</span>
         <span class="navbar-text text-white mr-3">||</span>
         <span class="navbar-text text-white mr-3" id="role">Role</span>
-        <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
         <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
       </div>
       <div class="mx-auto">
@@ -67,14 +68,7 @@
             <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
           </div>
         </div>
-        <div class="dropdown">
-          <a href="#reportMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-            <img src="../static/images/report.png" alt="Certificate">Report</a>
-          <div id="reportMenu" class="collapse">
-            <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="userActivityReportButton">User Activity</a>
-            <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="tableStatsReportButton">Table Statistics</a>
-          </div>
-        </div>
+        <a href="/user-activity" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/report.png" alt="report">Report</a>
       </div>
     </div>
   </div>
@@ -90,10 +84,10 @@
       <!-- Total Academic Years -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/academic-year/academic-year-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #87CEEB; background-color: #001F3F;">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/calendar.png" alt="Academic Years">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Academic Years</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalAcademicYears}"></strong></p>
+            <h5 class="card-title">Total Academic Years</h5>
+            <p class="card-text"><strong th:text="${totalAcademicYears}"></strong></p>
           </div>
         </a>
       </div>
@@ -101,10 +95,10 @@
       <!-- Total Faculties -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/faculty/faculty-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #DAA520; background-color: #50C878">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/dashboard.png" alt="Faculties">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Faculties</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalFaculties}"></strong></p>
+            <h5 class="card-title">Total Faculties</h5>
+            <p class="card-text"><strong th:text="${totalFaculties}"></strong></p>
           </div>
         </a>
       </div>
@@ -112,10 +106,10 @@
       <!-- Total Departments -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/department/department-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #87CEEB;  background-color: #DAA520">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/department2.png" alt="Departments">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Departments</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalDepartments}"></strong></p>
+            <h5 class="card-title">Total Departments</h5>
+            <p class="card-text"><strong th:text="${totalDepartments}"></strong></p>
           </div>
         </a>
       </div>
@@ -123,10 +117,10 @@
       <!-- Total Programmes -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/programme/programme-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #DAA520; background-color: #FF7F50">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/programme.png" alt="Programmes">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Programmes</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalProgrammes}"></strong></p>
+            <h5 class="card-title">Total Programmes</h5>
+            <p class="card-text"><strong th:text="${totalProgrammes}"></strong></p>
           </div>
         </a>
       </div>
@@ -134,10 +128,10 @@
       <!-- Total Students -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/student/student-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #87CEEB; background-color: #001F3F;">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/student2.png" alt="Students">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Students</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalStudents}"></strong></p>
+            <h5 class="card-title">Total Students</h5>
+            <p class="card-text"><strong th:text="${totalStudents}"></strong></p>
           </div>
         </a>
       </div>
@@ -145,10 +139,10 @@
       <!-- Total Certificates Added -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/certificate/certificate-add" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #DAA520;  background-color: #FF7F50">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/certificate.png" alt="Certificates Added">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Certificates</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalCertificates}"></strong></p>
+            <h5 class="card-title">Total Certificates</h5>
+            <p class="card-text"><strong th:text="${totalCertificates}"></strong></p>
           </div>
         </a>
       </div>
@@ -156,10 +150,10 @@
       <!-- Total Certificates Issued -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/certificate-issue/all-issued" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #87CEEB;  background-color: #DAA520">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/issued.png" alt="Certificates Issued">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Certificates Issued</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalIssuedCertificates}"></strong></p>
+            <h5 class="card-title">Total Certificates Issued</h5>
+            <p class="card-text"><strong th:text="${totalIssuedCertificates}"></strong></p>
           </div>
         </a>
       </div>
@@ -167,10 +161,10 @@
       <!-- Total Certificates Verified -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/certificate-verify/all-verified" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #DAA520;  background-color: #50C878">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/verified.png" alt="Certificates Verified">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Certificates Verified</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalVerifiedCertificates}"></strong></p>
+            <h5 class="card-title">Total Certificates Verified</h5>
+            <p class="card-text"><strong th:text="${totalVerifiedCertificates}"></strong></p>
           </div>
         </a>
       </div>
@@ -178,10 +172,10 @@
       <!-- Total Users -->
       <div class="col-md-4" style="color: #001F3F;">
         <a href="/register" class="text-decoration-none text-dark">
-          <div class="card p-3 shadow-sm" style="border: 2px solid #87CEEB;  background-color: #001F3F">
+          <div class="card p-3 shadow-sm" style="border: 5px solid #87CEEB;">
             <img src="../static/images/student.png" alt="Users">
-            <h5 class="card-title" style="color: #E6E6FA;">Total Users</h5>
-            <p class="card-text" style="color: #E6E6FA;"><strong th:text="${totalUsers}"></strong></p>
+            <h5 class="card-title">Total Users</h5>
+            <p class="card-text"><strong th:text="${totalUsers}"></strong></p>
           </div>
         </a>
       </div>

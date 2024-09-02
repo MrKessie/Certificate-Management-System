@@ -2,9 +2,6 @@ package com.cms.Enum;
 
 public enum Roles {
 
-//    ADMIN,
-//    CLIENT
-
     ROLE_ADMIN("Admin"),
     ROLE_CLIENT("Client");
 

@@ -17,14 +17,13 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
     event.preventDefault();
 
     const studentId = document.getElementById("verifyStudentId").value ;
-    const userId = document.getElementById("userId").value ;
     const employer = document.getElementById("employer").value;
     const organization = document.getElementById("organization").value
     const resultsContainer = document.getElementById("resultsGet");
     const errorContainer = document.getElementById("errorGet");
     const getBtn = document.getElementById("getBtn")
 
-    if (!studentId || !employer || !organization || !userId) {
+    if (!studentId || !employer || !organization) {
         await Swal.fire({
             icon: 'warning',
             title: 'Required Fields',
@@ -38,15 +37,6 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
             icon: 'warning',
             title: 'Invalid Student ID',
             text: 'Enter a valid Student ID.'
-        });
-        return;
-    }
-
-    if (isNaN(userId)) {
-        await Swal.fire({
-            icon: 'warning',
-            title: 'Invalid User ID',
-            text: 'Enter a valid User ID.'
         });
         return;
     }
@@ -71,7 +61,7 @@ document.getElementById("getCertificateForm").addEventListener("submit", async f
 
     const formData = new FormData();
     formData.append('studentId', studentId);
-    formData.append('userId', userId);
+    // formData.append('userId', userId);
     formData.append('employer', employer);
     formData.append('organization', organization);
 

@@ -40,6 +40,13 @@ public class Programme {
     private LocalDateTime dateEdited;
 
 
+    public Programme() {
+    }
+
+    public Programme(int programmeId) {
+        this.programmeId = programmeId;
+    }
+
     public int getProgrammeId() {
         return programmeId;
     }

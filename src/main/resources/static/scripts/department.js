@@ -99,6 +99,8 @@ document.getElementById('departmentForm').addEventListener('submit', async funct
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    loadFaculties();
+    showEditForm();
     try {
         const response = await fetch('/department/all');
         if (response.ok) {
@@ -110,13 +112,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             departments.forEach(department => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${department.departmentId}</td>
+                    <td class="department-id">${department.departmentId}</td>
                     <td>${department.departmentName}</td>
                     <td>${department.faculty.facultyName}</td>
                     <td>${department.dateAdded}</td>
                     <td>${department.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-info">Edit</button>
                     <button class="btn btn-sm btn-danger" data-department-id="${department.departmentId}">Delete</button>
                     </td>
                 `;
@@ -322,8 +324,95 @@ function loadFaculties() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function loadEditFaculties() {
+    return fetch('/faculty/all/faculties')
+        .then(response => response.json())
+        .then(faculties => {
+            const editFaculty = document.getElementById('editFaculty');
+            editFaculty.innerHTML = '<option value="">Select Faculty</option>';
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty.facultyId;
+                option.textContent = faculty.facultyName;
+                editFaculty.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading faculties:', error));
+}
 
-// Initial call to load faculties when the DOM is fully loaded
-document.addEventListener("DOMContentLoaded", function() {
-    loadFaculties();
-});
+
+
+
+function showEditForm() {
+    const departmentTable = document.getElementById('departmentTableBody');
+    const editModal = document.getElementById('editModal');
+    const editDepartmentId = document.getElementById('editDepartmentId');
+    const editDepartmentName = document.getElementById('editDepartmentName');
+    const editFaculty = document.getElementById('editFaculty');
+
+    departmentTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-info')) {
+            const row = e.target.closest('tr');
+            const departmentId = row.querySelector('.department-id').textContent;
+            const departmentName = row.querySelector('td:nth-child(2)').textContent;
+            const facultyName = row.querySelector('td:nth-child(3)').textContent
+
+            editDepartmentId.value = departmentId;
+            editDepartmentName.value = departmentName;
+            // editFaculty.value = faculty;
+
+            loadEditFaculties().then(() => {
+                const facultyOption = Array.from(editFaculty.options).find(option => option.text === facultyName);
+                if (facultyOption) {
+                    editFaculty.value = facultyOption.value;
+                }
+            });
+
+            $(editModal).modal('show');
+        }
+    });
+}
+
+function submitEditForm() {
+    const formData = {
+        departmentId: document.getElementById('editDepartmentId').value,
+        departmentName: document.getElementById('editDepartmentName').value,
+        faculty: {facultyId: parseInt(document.getElementById('editFaculty').value, 10)}
+    };
+    console.log('Sending update data:', formData);
+
+    fetch('/department/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Department Update',
+                    text: data.message
+                });
+                location.reload(); // Reload the page to show updated data
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Update Error',
+                    text: data.message
+                });
+            }
+        })
+        .catch(async (error) => {
+            console.error('Error:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: 'There was an error with the submission. Please try again.'
+            });
+        });
+
+    $(editModal).modal('hide');
+}

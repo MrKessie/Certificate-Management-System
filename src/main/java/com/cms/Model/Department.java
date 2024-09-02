@@ -28,10 +28,17 @@ public class Department {
     @CreationTimestamp
     private LocalDateTime dateAdded;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime dateEdited;
 
+
+    public Department() {
+    }
+
+    public Department(int departmentId) {
+        this.departmentId = departmentId;
+    }
 
     public int getDepartmentId() {
         return departmentId;

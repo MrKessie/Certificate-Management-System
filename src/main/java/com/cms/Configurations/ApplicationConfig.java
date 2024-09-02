@@ -1,4 +1,4 @@
-package com.cms.SecurityConfiguration;
+package com.cms.Configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

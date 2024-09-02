@@ -273,6 +273,22 @@ function loadFaculties() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function loadEditFaculties() {
+    return fetch('/faculty/all/faculties')
+        .then(response => response.json())
+        .then(faculties => {
+            const editFaculty = document.getElementById('editFaculty');
+            editFaculty.innerHTML = '<option value="">Select Faculty</option>';
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty.facultyId;
+                option.textContent = faculty.facultyName;
+                editFaculty.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading faculties:', error));
+}
+
 function loadDepartments() {
     console.log("Loading departments...")
     fetch('/department/all/departments')
@@ -288,6 +304,22 @@ function loadDepartments() {
             });
         })
         .catch(error => console.error('Error loading faculties:', error));
+}
+
+function loadEditDepartments() {
+    return fetch('/department/all/departments')
+        .then(response => response.json())
+        .then(departments => {
+            const editDepartment = document.getElementById('editDepartment');
+            editDepartment.innerHTML = '<option value="">Select Department</option>';
+            departments.forEach(department => {
+                const option = document.createElement('option');
+                option.value = department.departmentId;
+                option.textContent = department.departmentName;
+                editDepartment.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading Departments:', error));
 }
 
 function loadProgrammes() {
@@ -307,6 +339,22 @@ function loadProgrammes() {
         .catch(error => console.error('Error loading programmes:', error));
 }
 
+function loadEditProgrammes() {
+    return fetch('/programme/all/programmes')
+        .then(response => response.json())
+        .then(programmes => {
+            const editProgramme = document.getElementById('editProgramme');
+            editProgramme.innerHTML = '<option value="">Select Programme</option>';
+            programmes.forEach(programme => {
+                const option = document.createElement('option');
+                option.value = programme.programmeId;
+                option.textContent = programme.programmeName;
+                editProgramme.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading Programmes:', error));
+}
+
 function loadAcademicYears() {
     console.log("Loading academic...")
     fetch('/academic-year/all/academic-years')
@@ -324,6 +372,81 @@ function loadAcademicYears() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function loadEditAcademicYears() {
+    return fetch('/academic-year/all/academic-years')
+        .then(response => response.json())
+        .then(academicYears => {
+            const editAcademicYear = document.getElementById('editAcademicYear');
+            editAcademicYear.innerHTML = '<option value="">Select Academic Year</option>';
+            academicYears.forEach(academicYear => {
+                const option = document.createElement('option');
+                option.value = academicYear.academicYearId;
+                option.textContent = academicYear.academicYear;
+                editAcademicYear.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading Academic Years:', error));
+}
+
+function showEditForm() {
+    const studentTable = document.getElementById('studentTableBody');
+    const editModal = document.getElementById('editModal');
+    const editStudentId = document.getElementById('editStudentId');
+    const editStudentName = document.getElementById('editStudentName');
+    const editProgramme = document.getElementById('editProgramme');
+    const editDepartment = document.getElementById('editDepartment');
+    const editFaculty = document.getElementById('editFaculty');
+    const editAcademicYear = document.getElementById('editAcademicYear');
+
+    studentTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-info')) {
+            const row = e.target.closest('tr');
+            const studentId = row.querySelector('.student-id').textContent;
+            const studentName = row.querySelector('.student-name').textContent;
+            const academicYear = row.querySelector('.academic-year').textContent;
+            const facultyName = row.querySelector('.faculty-name').textContent
+            const departmentName = row.querySelector('.department-name').textContent
+            const programmeName = row.querySelector('.programme-name').textContent;
+
+
+            editStudentId.value = studentId;
+            editStudentName.value = studentName;
+
+            loadEditAcademicYears().then(() => {
+                const academicYearOption = Array.from(editAcademicYear.options).find(option => option.text === academicYear);
+                if (academicYearOption) {
+                    editAcademicYear.value = academicYearOption.value;
+                }
+            });
+
+            loadEditFaculties().then(() => {
+                const facultyOption = Array.from(editFaculty.options).find(option => option.text === facultyName);
+                if (facultyOption) {
+                    editFaculty.value = facultyOption.value;
+                }
+            });
+
+            loadEditDepartments().then(() => {
+                const departmentOption = Array.from(editDepartment.options).find(option => option.text === departmentName);
+                if (departmentOption) {
+                    editDepartment.value = departmentOption.value;
+                }
+            });
+
+            loadEditProgrammes().then(() => {
+                const programmeOption = Array.from(editProgramme.options).find(option => option.text === programmeName);
+                if (programmeOption) {
+                    editProgramme.value = programmeOption.value;
+                }
+            });
+
+            $(editModal).modal('show');
+        }
+    });
+}
+
+
+
 
 // Initial call to load faculties when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", async function () {
@@ -331,6 +454,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     loadDepartments()
     loadProgrammes();
     loadAcademicYears();
+    showEditForm();
 
 
     try {
@@ -344,12 +468,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             students.forEach(student => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${student.studentId}</td>
-                    <td>${student.studentName}</td>
-                    <td>${student.academicYear.academicYear}</td>
-                    <td>${student.faculty.facultyName}</td>
-                    <td>${student.department.departmentName}</td>
-                    <td>${student.programme.programmeName}</td>
+                    <td class="student-id">${student.studentId}</td>
+                    <td class="student-name">${student.studentName}</td>
+                    <td class="academic-year">${student.academicYear.academicYear}</td>
+                    <td class="faculty-name">${student.faculty.facultyName}</tdclass-faculty-id>
+                    <td class="department-name">${student.department.departmentName}</td>
+                    <td class="programme-name">${student.programme.programmeName}</td>
                     <td>${student.dateAdded}</td>
                     <td>${student.dateEdited}</td>
                     <td>

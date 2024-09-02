@@ -36,6 +36,11 @@
   </style>
 </head>
 <body>
+<!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
 <!--======== HEADER STARTS HERE ========== -->
 <!--======== HEADER STARTS HERE ========== -->
 <!-- Header -->
@@ -93,14 +98,7 @@
             <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
           </div>
         </div>
-        <div class="dropdown">
-          <a href="#reportMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-            <img src="../static/images/report.png" alt="Certificate">Report</a>
-          <div id="reportMenu" class="collapse">
-            <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="userActivityReportButton">User Activity</a>
-            <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="tableStatsReportButton">Table Statistics</a>
-          </div>
-        </div>
+        <a href="/user-activity" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/report.png" alt="report">Report</a>
       </div>
     </div>
   </div>

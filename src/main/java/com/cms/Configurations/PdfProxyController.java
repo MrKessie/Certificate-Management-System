@@ -1,4 +1,4 @@
-package com.cms.SecurityConfiguration;
+package com.cms.Configurations;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

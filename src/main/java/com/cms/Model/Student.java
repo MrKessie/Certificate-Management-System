@@ -41,8 +41,6 @@ public class Student {
     @JsonIgnore
     private List<Certificate> certificates;
 
-
-
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -54,6 +52,10 @@ public class Student {
     LocalDateTime dateEdited;
 
     public Student(String studentName, String programmeName, String departmentName, String academicYear) {
+    }
+
+    public Student(int studentId) {
+        this.studentId = studentId;
     }
 
     public Student() {

@@ -63,4 +63,25 @@ public class UserService {
     public long totalUsers() {
         return userRepository.count();
     }
+
+    public List<String> getOnlineUsersByRole(String role) {
+        return userSessions.entrySet().stream()
+                .filter(entry -> userRepository.findById(entry.getKey())
+                        .map(user -> user.getRole().equals(role))
+                        .orElse(false))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public void userConnected(String userId, String sessionId) {
+        userSessions.put(userId, sessionId);
+    }
+
+    public void userDisconnected(String userId) {
+        userSessions.remove(userId);
+    }
+
+    public boolean isUserOnline(String userId) {
+        return userSessions.containsKey(userId);
+    }
 }

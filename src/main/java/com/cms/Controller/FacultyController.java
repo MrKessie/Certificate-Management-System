@@ -4,14 +4,14 @@ package com.cms.Controller;
 import com.cms.Model.Faculty;
 import com.cms.Model.User;
 import com.cms.Repository.FacultyRepository;
-import com.cms.Service.DepartmentImportResult;
-import com.cms.Service.FacultyImportResult;
-import com.cms.Service.FacultyService;
+import com.cms.Service.*;
 import com.cms.UpdateRequest.FacultyUpdateRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
@@ -30,6 +31,12 @@ public class FacultyController {
 
     @Autowired
     FacultyRepository facultyRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserActivityService userActivityService;
 
     //=============METHOD TO SHOW FACULTY ALL PAGE=============//
     @GetMapping("/faculty-all")
@@ -61,22 +68,41 @@ public class FacultyController {
         return "faculty-edit";
     }
 
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findById(Integer.parseInt(username));
+    }
+
 
 
     //=============METHOD TO ADD FACULTY=============//
     @PostMapping("/add")
     public ResponseEntity<String> addFaculty(@RequestParam int facultyId, @RequestParam String facultyName) {
-        if (facultyService.existByFacultyId(facultyId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Faculty ID already exists.");
+        User currentUser = getCurrentUser();
+        try {
+
+            if (facultyService.existByFacultyId(facultyId)) {
+                userActivityService.logActivity(currentUser, "ADD_FACULTY_FAILED",
+                        "Attempted to add existing faculty: " + facultyName);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Faculty ID already exists.");
+            }
+
+//        int userId = Integer.parseInt(principal.getName());
+            Faculty faculty = facultyService.addFaculty(facultyId, facultyName);
+
+            if (faculty == null) {
+                userActivityService.logActivity(currentUser, "ADD_FACULTY_ERROR",
+                        "Error occurred while adding faculty: " + facultyName);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+            }
+
+            userActivityService.logActivity(currentUser, "ADD_FACULTY_SUCCESS",
+                    "Added new faculty: " + facultyName);
+            return ResponseEntity.ok("Faculty added successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
-        Faculty faculty = facultyService.addFaculty(facultyId,facultyName);
-
-        if (faculty == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
-        }
-
-        return ResponseEntity.ok("Faculty added successfully!");
     }
 
 
@@ -99,13 +125,29 @@ public class FacultyController {
     //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-faculties")
     public ResponseEntity<?> importFaculties(@RequestParam("file") MultipartFile file) throws IOException {
-        FacultyImportResult result = facultyService.importFaculty(file);
-
+        User currentUser = getCurrentUser();
         Map<String, Object> response = new HashMap<>();
+
+        try{
+        FacultyImportResult result = facultyService.importFaculty(file);
+        userActivityService.logActivity(currentUser, "IMPORT_FACULTY_START",
+                "Started importing faculties from file: " + file.getOriginalFilename());
+
         response.put("addedCount", result.getAddedFaculties().size());
         response.put("notAddedFaculties", result.getNotAddedFaculties());
+            userActivityService.logActivity(currentUser, "IMPORT_FACULTY_SUCCESS",
+                    String.format("Successfully imported faculties. Added: %d, Not added: %d",
+                            result.getAddedFaculties().size(),
+                            result.getNotAddedFaculties().size()));
 
         return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            userActivityService.logActivity(currentUser, "IMPORT_FACULTY_ERROR",
+                    "Error occurred while importing faculties: " + e.getMessage());
+
+            response.put("error", "An error occurred while importing faculties: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 
@@ -122,31 +164,16 @@ public class FacultyController {
     //=============METHOD TO DELETE ALL FACULTY BY ID=============//
     @DeleteMapping("/delete/{facultyId}")
     public ResponseEntity<String> deleteFaculty(@PathVariable int facultyId) {
+        User currentUser = getCurrentUser();
         if (facultyService.existByFacultyId(facultyId)) {
             facultyService.deleteFaculty(facultyId);
+
+            userActivityService.logActivity(currentUser, "DELETE_FACULTY_SUCCESS",
+                    "Deleted faculty with ID: " + facultyId);
             return ResponseEntity.ok("Faculty deleted successfully!");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Faculty not found.");
-        }
-    }
-
-    @GetMapping("/edit/{facultyId}")
-    public ResponseEntity<Faculty> getFacultyById(@PathVariable("facultyId") int facultyId) {
-        Faculty faculty = facultyService.findById(facultyId);
-        if (faculty != null) {
-            return ResponseEntity.ok(faculty);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-
-    @PutMapping("/update/{facultyId}")
-    public ResponseEntity<String> updateFaculty(@PathVariable("facultyId") int facultyId, @RequestBody FacultyUpdateRequest request) {
-        if (facultyService.existByFacultyId(facultyId)) {
-            facultyService.updateFaculty(facultyId, request.getFacultyName());
-            return ResponseEntity.ok("Faculty updated successfully!");
-        } else {
+            userActivityService.logActivity(currentUser, "DELETE_FACULTY_FAILED",
+                    "Attempted to delete non-existent faculty ID: " + facultyId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Faculty not found.");
         }
     }
@@ -165,6 +192,29 @@ public class FacultyController {
             newFaculties.add(simplifiedFaculty);
         }
         return newFaculties;
+    }
+
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateFaculty(@RequestBody Faculty faculty) {
+        User currentUser = getCurrentUser();
+        try {
+            Faculty updatedFaculty = facultyService.updateFaculty(faculty);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Faculty updated successfully");
+            response.put("data", updatedFaculty);
+            userActivityService.logActivity(currentUser, "UPDATE_FACULTY_SUCCESS",
+                    "Updated faculty: " + updatedFaculty.getFacultyName());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Error updating faculty: " + e.getMessage());
+            userActivityService.logActivity(currentUser, "UPDATE_FACULTY_ERROR",
+                    "Error updating faculty: " + faculty.getFacultyName() + ". Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 }

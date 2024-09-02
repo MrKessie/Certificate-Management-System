@@ -2,6 +2,7 @@ package com.cms.Service;
 
 import com.cms.Model.Department;
 import com.cms.Model.Faculty;
+import com.cms.Model.User;
 import com.cms.Repository.FacultyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.poi.ss.usermodel.*;
@@ -21,11 +22,18 @@ public class FacultyService {
     @Autowired
     FacultyRepository facultyRepository;
 
+    @Autowired
+    UserActivityService userActivityService;
+
+    @Autowired
+    UserService userService;
+
     //=============METHOD TO ADD FACULTY=============//
     public Faculty addFaculty(int facultyId, String facultyName) {
-        if (facultyRepository.existsByFacultyId(facultyId)) {
-            return null;
-        }
+//            User user = userService.findById(userId);
+            if (facultyRepository.existsByFacultyId(facultyId)) {
+                return null;
+            }
 
         Faculty faculty = new Faculty();
         faculty.setFacultyId(facultyId);
@@ -34,7 +42,10 @@ public class FacultyService {
         faculty.setDateEdited(LocalDateTime.now());
 
         facultyRepository.save(faculty);
+
+
         return faculty;
+
     }
 
 
@@ -128,6 +139,17 @@ public class FacultyService {
 
     public long totalFaculties() {
         return facultyRepository.count();
+    }
+
+
+    public Faculty updateFaculty(Faculty faculty) {
+        Faculty editedFaculty = facultyRepository.findById(faculty.getFacultyId())
+                .orElseThrow(() -> new RuntimeException("Faculty not found"));
+
+        faculty.setFacultyName(faculty.getFacultyName());
+        faculty.setDateEdited(LocalDateTime.now());
+
+        return facultyRepository.save(faculty);
     }
 
 }

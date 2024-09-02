@@ -1,4 +1,4 @@
-package com.cms.SecurityConfiguration;
+package com.cms.Configurations;
 
 import com.cms.ActivityLogger;
 import org.springframework.beans.factory.annotation.Autowired;

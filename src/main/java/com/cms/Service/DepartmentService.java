@@ -144,5 +144,23 @@ public class DepartmentService {
         return departmentRepository.count();
     }
 
+    public Department updateDepartment(Department department) {
+        Department editedDepartment = departmentRepository.findById(department.getDepartmentId())
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+        editedDepartment.setDepartmentName(department.getDepartmentName());
+
+        if (department.getFaculty() != null && department.getFaculty().getFacultyId() != 0) {
+            Faculty faculty = facultyRepository.findById(department.getFaculty().getFacultyId())
+                    .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + department.getFaculty().getFacultyId()));
+            editedDepartment.setFaculty(faculty);
+        } else {
+            throw new RuntimeException("Invalid faculty data provided");
+        }
+
+        editedDepartment.setDateEdited(LocalDateTime.now());
+
+        return departmentRepository.save(editedDepartment);
+    }
+
 }
 

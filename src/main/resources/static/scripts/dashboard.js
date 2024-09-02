@@ -1,5 +1,8 @@
 console.log("Dashboard script loaded successfully")
 
+// Hide preloader when the page is fully loaded
+
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar-wrapper');
     const mainContent = document.getElementById('main-content');
@@ -26,21 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching user info:', error);
         });
 });
-
-
-// document.getElementById('userActivityReportButton').addEventListener('click', function() {
-//     const userId = document.getElementById('currentUserId').value;
-//     console.log("current user id: " + userId);
-//     window.open(`/reports/user-activity/pdf?userId=${userId}`, '_blank');
-// });
-
-
-// document.getElementById('userActivityReportButton').addEventListener('click', function(e) {
-//     e.preventDefault();
-//     const userId = document.getElementById('currentUserId').value;
-//     this.href = `/reports/user-activity/pdf?userId=${userId}`;
-//     window.open(this.href, '_blank');
-// });
 
 document.getElementById('userActivityReportButton').addEventListener('click', function() {
     fetch('/reports/user-activity/pdf', {
@@ -82,3 +70,4 @@ document.getElementById('tableStatsReportButton').addEventListener('click', func
 function getCurrentUserId() {
     return document.getElementById('currentUserId').value;
 }
+

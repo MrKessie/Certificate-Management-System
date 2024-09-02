@@ -99,6 +99,7 @@ document.getElementById('addFacultyForm').addEventListener('submit', async funct
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    showEditForm();s
         try {
             const response = await fetch('/faculty/all');
             if (response.ok) {
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${faculty.dateAdded}</td>
                     <td>${faculty.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-info">Edit</button>
                     <button class="btn btn-sm btn-danger" data-faculty-id="${faculty.facultyId}">Delete</button>
                     </td>
                 `;
@@ -205,51 +206,51 @@ function attachDeleteListeners() {
 }
 
 
-document.getElementById('editFacultyForm').addEventListener('submit', async (event) => {
-    event.preventDefault(); // Prevent default form submission
-
-    const facultyId = document.getElementById('editFacultyId').value;
-    const facultyName = document.getElementById('editFacultyName').value;
-
-    try {
-        const response = await fetch(`/faculties/update/${facultyId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ facultyName })
-        });
-
-        if (response.ok) {
-            await Swal.fire({
-                icon: 'success',
-                title: 'Updated',
-                text: 'Faculty details updated successfully!'
-            });
-
-            // Hide the modal
-            const myModalEl = document.getElementById('editFacultyModal');
-            const modal = bootstrap.Modal.getInstance(myModalEl);
-            modal.hide();
-
-            // Optionally, refresh the table or update the specific row
-            location.reload(); // Reload the page or update the table row dynamically
-        } else {
-            const errorText = await response.text();
-            await Swal.fire({
-                icon: 'error',
-                title: 'Update Error',
-                text: errorText || 'There was an error updating the faculty. Please try again.'
-            });
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Submission Error',
-            text: 'There was an error with the submission. Please try again.'
-        });
-    }
-});
+// document.getElementById('editFacultyForm').addEventListener('submit', async (event) => {
+//     event.preventDefault(); // Prevent default form submission
+//
+//     const facultyId = document.getElementById('editFacultyId').value;
+//     const facultyName = document.getElementById('editFacultyName').value;
+//
+//     try {
+//         const response = await fetch(`/faculties/update/${facultyId}`, {
+//             method: 'PUT',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({ facultyName })
+//         });
+//
+//         if (response.ok) {
+//             await Swal.fire({
+//                 icon: 'success',
+//                 title: 'Updated',
+//                 text: 'Faculty details updated successfully!'
+//             });
+//
+//             // Hide the modal
+//             const myModalEl = document.getElementById('editFacultyModal');
+//             const modal = bootstrap.Modal.getInstance(myModalEl);
+//             modal.hide();
+//
+//             // Optionally, refresh the table or update the specific row
+//             location.reload(); // Reload the page or update the table row dynamically
+//         } else {
+//             const errorText = await response.text();
+//             await Swal.fire({
+//                 icon: 'error',
+//                 title: 'Update Error',
+//                 text: errorText || 'There was an error updating the faculty. Please try again.'
+//             });
+//         }
+//     } catch (error) {
+//         await Swal.fire({
+//             icon: 'error',
+//             title: 'Submission Error',
+//             text: 'There was an error with the submission. Please try again.'
+//         });
+//     }
+// });
 
 function attachEditListeners() {
     document.querySelectorAll('.btn-info').forEach(button => {
@@ -371,5 +372,66 @@ function importFaculties() {
 }
 
 
+function showEditForm() {
+    const facultyTable = document.getElementById('facultyTableBody');
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const editFacultyId = document.getElementById('editFacultyId');
+    const editFacultyName = document.getElementById('editFacultyName');
 
+    facultyTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-info')) {
+            const row = e.target.closest('tr');
+            const facultyId = row.querySelector('.faculty-id').textContent;
+            const facultyName = row.querySelector('td:nth-child(2)').textContent;
+
+            editFacultyId.value = facultyId;
+            editFacultyName.value = facultyName;
+
+            $(editModal).modal('show');
+        }
+    });
+}
+
+function submitEditForm() {
+    const formData = {
+        facultyId: document.getElementById('editFacultyId').value,
+        facultyName: document.getElementById('editFacultyName').value
+    };
+
+    fetch('/faculty/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Faculty Update',
+                    text: data.message
+                });
+                location.reload(); // Reload the page to show updated data
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Update Error',
+                    text: 'Error updating Faculty:' + data.message
+                });
+            }
+        })
+        .catch(async (error) => {
+            console.error('Error:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: 'There was an error with the submission. Please try again.'
+            });
+        });
+
+    $(editModal).modal('hide');
+}
 

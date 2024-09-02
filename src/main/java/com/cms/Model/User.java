@@ -115,4 +115,11 @@ public class User {
     public void setDateEdited(LocalDateTime dateEdited) {
         this.dateEdited = dateEdited;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                '}';
+    }
 }

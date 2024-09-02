@@ -20,10 +20,16 @@ public class Faculty {
     @CreationTimestamp
     private LocalDateTime dateAdded;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = true)
     @UpdateTimestamp
     private LocalDateTime dateEdited;
 
+    public Faculty() {
+    }
+
+    public Faculty(int facultyId) {
+        this.facultyId = facultyId;
+    }
 
     public int getFacultyId() {
         return facultyId;

@@ -138,4 +138,38 @@ public class ProgrammeService {
     public long totalProgrammes() {
         return programmeRepository.count();
     }
+
+
+    public Programme updateProgramme(Programme programme) {
+        Programme editedProgramme = programmeRepository.findById(programme.getProgrammeId())
+                .orElseThrow(() -> new RuntimeException("Programme not found"));
+
+        // Update the programme name
+        editedProgramme.setProgrammeName(programme.getProgrammeName());
+
+        // Update the faculty if provided
+        if (programme.getFaculty() != null && programme.getFaculty().getFacultyId() != 0) {
+            Faculty faculty = facultyRepository.findById(programme.getFaculty().getFacultyId())
+                    .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + programme.getFaculty().getFacultyId()));
+            editedProgramme.setFaculty(faculty);
+        } else {
+            throw new RuntimeException("Invalid faculty data provided");
+        }
+
+        // Update the department if provided
+        if (programme.getDepartment() != null && programme.getDepartment().getDepartmentId() != 0) {
+            Department department = departmentRepository.findById(programme.getDepartment().getDepartmentId())
+                    .orElseThrow(() -> new RuntimeException("Department not found with id: " + programme.getDepartment().getDepartmentId()));
+            editedProgramme.setDepartment(department);
+        } else {
+            throw new RuntimeException("Invalid department data provided");
+        }
+
+        // Update the dateEdited
+        editedProgramme.setDateEdited(LocalDateTime.now());
+
+        // Save the updated programme
+        return programmeRepository.save(editedProgramme);
+    }
+
 }

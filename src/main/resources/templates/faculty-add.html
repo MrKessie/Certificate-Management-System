@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
 </head>
 <body>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
+
 <!--======== HEADER STARTS HERE ========== -->
 <!--======== HEADER STARTS HERE ========== -->
 <!-- Header -->
@@ -69,14 +74,7 @@
                         <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
                     </div>
                 </div>
-                <div class="dropdown">
-                    <a href="#reportMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-                        <img src="../static/images/report.png" alt="Certificate">Report</a>
-                    <div id="reportMenu" class="collapse">
-                        <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="userActivityReportButton">User Activity</a>
-                        <a href="#" target="_blank" class="list-group-item list-group-item-action bg-dark text-white" id="tableStatsReportButton">Table Statistics</a>
-                    </div>
-                </div>
+                <a href="/user-activity" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/report.png" alt="report">Report</a>
             </div>
         </div>
     </div>
@@ -154,14 +152,14 @@
                                 </thead>
                                 <tbody id="facultyTableBody">
                                 <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-    <!--                            <tr>-->
                                 <tr th:each="faculty : ${faculties}">
                                     <td class="faculty-id" th:text="${faculty.facultyId}">Faculty ID</td>
                                     <td th:text="${faculty.facultyName}">Faculty Name</td>
                                     <td th:text="${faculty.dateAdded}">Date Added</td>
                                     <td th:text="${faculty.dateEdited}">Date Edited</td>
                                     <td>
-                                        <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#editModal">Edit</button>
+                                        <button class="btn btn-sm btn-info">Edit</button>
+<!--                                        <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#editModal">Edit</button>-->
                                         <button class="btn btn-sm btn-danger">Delete</button>
                                     </td>
                                 </tr>
@@ -171,6 +169,37 @@
                         </div>
                         <!-- Pagination handled by DataTables -->
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Faculty Modal -->
+    <div class="modal fade" id="editModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Faculty</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="form-group">
+                            <label for="editFacultyId">Faculty ID</label>
+                            <input type="text" class="form-control" id="editFacultyId" name="facultyId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="editFacultyName">Faculty Name</label>
+                            <input type="text" class="form-control" id="editFacultyName" name="facultyName" required>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="submitEditForm()">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
