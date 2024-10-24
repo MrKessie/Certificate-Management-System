@@ -125,10 +125,6 @@
                 <input type="text" class="form-control" id="verifyStudentId" name="studentId" required>
               </div>
               <div class="form-group">
-                <label for="userId">User ID:</label>
-                <input type="text" class="form-control" id="userId" name="userId" required>
-              </div>
-              <div class="form-group">
                 <label for="employer">Employer Name:</label>
                 <input type="text" class="form-control" id="employer" name="employer" required>
               </div>
@@ -163,53 +159,6 @@
       </div>
     </div>
   </div>
-
-  <!--  <div class="container mt-5">-->
-  <!--    <div class="card form-container" id="getCertificateFormContainer">-->
-  <!--      <div class="card-body">-->
-  <!--        <h2 class="card-title">Verify Certificate</h2>-->
-  <!--        <form id="getCertificateForm">-->
-  <!--          <div class="form-group">-->
-  <!--            <label for="verifyStudentId">Student ID:</label>-->
-  <!--            <input type="text" class="form-control" id="verifyStudentId" name="studentId" required>-->
-  <!--          </div>-->
-  <!--          <div class="form-group">-->
-  <!--            <label for="userId">User ID:</label>-->
-  <!--            <input type="text" class="form-control" id="userId" name="userId" required>-->
-  <!--          </div>-->
-  <!--          <div class="form-group">-->
-  <!--            <label for="employer">Employer Name:</label>-->
-  <!--            <input type="text" class="form-control" id="employer" name="employer" required>-->
-  <!--          </div>-->
-  <!--          <div class="form-group">-->
-  <!--            <label for="organization">Organization:</label>-->
-  <!--            <input type="text" class="form-control" id="organization" name="organization" required>-->
-  <!--          </div>-->
-  <!--          <div>-->
-  <!--            <div class="form-group">-->
-  <!--              <label for="signatureCanvas">Signature:</label>-->
-  <!--              <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000;"></canvas>-->
-  <!--              <button type="button" id="clearSignature">Clear Signature</button>-->
-  <!--            </div>-->
-  <!--          </div>-->
-  <!--          <button type="submit" class="btn btn-primary" id="getBtn">Verify Certificate</button>-->
-  <!--          <button type="button" class="btn btn-secondary" id="showVerifyForm">Bulk Verification</button>-->
-  <!--        </form>-->
-  <!--        <div id="errorGet" class="error"></div>-->
-  <!--        <div id="resultsGet" class="results hidden">-->
-  <!--          <h2>Results:</h2>-->
-  <!--          <p><strong>Status:</strong> <span id="statusGet"></span></p>-->
-  <!--          <p><strong>Student Id:</strong> <span id="studentIdGet"></span></p>-->
-  <!--          <p><strong>Name:</strong> <span id="nameGet"></span></p>-->
-  <!--          <p><strong>Programme:</strong> <span id="programmeGet"></span></p>-->
-  <!--          <p><strong>Department:</strong> <span id="departmentGet"></span></p>-->
-  <!--          <p><strong>Academic Year:</strong> <span id="academicYearGet"></span></p>-->
-  <!--          <p><strong>Class:</strong> <span id="classHonoursGet"></span></p>-->
-  <!--          <a type="submit" id="viewCertificateGet" target="_blank">View Certificate</a>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
 
   <div class="card form-container mt-4" id="verifyCertificateFormContainer" style="display: none;">
     <div class="card-body">
@@ -266,6 +215,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashboard.js"></script>
 <script src="../static/scripts/certificate-verify.js"></script>
-
+<script>
+  window.addEventListener('load', function() {
+    document.getElementById('preloader').style.display = 'none';
+  });
+</script>
 </body>
 </html>

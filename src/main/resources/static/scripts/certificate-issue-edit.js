@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${certificateIssued.dateIssued}</td>
                     <td>${certificateIssued.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-certificateIssue-id="${certificateIssued.issueId}">Delete</button>
+                    <button class="btn btn-sm btn-info"><i class="la la-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger" data-certificateIssue-id="${certificateIssued.issueId}"><i class="la la-trash-o"></button>
                     </td>
                 `;
                 tableBody.appendChild(row);

@@ -1,7 +1,6 @@
 package com.cms.Controller;
 
 import com.cms.Model.AcademicYear;
-import com.cms.Model.Faculty;
 import com.cms.Model.User;
 import com.cms.Repository.AcademicYearRepository;
 import com.cms.Service.AcademicYearImportResult;
@@ -40,12 +39,12 @@ public class AcademicYearController {
 
 
     //=============METHOD TO SHOW ACADEMIC YEAR ADD PAGE=============//
-    @GetMapping("/academic-year-add")
+    @GetMapping
     public String showAddAcademicYearPage(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("academicYears", academicYearService.academicYearList());
-        return "academic-year-add";
+        return "academic-year";
     }
 
     private User getCurrentUser() {

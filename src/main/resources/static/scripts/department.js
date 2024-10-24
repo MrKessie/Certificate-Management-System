@@ -16,6 +16,17 @@ document.getElementById('cancelImport').addEventListener('click', function() {
     document.getElementById('addForm').style.display = 'block';
 });
 
+function editDepartment(departmentId, departmentName, facultyId) {
+    // Populate the form fields with the passed data
+    document.getElementById('editDepartmentId').value = departmentId;
+    document.getElementById('editDepartmentName').value = departmentName;
+    document.getElementById('editFaculty').value = facultyId;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'));
+    editModal.show();
+}
+
 
 document.getElementById('departmentForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -101,42 +112,42 @@ document.getElementById('departmentForm').addEventListener('submit', async funct
 document.addEventListener('DOMContentLoaded', async () => {
     loadFaculties();
     showEditForm();
-    try {
-        const response = await fetch('/department/all');
-        if (response.ok) {
-            const departments = await response.json();
-
-            const tableBody = document.getElementById('departmentTableBody');
-            tableBody.innerHTML = ''; // Clear any existing rows
-
-            departments.forEach(department => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="department-id">${department.departmentId}</td>
-                    <td>${department.departmentName}</td>
-                    <td>${department.faculty.facultyName}</td>
-                    <td>${department.dateAdded}</td>
-                    <td>${department.dateEdited}</td>
-                    <td>
-                    <button class="btn btn-sm btn-info">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-department-id="${department.departmentId}">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Attach delete event listeners after populating the table
-            attachDeleteListeners();
-        } else {
-            throw new Error('Failed to fetch department data');
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Data Fetch Error',
-            text: 'There was an error fetching department data. Please try again.'
-        });
-    }
+    // try {
+    //     const response = await fetch('/department/all');
+    //     if (response.ok) {
+    //         const departments = await response.json();
+    //
+    //         const tableBody = document.getElementById('departmentTableBody');
+    //         tableBody.innerHTML = ''; // Clear any existing rows
+    //
+    //         departments.forEach(department => {
+    //             const row = document.createElement('tr');
+    //             row.innerHTML = `
+    //                 <td class="department-id">${department.departmentId}</td>
+    //                 <td>${department.departmentName}</td>
+    //                 <td>${department.faculty.facultyName}</td>
+    //                 <td>${department.dateAdded}</td>
+    //                 <td>${department.dateEdited}</td>
+    //                 <td>
+    //                 <button class="btn btn-sm btn-info"><i class="la la-pencil"></i></button>
+    //                 <button class="btn btn-sm btn-danger" data-department-id="${department.departmentId}"><i class="la la-trash-o"></i></button>
+    //                 </td>
+    //             `;
+    //             tableBody.appendChild(row);
+    //         });
+    //
+    //         // Attach delete event listeners after populating the table
+    //         attachDeleteListeners();
+    //     } else {
+    //         throw new Error('Failed to fetch department data');
+    //     }
+    // } catch (error) {
+    //     await Swal.fire({
+    //         icon: 'error',
+    //         title: 'Data Fetch Error',
+    //         text: 'There was an error fetching department data. Please try again.'
+    //     });
+    // }
 });
 
 

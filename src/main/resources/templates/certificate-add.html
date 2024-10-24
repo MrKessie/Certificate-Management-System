@@ -274,24 +274,6 @@
                                 </tr>
                                 </thead>
                                 <tbody id="certificateTableBody">
-                                <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
-    <!--                            <tr th:each="certificate : ${certificates}">-->
-    <!--                                <td class="faculty-id" th:text="${certificate.certificateId}">ID</td>-->
-    <!--                                <td th:text="${certificate.studentId.studentId}">Student ID</td>-->
-    <!--                                <td th:text="${certificate.studentName}">Student Name</td>-->
-    <!--                                <td th:text="${certificate.academicYear.academicYear}">Academic Year</td>-->
-    <!--                                <td th:text="${certificate.programme.programmeName}">Programme</td>-->
-    <!--                                <td th:text="${certificate.department.departmentName}">Department</td>-->
-    <!--                                <td th:text="${certificate.graduateClass}">Class</td>-->
-    <!--                                <td th:text="${certificate.certificatePath}">Certificate Path</td>-->
-    <!--                                <td th:text="${certificate.dateAdded}">Date Added</td>-->
-    <!--                                <td th:text="${certificate.dateEdited}">Date Edited</td>-->
-    <!--                                <td>-->
-    <!--                                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>-->
-    <!--                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteCertificate(' + ${certificate.certificateId} + ')'">Delete</button>-->
-    <!--                                </td>-->
-    <!--                            </tr>-->
-                                <!-- Repeat rows as necessary -->
                                 </tbody>
                             </table>
                         </div>
@@ -310,5 +292,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/dashboard.js"></script>
 <script src="../static/scripts/certificate.js"></script>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById('preloader').style.display = 'none';
+    });
+</script>
 </body>
 </html>

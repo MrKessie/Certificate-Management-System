@@ -31,7 +31,6 @@ public class AcademicYearService {
         if  (academicYearRepository.existsByAcademicYear(year)) {
             return null;
         }
-
         AcademicYear academicYear = new AcademicYear();
         academicYear.setAcademicYear(year);
         academicYearRepository.save(academicYear);

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Controller
 public class DashboardController {
 
@@ -49,7 +52,12 @@ public class DashboardController {
         model.addAttribute("totalIssuedCertificates", certificateIssueService.totalCertificatesIssued());
         model.addAttribute("totalCertificates", certificateService.totalCertificates());
 
-        return "admin-dashboard";
+        LocalDate currentDate = LocalDate.now();
+        // Format the date as needed
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+        model.addAttribute("currentDate", formattedDate);
+
+        return "admin-homepage";
     }
 
     @GetMapping("/client/dashboard")

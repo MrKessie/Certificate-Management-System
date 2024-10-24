@@ -343,8 +343,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <td>${programme.dateAdded}</td>
                     <td>${programme.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-programme-id="${programme.programmeId}">Delete</button>
+                    <button class="btn btn-sm btn-info"><i class="la la-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger" data-programme-id="${programme.programmeId}"><i class="la la-trash-o"></i></button>
                     </td>
                 `;
                 tableBody.appendChild(row);

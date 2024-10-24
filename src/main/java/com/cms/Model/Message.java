@@ -13,18 +13,21 @@ import java.time.LocalDateTime;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int messageId;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
+    @JoinColumn(name = "sender_id", foreignKey = @ForeignKey(name = "fk_message_sender",
+            foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
+    @JoinColumn(name = "receiver_id", foreignKey = @ForeignKey(name = "fk_message_receiver",
+            foreignKeyDefinition = "FOREIGN KEY (receiver_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
     private User receiver;
 
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "id")
+    @JoinColumn(name = "conversation_id", foreignKey = @ForeignKey(name = "fk_message_conversation",
+            foreignKeyDefinition = "FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id) ON UPDATE CASCADE ON DELETE CASCADE"))
     private Conversation conversation;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +38,7 @@ public class Message {
     private String content;
 
     @Column(name = "timestamp")
-    private Timestamp timestamp;
+    private LocalDateTime sentAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -45,19 +48,18 @@ public class Message {
     private boolean isRead;
 
     public Message() {
-        this.timestamp = new Timestamp(System.currentTimeMillis());
+        this.sentAt = LocalDateTime.now();
         this.status = MessageStatus.SENT;
         this.isRead = false;
     }
 
 
-
-    public int getId() {
-        return id;
+    public int getMessageId() {
+        return messageId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
     }
 
     public User getSender() {
@@ -100,12 +102,12 @@ public class Message {
         this.content = content;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public LocalDateTime getSentAt() {
+        return sentAt;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setSentAt(LocalDateTime sentAt) {
+        this.sentAt = sentAt;
     }
 
     public MessageStatus getStatus() {

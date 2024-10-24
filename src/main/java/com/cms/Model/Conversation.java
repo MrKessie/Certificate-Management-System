@@ -1,5 +1,6 @@
 package com.cms.Model;
 
+import com.cms.Enum.ConversationStatus;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -10,34 +11,39 @@ import java.time.LocalDateTime;
 public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int conversationId;
 
     @ManyToOne
-    @JoinColumn(name = "initiator_id", referencedColumnName = "id")
-    private User initiator;  // The user who started the conversation (could be a student or employer)
+    @JoinColumn(name = "initiator_id", foreignKey = @ForeignKey(name = "fk_conversation_initiator",
+            foreignKeyDefinition = "FOREIGN KEY (initiator_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    private User initiator;
 
     @ManyToOne
-    @JoinColumn(name = "responder_id", referencedColumnName = "id")
-    private User responder;  // The user who responded to the conversation (could be an admin)
+    @JoinColumn(name = "responder_id", foreignKey = @ForeignKey(name = "fk_conversation_responder",
+            foreignKeyDefinition = "FOREIGN KEY (responder_id) REFERENCES user(user_id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    private User responder;
+
+    @Enumerated(EnumType.STRING)
+    private ConversationStatus status;
 
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private LocalDateTime startedAt;
 
     @Column(name = "is_active")
     private boolean isActive;
 
     // Getters and Setters
     public Conversation() {
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.startedAt = LocalDateTime.now();
         this.isActive = true;
     }
 
-    public int getId() {
-        return id;
+    public int getConversationId() {
+        return conversationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setConversationId(int conversationId) {
+        this.conversationId = conversationId;
     }
 
     public User getInitiator() {
@@ -56,12 +62,20 @@ public class Conversation {
         this.responder = responder;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public ConversationStatus getStatus() {
+        return status;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setStatus(ConversationStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
     }
 
     public boolean isActive() {

@@ -146,21 +146,17 @@
                 <label for="getStudentId">Student ID:</label>
                 <input type="text" class="form-control" id="getStudentId" name="studentId" required>
               </div>
-<!--              <div class="form-group">-->
-<!--                <label for="userId">User ID:</label>-->
-<!--                <input type="text" class="form-control" id="userId" name="userId" required>-->
-<!--              </div>-->
               <div class="form-group">
                 <label for="collectorName">Collector Name:</label>
                 <input type="text" class="form-control" id="collectorName" name="collectorName" required>
               </div>
               <button type="submit" class="btn btn-primary mt-3" id="getBtn">Get Certificate</button>
-              <button type="button" class="btn btn-secondary mt-3 ml-2" id="showVerifyForm">Bulk Verification</button>
+              <button type="button" class="btn btn-secondary mt-3 ml-2" id="showVerifyForm">Bulk Issue</button>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for="signatureCanvas">Signature:</label>
-                <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid #000; display: block; width: 100%;"></canvas>
+                <canvas id="signatureCanvas" width="400" height="130" style="border: 1px solid #000; display: block; width: 100%;"></canvas>
                 <button type="button" id="clearSignature" class="btn btn-sm btn-outline-secondary mt-2">Clear Signature</button>
               </div>
             </div>
@@ -191,7 +187,7 @@
           <input type="file" class="form-control-file" id="file" name="file" required>
         </div>
         <button type="submit" class="btn btn-primary">Get Certificate</button>
-        <button type="button" class="btn btn-secondary" id="showGetForm">Get Certificate</button>
+        <button type="button" class="btn btn-secondary" id="showGetForm">Single Issue</button>
       </form>
       <div id="errorVerify" class="alert alert-danger mt-3" style="display: none;"></div>
     </div>
@@ -238,6 +234,10 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script src="../static/scripts/dashboard.js"></script>
 <script src="../static/scripts/certificate-issue.js"></script>
-
+<script>
+  window.addEventListener('load', function() {
+    document.getElementById('preloader').style.display = 'none';
+  });
+</script>
 </body>
 </html>

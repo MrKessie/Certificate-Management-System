@@ -477,8 +477,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <td>${student.dateAdded}</td>
                     <td>${student.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-student-id="${student.studentId}">Delete</button>
+                    <button class="btn btn-sm btn-info"><i class="la la-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger" data-student-id="${student.studentId}"><i class="la la-trash-o"></i></button>
                     </td>
                 `;
                 tableBody.appendChild(row);

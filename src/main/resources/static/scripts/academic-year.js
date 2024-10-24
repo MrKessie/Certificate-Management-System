@@ -1,16 +1,16 @@
 console.log("Academic year Script is loaded successfully");
 
 // Show Import Form
-document.getElementById('showImportForm').addEventListener('click', function() {
-    document.getElementById('addForm').style.display = 'none';
-    document.getElementById('importForm').style.display = 'block';
-});
+// document.getElementById('showImportForm').addEventListener('click', function() {
+//     document.getElementById('addForm').style.display = 'none';
+//     document.getElementById('importForm').style.display = 'block';
+// });
 
 // Cancel Import
-document.getElementById('cancelImport').addEventListener('click', function() {
-    document.getElementById('addForm').style.display = 'block';
-    document.getElementById('importForm').style.display = 'none';
-});
+// document.getElementById('cancelImport').addEventListener('click', function() {
+//     document.getElementById('addForm').style.display = 'block';
+//     document.getElementById('importForm').style.display = 'none';
+// });
 
 // Populate Edit Form in Modal
 // function populateEditForm(id, year) {
@@ -38,105 +38,153 @@ $(document).ready(function() {
 
 
 //FUNCTION VALIDATE FORM CONTROLS AMD SUBMIT
-document.getElementById('academicYearForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+// document.getElementById('academicYearForm').addEventListener('submit', async function(event) {
+//     event.preventDefault();
+//
+//     // Get form data
+//     const academicYear = document.getElementById('academicYearInput').value;
+//     // const facultyName = document.getElementById('facultyName').value;
+//
+//     // Validate form data
+//     if (!academicYear) {
+//         await Swal.fire({
+//             icon: 'warning',
+//             title: 'Required Fields',
+//             text: 'All fields are required.'
+//         });
+//         return;
+//     }
+//
+//     // Prepare data to send
+//     const formData = new FormData();
+//     formData.append('academicYear', academicYear);
+//     // formData.append('facultyName', facultyName);
+//
+//     try {
+//         const response = await fetch('/academic-year/add', {
+//             method: 'POST',
+//             body: formData
+//         });
+//
+//         if (response.ok) {
+//             // Check response status or JSON if needed
+//             const result = await response.text(); // or response.json() if server returns JSON
+//
+//             // Handle response and display SweetAlert
+//             await Swal.fire({
+//                 icon: 'success',
+//                 title: 'Academic Year Added',
+//                 text: 'Academic Year has been added successfully!'
+//             });
+//
+//             // Optionally redirect or reset form
+//             document.getElementById('academicYearForm').reset(); // Reset form
+//             window.location.reload(); // Redirect if needed
+//         } else {
+//             const errorText = await response.text(); // or response.json() if server returns JSON
+//
+//             await Swal.fire({
+//                 icon: 'error',
+//                 title: 'Submission Error',
+//                 text: errorText || 'There was an error with the submission. Please try again.'
+//             });
+//         }
+//     } catch (error) {
+//         await Swal.fire({
+//             icon: 'error',
+//             title: 'Submission Error',
+//             text: 'There was an error with the submission. Please try again.'
+//         });
+//     }
+// });
 
-    // Get form data
-    const academicYear = document.getElementById('academicYearInput').value;
-    // const facultyName = document.getElementById('facultyName').value;
+// Function to add academic year
+async function addAcademicYear() {
+// document.getElementById('acadeicYearForm').addEventListener('submit', async function(event) {
+    const academicYearInput = document.getElementById('academicYearInput');
+    const academicYear = academicYearInput.value.trim();
 
-    // Validate form data
     if (!academicYear) {
         await Swal.fire({
-            icon: 'warning',
-            title: 'Required Fields',
-            text: 'All fields are required.'
+            icon: 'error',
+            title: 'Error',
+            text: 'Please enter an academic year.'
         });
         return;
     }
 
-    // Prepare data to send
-    const formData = new FormData();
-    formData.append('academicYear', academicYear);
-    // formData.append('facultyName', facultyName);
-
     try {
+        // Show loading state
+        Swal.fire({
+            title: 'Adding Academic Year',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Make API call to add academic year
         const response = await fetch('/academic-year/add', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `academicYear=${encodeURIComponent(academicYear)}`
         });
 
-        if (response.ok) {
-            // Check response status or JSON if needed
-            const result = await response.text(); // or response.json() if server returns JSON
-
-            // Handle response and display SweetAlert
-            await Swal.fire({
-                icon: 'success',
-                title: 'Academic Year Added',
-                text: 'Academic Year has been added successfully!'
-            });
-
-            // Optionally redirect or reset form
-            document.getElementById('academicYearForm').reset(); // Reset form
-            window.location.reload(); // Redirect if needed
-        } else {
-            const errorText = await response.text(); // or response.json() if server returns JSON
-
-            await Swal.fire({
-                icon: 'error',
-                title: 'Submission Error',
-                text: errorText || 'There was an error with the submission. Please try again.'
-            });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.text();
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Academic Year saved successfully.',
+            text: data
+        });
+
+        // Clear the input field
+        academicYearInput.value = '';
+        // Optionally, refresh the list of academic years or update the UI
     } catch (error) {
+        console.error('Error:', error);
         await Swal.fire({
             icon: 'error',
-            title: 'Submission Error',
-            text: 'There was an error with the submission. Please try again.'
+            title: 'Error',
+            text: 'An error occurred while adding the academic year. Please try again.'
         });
     }
+}
+
+
+// Event listener for the Save button
+document.getElementById('saveAcademicYear').addEventListener('click', addAcademicYear);
+
+// Event listener for the modal close button
+document.getElementById('closeModal').addEventListener('click', () => {
+    // Close the modal (assuming you're using Bootstrap)
+    $('#addAcademicYearModal').modal('hide');
 });
+
+// Function to handle Excel import (placeholder)
+async function importExcel() {
+    await Swal.fire({
+        icon: 'info',
+        title: 'Import Excel',
+        text: 'Excel import functionality is not implemented in this example.'
+    });
+}
+
+// Event listener for the Import (Excel) button
+document.getElementById('importExcel').addEventListener('click', importExcel);
 
 
 document.addEventListener('DOMContentLoaded', async () => {
     showEditForm()
     console.log('DOM content');
-    try {
-        const response = await fetch('/academic-year/all');
-        if (response.ok) {
-            const faculties = await response.json();
-
-            const tableBody = document.getElementById('academicYearTableBody');
-            tableBody.innerHTML = ''; // Clear any existing rows
-
-            faculties.forEach(academicYear => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="academic-year-id">${academicYear.id}</td>
-                    <td>${academicYear.academicYear}</td>
-                    <td>${academicYear.dateAdded}</td>
-                    <td>${academicYear.dateEdited}</td>
-                    <td>
-                    <button class="btn btn-sm btn-info">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-academic-year-id="${academicYear.id}">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Attach delete event listeners after populating the table
-            attachDeleteListeners();
-        } else {
-            throw new Error('Failed to fetch academic year data');
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Data Fetch Error',
-            text: 'There was an error fetching academic year data. Please try again.'
-        });
-    }
 });
 
 

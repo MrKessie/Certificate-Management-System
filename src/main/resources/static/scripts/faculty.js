@@ -18,6 +18,20 @@ document.getElementById('cancelImport').addEventListener('click', function() {
     document.getElementById('addForm').style.display = 'block';
 });
 
+function editFaculty(button) {
+    // Read data attributes from the button
+    const facultyId = button.getAttribute('data-faculty-id');
+    const facultyName = button.getAttribute('data-faculty-name');
+
+    // Populate the form fields with the values
+    document.getElementById('editFacultyId').value = facultyId;
+    document.getElementById('editFacultyName').value = facultyName;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editFacultyModal'));
+    editModal.show();
+}
+
 
 document.getElementById('addFacultyForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -100,41 +114,6 @@ document.getElementById('addFacultyForm').addEventListener('submit', async funct
 
 document.addEventListener('DOMContentLoaded', async () => {
     showEditForm();s
-        try {
-            const response = await fetch('/faculty/all');
-            if (response.ok) {
-                const faculties = await response.json();
-
-                const tableBody = document.getElementById('facultyTableBody');
-                tableBody.innerHTML = ''; // Clear any existing rows
-
-                faculties.forEach(faculty => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${faculty.facultyId}</td>
-                    <td>${faculty.facultyName}</td>
-                    <td>${faculty.dateAdded}</td>
-                    <td>${faculty.dateEdited}</td>
-                    <td>
-                    <button class="btn btn-sm btn-info">Edit</button>
-                    <button class="btn btn-sm btn-danger" data-faculty-id="${faculty.facultyId}">Delete</button>
-                    </td>
-                `;
-                    tableBody.appendChild(row);
-                });
-
-                // Attach delete event listeners after populating the table
-                attachDeleteListeners();
-            } else {
-                throw new Error('Failed to fetch faculty data');
-            }
-        } catch (error) {
-            await Swal.fire({
-                icon: 'error',
-                title: 'Data Fetch Error',
-                text: 'There was an error fetching faculty data. Please try again.'
-            });
-        }
     });
 
 
