@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEW - Certificate Management System</title>
+
+
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/assets/images/favicon.png">
+    <!--  Font Awesome-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" rel="stylesheet">
+
+    <!--  Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="../static/assets/plugins/tables/css/datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Pignose Calender -->
+    <link href="../static/assets/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+    <!-- Chartist -->
+    <link rel="stylesheet" href="../static/assets/plugins/chartist/css/chartist.min.css">
+    <link rel="stylesheet" href="../static/assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+    <!-- Custom Stylesheet -->
+    <link href="../static/assets/css/style.css" rel="stylesheet">
+</head>
+<style>
+    .modal-header {
+        border-bottom: none;
+    }
+    .modal-footer {
+        border-top: none;
+    }
+
+    /* Sidebar styles */
+    #wrapper {
+        display: flex;
+        width: 100%;
+    }
+
+    #sidebar-wrapper {
+        width: 250px;
+        transition: width 0.3s;
+        overflow: hidden;
+    }
+
+    #sidebar-wrapper.collapsed {
+        width: 0;
+    }
+
+    main {
+        flex-grow: 1;
+        padding-left: 250px;
+        transition: padding-left 0.3s;
+    }
+
+    main.collapsed {
+        padding-left: 20px;
+    }
+</style>
+<body>
+<!--*******************
+        Preloader start
+********************-->
+<div id="preloader">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+        </svg>
+    </div>
+</div>
+<!--*******************
+    Preloader end
+********************-->
+
+<!--======== HEADER STARTS HERE ========== -->
+<!--======== HEADER STARTS HERE ========== -->
+
+<div th:replace="~{fragments/layout :: header-start}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
+
+<!--======== SIDE BAR STARTS HERE ==========-->
+<!--======== SIDE BAR STARTS HERE ========== -->
+
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
+<!--======== SIDE BAR ENDS HERE ==========-->
+<!--======== SIDE BAR ENDS HERE ========== -->
+
+<!--======== MAIN CONTENT STARTS HERE ==========-->
+<!--======== MAIN CONTENT STARTS HERE ========== -->
+<div class="content-body">
+    <div class="row justify-content-center">
+        <div class="row page-titles mx-0">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Setup</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Programme</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- PROGRAMMES tABLE -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h4 class="card-title">PROGRAMME LIST</h4>
+                            <button class="btn btn-primary" id="addNewButton" data-bs-toggle="modal" data-bs-target="#addProgrammeModal" style="background-color: blue; color: white">+ Add Programme</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="programmeTable">
+                                <thead>
+                                <tr>
+                                    <th>Programme ID</th>
+                                    <th>Programme Name</th>
+                                    <th>Faculty</th>
+                                    <th>Department</th>
+                                    <th>Date Added</th>
+                                    <th>Date Edited</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="programmeTableBody">
+                                <!-- Example data rows, replace these with your Thymeleaf code or data binding -->
+                                <tr th:each="programme : ${programmes}">
+                                    <td th:text="${programme.programmeId}">ID</td>
+                                    <td th:text="${programme.programmeName}">Academic Year</td>
+                                    <td th:text="${programme.faculty.facultyName}">Academic Year</td>
+                                    <td th:text="${programme.department.departmentName}">Academic Year</td>
+                                    <td th:text="${programme.dateAdded}">Date Added</td>
+                                    <td th:text="${programme.dateEdited}">Date Edited</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info"
+                                                th:data-programme-id="${programme.programmeId}"
+                                                th:data-programme-name="${programme.programmeName}"
+                                                th:data-programme-faculty="${programme.faculty}"
+                                                th:data-programme-department="${programme.department}"
+                                                onclick="editDepartment(this)"
+                                                style="background-color: blue">
+                                            <i class="la la-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" th:onclick="'deleteProgramme(' + ${programme.programmeId} + ')'">
+                                            <i class="la la-trash-o"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Repeat rows as necessary -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination handled by DataTables -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD PROGRAMME MODAL -->
+        <div class="modal fade" id="addProgrammeModal" tabindex="-1" aria-labelledby="addProgrammeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProgrammeModalLabel">Add Programme</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <form id="addProgrammeForm">
+                            <div class="form-group mb-3">
+                                <label for="programmeId">Programme ID</label>
+                                <input type="text" class="form-control" id="programmeId" name="programmeId" placeholder="Eg. 26458" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="programmeName">Programme Name</label>
+                                <input type="text" class="form-control" id="programmeName" name="programmeName" placeholder="Eg. Bachelor of Science" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="faculty">Faculty</label>
+                                <select class="form-control" id="faculty" name="faculty" required>
+                                    <option value="">Select Faculty</option>
+                                    <!-- Dynamically load faculties -->
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="department">Department</label>
+                                <select class="form-control" id="department" name="department" required>
+                                    <option value="">Select Department</option>
+                                    <!-- Dynamically load departments based on faculty -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background-color: blue; color: white">Save</button>
+                            <button class="btn btn-secondary" id="showImportFormButton" data-bs-toggle="modal" data-bs-target="#importProgrammeModal" style="color: white">Import (Excel)</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--        ADD PROGRAMME MODAL ENDS HERE-->
+
+
+        <!-- IMPORT PROGRAMME MODAL START -->
+        <div class="modal fade" id="importProgrammeModal" tabindex="-1" aria-labelledby="importProgrammeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importProgrammeModalLabel">Import Programme (Excel)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <p><strong>NOTE:</strong> To import Programmes from an Excel file, the details should follow the format below:</p>
+                        <p><strong>COLUMN A: </strong>Programme ID</p>
+                        <p><strong>COLUMN B: </strong>Programme Name</p>
+                        <p><strong>COLUMN C: </strong>Faculty ID</p>
+                        <p><strong>COLUMN D: </strong>Department ID</p>
+                        <form id="programmeImportForm" onsubmit="return importProgrammes()" enctype="multipart/form-data">
+                            <div class="form-group mb-3">
+                                <label for="file">Choose File</label>
+                                <input type="file" class="form-control" id="file" name="file" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background-color: blue; color: white">Import (Excel)</button>
+                            <button class="btn btn-primary" id="addProgrammeButton" data-bs-toggle="modal" data-bs-target="#addProgrammeModal" style="color: white">Add Programme</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--        IMPORT PROGRAMME MODAL END-->
+    </div>
+</div>
+
+
+<!-- Edit Programme Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editProgrammeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProgrammeModalLabel">Edit Programme</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group mb-3">
+                        <label for="editProgrammeId">Programme ID</label>
+                        <input type="text" class="form-control" id="editProgrammeId" name="programmeId" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="editProgrammeName">Programme Name</label>
+                        <input type="text" class="form-control" id="editProgrammeName" name="programmeName" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="editFaculty">Faculty</label>
+                        <select class="form-control" id="editFaculty" name="faculty" required>
+                            <option value="">Select Faculty</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="editDepartment">Department</label>
+                        <select class="form-control" id="editDepartment" name="department" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitEditForm()" style="background-color: blue; color: white">Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--======== MAIN CONTENT ENDS HERE ==========-->
+<!--======== MAIN CONTENT ENDS HERE ==========-->
+
+<!--======== FOOTER STARTS HERE ==========-->
+<!--======== FOOTER STARTS HERE ==========-->
+<div th:replace="~{fragments/layout :: footer}"></div>
+<!--======== FOOTER ENDS HERE ========== -->
+<!--======== FOOTER ENDS HERE ========== -->
+
+
+<!--SCRIPTS GOES HERE-->
+<script src="../static/assets/plugins/common/common.min.js"></script>
+<script src="../static/assets/js/custom.min.js"></script>
+<script src="../static/assets/js/settings.js"></script>
+<script src="../static/assets/js/gleek.js"></script>
+<script src="../static/assets/js/styleSwitcher.js"></script>
+
+<!-- Chartjs -->
+<script src="../static/assets/plugins/chart.js/Chart.bundle.min.js"></script>
+<!-- Circle progress -->
+<script src="../static/assets/plugins/circle-progress/circle-progress.min.js"></script>
+<!-- Datamap -->
+<script src="../static/assets/plugins/d3v3/index.js"></script>
+<script src="../static/assets/plugins/topojson/topojson.min.js"></script>
+<script src="../static/assets/plugins/datamaps/datamaps.world.min.js"></script>
+<!-- Morrisjs -->
+<script src="../static/assets/plugins/raphael/raphael.min.js"></script>
+<script src="../static/assets/plugins/morris/morris.min.js"></script>
+<!-- Pignose Calender -->
+<script src="../static/assets/plugins/moment/moment.min.js"></script>
+<script src="../static/assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
+<!-- ChartistJS -->
+<script src="../static/assets/plugins/chartist/js/chartist.min.js"></script>
+<script src=../static/assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js></script>
+<script src="../static/assets/js/dashboard/dashboard-1.js"></script>
+
+<script src="../static/assets/plugins/tables/js/jquery.dataTables.min.js"></script>
+<script src="../static/assets/plugins/tables/js/datatable/dataTables.bootstrap4.min.js"></script>
+<script src="../static/assets/plugins/tables/js/datatable-init/datatable-basic.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../static/scripts/dashboard.js"></script>
+<script src="../static/scripts/programme.js"></script>
+</body>
+</html>

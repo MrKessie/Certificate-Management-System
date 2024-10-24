@@ -1,4 +1,3 @@
-//FUNCTION VALIDATE FORM CONTROLS AND SUBMIT
 console.log("Faculty JS loaded");
 
 
@@ -183,53 +182,6 @@ function attachDeleteListeners() {
         });
     });
 }
-
-
-// document.getElementById('editFacultyForm').addEventListener('submit', async (event) => {
-//     event.preventDefault(); // Prevent default form submission
-//
-//     const facultyId = document.getElementById('editFacultyId').value;
-//     const facultyName = document.getElementById('editFacultyName').value;
-//
-//     try {
-//         const response = await fetch(`/faculties/update/${facultyId}`, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ facultyName })
-//         });
-//
-//         if (response.ok) {
-//             await Swal.fire({
-//                 icon: 'success',
-//                 title: 'Updated',
-//                 text: 'Faculty details updated successfully!'
-//             });
-//
-//             // Hide the modal
-//             const myModalEl = document.getElementById('editFacultyModal');
-//             const modal = bootstrap.Modal.getInstance(myModalEl);
-//             modal.hide();
-//
-//             // Optionally, refresh the table or update the specific row
-//             location.reload(); // Reload the page or update the table row dynamically
-//         } else {
-//             const errorText = await response.text();
-//             await Swal.fire({
-//                 icon: 'error',
-//                 title: 'Update Error',
-//                 text: errorText || 'There was an error updating the faculty. Please try again.'
-//             });
-//         }
-//     } catch (error) {
-//         await Swal.fire({
-//             icon: 'error',
-//             title: 'Submission Error',
-//             text: 'There was an error with the submission. Please try again.'
-//         });
-//     }
-// });
 
 function attachEditListeners() {
     document.querySelectorAll('.btn-info').forEach(button => {

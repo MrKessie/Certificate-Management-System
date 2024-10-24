@@ -450,50 +450,9 @@ function showEditForm() {
 
 // Initial call to load faculties when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", async function () {
-    loadFaculties()
-    loadDepartments()
+    loadFaculties();
+    loadDepartments();
     loadProgrammes();
     loadAcademicYears();
     showEditForm();
-
-
-    try {
-        const response = await fetch('/student/all');
-        if (response.ok) {
-            const students = await response.json();
-
-            const tableBody = document.getElementById('studentTableBody');
-            tableBody.innerHTML = ''; // Clear any existing rows
-
-            students.forEach(student => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="student-id">${student.studentId}</td>
-                    <td class="student-name">${student.studentName}</td>
-                    <td class="academic-year">${student.academicYear.academicYear}</td>
-                    <td class="faculty-name">${student.faculty.facultyName}</tdclass-faculty-id>
-                    <td class="department-name">${student.department.departmentName}</td>
-                    <td class="programme-name">${student.programme.programmeName}</td>
-                    <td>${student.dateAdded}</td>
-                    <td>${student.dateEdited}</td>
-                    <td>
-                    <button class="btn btn-sm btn-info"><i class="la la-pencil"></i></button>
-                    <button class="btn btn-sm btn-danger" data-student-id="${student.studentId}"><i class="la la-trash-o"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Attach delete event listeners after populating the table
-            attachDeleteListeners();
-        } else {
-            throw new Error('Failed to fetch Student data');
-        }
-    } catch (error) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Data Fetch Error',
-            text: 'There was an error fetching Student data. Please try again.'
-        });
-    }
 });

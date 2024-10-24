@@ -51,7 +51,7 @@ public class ProgrammeController {
         model.addAttribute("programmes", programmeService.allProgrammes());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
-        return "programme-add";
+        return "programme";
     }
 
     @GetMapping("/programme-edit")

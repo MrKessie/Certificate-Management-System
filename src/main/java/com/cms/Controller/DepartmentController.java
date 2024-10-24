@@ -49,7 +49,7 @@ public class DepartmentController {
         model.addAttribute("department", new Department());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
-        return "department-add";
+        return "department";
     }
 
     @GetMapping("/department-edit")
