@@ -4,10 +4,12 @@ import com.cms.Enum.Genders;
 import com.cms.Enum.Roles;
 import com.cms.Model.User;
 import com.cms.Service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +21,10 @@ public class AuthController {
     UserService userService;
 
     @GetMapping("/register")
-    public String showRegistrationForm() {
-//        model.addAttribute("user", new User());
+    public String showRegistrationForm(HttpSession session, Model model) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+        model.addAttribute("users", userService.usersList());
         return "register";
     }
 

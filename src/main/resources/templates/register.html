@@ -1,203 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Certificate Management System</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <link rel="stylesheet" href="../static/styles/pages/pages-add.css">
-  <link rel="stylesheet" href="../static/styles/dashboard.css">
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 100px;
-      width: 70%;
-    }
-    .header {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .form-buttons {
-      display: flex;
-      justify-content: space-between;
-    }
-    .form-buttons button {
-      width: 48%;
-    }
-  </style>
+  <title>UEW - Certificate Management System</title>
+
+
+  <!-- Favicon icon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="../static/assets/images/favicon.png">
+  <!--  Font Awesome-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" rel="stylesheet">
+
+  <!--  Bootstrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="../static/assets/plugins/tables/css/datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+  <!-- Pignose Calender -->
+  <link href="../static/assets/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+  <!-- Chartist -->
+  <link rel="stylesheet" href="../static/assets/plugins/chartist/css/chartist.min.css">
+  <link rel="stylesheet" href="../static/assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+  <!-- Custom Stylesheet -->
+  <link href="../static/assets/css/style.css" rel="stylesheet">
 </head>
+<style>
+  .modal-header {
+    border-bottom: none;
+  }
+  .modal-footer {
+    border-top: none;
+  }
+
+  /* Sidebar styles */
+  #wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  #sidebar-wrapper {
+    width: 250px;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+
+  #sidebar-wrapper.collapsed {
+    width: 0;
+  }
+
+  main {
+    flex-grow: 1;
+    padding-left: 250px;
+    transition: padding-left 0.3s;
+  }
+
+  main.collapsed {
+    padding-left: 20px;
+  }
+</style>
 <body>
-<!-- Preloader -->
+<!--*******************
+        Preloader start
+********************-->
 <div id="preloader">
-  <div class="spinner"></div>
+  <div class="loader">
+    <svg class="circular" viewBox="25 25 50 50">
+      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+    </svg>
+  </div>
 </div>
+<!--*******************
+    Preloader end
+********************-->
 
 <!--======== HEADER STARTS HERE ========== -->
 <!--======== HEADER STARTS HERE ========== -->
-<!-- Header -->
-<!--<header th:fragment="header">-->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <div class="container-fluid">
-      <div class="d-flex align-items-center">
-        <span class="navbar-text text-white mr-3" id="userName">Full Name</span>
-        <span class="navbar-text text-white mr-3">||</span>
-        <span class="navbar-text text-white mr-3" id="roleUser">Role</span>
-        <!--        <button class="btn btn-primary ml-3" id="menu-toggle">Toggle Menu</button>-->
-        <button class="btn btn-primary ml-3" id="menu-toggle">☰</button>
-      </div>
-      <div class="mx-auto">
-        <a class="navbar-brand text-white" href="#">Certificate Management System</a>
-      </div>
-      <div class="d-flex align-items-center">
-        <a class="nav-link text-white" href="#"><img src="../static/images/notification.png" alt="Notification" class="icon"></a>
-        <a class="nav-link text-white" href="#"><img src="../static/images/logout.png" alt="Logout" class="icon"></a>
-      </div>
-    </div>
-  </nav>
-</header>
-<!--======== HEADER ENDS HERE ========== -->
-<!--======== HEADER ENDS HERE ========== -->
 
+<div th:replace="~{fragments/layout :: header-start}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<!--======== HEADER ENDS HERE ========== -->
+<!--======== HEADER ENDS HERE ========== -->
 
 <!--======== SIDE BAR STARTS HERE ==========-->
 <!--======== SIDE BAR STARTS HERE ========== -->
-<nav th:fragment="sidebar">
-  <div class="d-flex" id="wrapper">
-    <!-- Sidebar -->
-    <div class="bg-dark border-right" id="sidebar-wrapper">
-      <div class="list-group list-group-flush" id="sidebar-content">
-        <a href="/dashboard/homepage" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/home.png" alt="home">Dashboard</a>
-        <div class="dropdown">
-          <a href="#academicYearMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse"><img src="../static/images/calendar.png" alt="dashboard">Setup</a>
-          <div id="academicYearMenu" class="collapse">
-            <a class="list-group-item list-group-item-action bg-dark text-white" href="/academic-year/academic-year-add">Academic Year</a>
-            <a href="/faculty/faculty-add" class="list-group-item list-group-item-action bg-dark text-white">Faculty</a>
-            <a href="/department/department-add" class="list-group-item list-group-item-action bg-dark text-white">Department</a>
-            <a href="/programme/programme-add" class="list-group-item list-group-item-action bg-dark text-white" >Programme</a>
-            <a href="/student/student-add" class="list-group-item list-group-item-action bg-dark text-white">Student</a>
-            <a href="/register" class="list-group-item list-group-item-action bg-dark text-white">Users</a>
-          </div>
-        </div>
-        <div class="dropdown">
-          <a href="#certificateMenu" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-toggle="collapse">
-            <img src="../static/images/certificate.png" alt="Certificate">Certificate</a>
-          <div id="certificateMenu" class="collapse">
-            <a href="/certificate/certificate-add" class="list-group-item list-group-item-action bg-dark text-white">Add Certificate</a>
-            <a href="/certificate-issue" class="list-group-item list-group-item-action bg-dark text-white">Issue Certificate</a>
-            <a href="/certificate-verify" class="list-group-item list-group-item-action bg-dark text-white">Verify Certificate</a>
-            <a href="/certificate-issue/all-issued" class="list-group-item list-group-item-action bg-dark text-white">Issued Table</a>
-            <a href="/certificate-verify/all-verified" class="list-group-item list-group-item-action bg-dark text-white">Verified Table</a>
-          </div>
-        </div>
-        <a href="/user-activity" class="list-group-item list-group-item-action bg-dark text-white"><img src="../static/images/report.png" alt="report">Report</a>
-      </div>
-    </div>
-  </div>
-</nav>
-<!-- /#sidebar-wrapper -->
+
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+
 <!--======== SIDE BAR ENDS HERE ==========-->
 <!--======== SIDE BAR ENDS HERE ========== -->
 
-<main id="main-content">
-  <div class="container">
-    <div class="header">
-      <h1>Add User</h1>
-    </div>
-  <!--  <div class="content">-->
-      <div class="form-container">
-        <h2>User Info</h2>
-  <!--      <form action="/user/add" method="POST" id="registerForm">-->
-        <form id="registerForm">
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="userId">User ID</label>
-              <input type="text" class="form-control" id="userId" placeholder="User ID" name="userId" required>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="fullName">Full Name</label>
-              <input type="text" class="form-control" id="fullName" placeholder="Full Name" name="fullName" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="gender">Gender</label>
-              <select id="gender" class="form-control" name="gender" required>
-                <option value="">Select Gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="role">Role</label>
-              <select id="role" class="form-control" name="role" required>
-                <option value="">Select Role</option>
-                <option value="ROLE_ADMIN">Admin</option>
-                <option value="ROLE_CLIENT">Client</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="usernames">Username</label>
-              <input type="text" class="form-control" id="usernames" placeholder="Username" name="username" required>
-            </div>
-          </div>
-          <div class="form-buttons">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="button" class="btn btn-danger">Cancel</button>
-          </div>
-        </form>
+<!--======== MAIN CONTENT STARTS HERE ==========-->
+<!--======== MAIN CONTENT STARTS HERE ========== -->
+<div class="content-body">
+  <div class="row justify-content-center">
+    <div class="row page-titles mx-0">
+      <div class="col p-md-0">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="javascript:void(0)">Setup</a></li>
+          <li class="breadcrumb-item active"><a href="javascript:void(0)">User</a></li>
+        </ol>
       </div>
-  </div>
+    </div>
+
+    <!--  DATATABLE STARTS HERE-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <!-- Use Flexbox to align items horizontally -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="card-title mb-0">USER LIST</h4>
+                <button class="btn btn-primary" id="addNewButton" data-bs-toggle="modal" data-bs-target="#registerModal" style="background-color: blue">+ Add User</button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered zero-configuration">
+                  <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Gender</th>
+                    <th>Role</th>
+                    <th>Date Created</th>
+                    <th>Date Updated</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="user : ${users}">
+                    <td th:text="${user.userId}"></td>
+                    <td th:text="${user.fullName}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.gender}"></td>
+                    <td th:text="${user.role}"></td>
+                    <td th:text="${user.dateAdded}"></td>
+                    <td th:text="${user.dateEdited}"></td>
+                    <td>
+                      <button class="btn btn-sm btn-info"
+                              th:data-user-id="${user.userId}"
+                              th:data-user-fullname="${user.fullName}"
+                              th:data-user-username="${user.username}"
+                              th:data-user-gender="${user.gender}"
+                              th:data-user-role="${user.role}"
+                              onclick="editUser(this)"
+                              style="background-color: blue">
+                        <i class="la la-pencil"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" th:onclick="'deleteUser(' + ${user.userId} + ')'">
+                        <i class="la la-trash-o"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--DATA TABLE ENDS HERE-->
 
 
-  <!-- User Table -->
-  <div class="row justify-content-center mt-4">
-    <div class="col-md-12">
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-between mb-3">
-            <h5 class="card-title">All Users</h5>
-            <button class="btn btn-primary" onclick="">+ Add new</button>
+    <!-- Register User Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">Register Info</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="table-responsive">
-            <table class="table table-bordered" id="userTable">
-              <thead>
-              <tr>
-                <th>User ID</th>
-                <th>Full Name</th>
-                <th>Username</th>
-                <th>Gender</th>
-                <th>Role</th>
-                <th>Date Added</th>
-                <th>Date Edited</th>
-                <th>Action</th>
-              </tr>
-              </thead>
-              <tbody id="userTableBody"></tbody>
-            </table>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <form id="registerForm">
+              <div class="col">
+                <div class="form-group">
+                  <label for="userId">User ID</label>
+                  <input type="text" class="form-control" id="userId" name="userId" placeholder="User ID" required>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="fullName">Full Name</label>
+                  <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Full Name" required>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender" class="form-control" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="role">Role</label>
+                  <select id="role" class="form-control" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="ROLE_ADMIN">Admin</option>
+                    <option value="ROLE_CLIENT">Client</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="usernames">Username</label>
+                  <input type="text" class="form-control" id="usernames" name="username" placeholder="Username" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </form>
           </div>
-          <!-- Pagination handled by DataTables -->
         </div>
       </div>
     </div>
   </div>
-<!--  </div>-->
-</main>
+  </div>
+<!--======== MAIN CONTENT ENDS HERE ==========-->
+<!--======== MAIN CONTENT ENDS HERE ==========-->
 
+<!--======== FOOTER STARTS HERE ==========-->
+<!--======== FOOTER STARTS HERE ==========-->
+<div th:replace="~{fragments/layout :: footer}"></div>
+<!--======== FOOTER ENDS HERE ========== -->
+<!--======== FOOTER ENDS HERE ========== -->
+
+
+<!--SCRIPTS GOES HERE-->
+<script src="../static/assets/plugins/common/common.min.js"></script>
+<script src="../static/assets/js/custom.min.js"></script>
+<script src="../static/assets/js/settings.js"></script>
+<script src="../static/assets/js/gleek.js"></script>
+<script src="../static/assets/js/styleSwitcher.js"></script>
+
+<!-- Chartjs -->
+<script src="../static/assets/plugins/chart.js/Chart.bundle.min.js"></script>
+<!-- Circle progress -->
+<script src="../static/assets/plugins/circle-progress/circle-progress.min.js"></script>
+<!-- Datamap -->
+<script src="../static/assets/plugins/d3v3/index.js"></script>
+<script src="../static/assets/plugins/topojson/topojson.min.js"></script>
+<script src="../static/assets/plugins/datamaps/datamaps.world.min.js"></script>
+<!-- Morrisjs -->
+<script src="../static/assets/plugins/raphael/raphael.min.js"></script>
+<script src="../static/assets/plugins/morris/morris.min.js"></script>
+<!-- Pignose Calender -->
+<script src="../static/assets/plugins/moment/moment.min.js"></script>
+<script src="../static/assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
+<!-- ChartistJS -->
+<script src="../static/assets/plugins/chartist/js/chartist.min.js"></script>
+<script src=../static/assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js></script>
+<script src="../static/assets/js/dashboard/dashboard-1.js"></script>
+
+<script src="../static/assets/plugins/tables/js/jquery.dataTables.min.js"></script>
+<script src="../static/assets/plugins/tables/js/datatable/dataTables.bootstrap4.min.js"></script>
+<script src="../static/assets/plugins/tables/js/datatable-init/datatable-basic.min.js"></script>
+
+<!--Personal Scripts-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
@@ -205,10 +281,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../static/scripts/register.js"></script>
 <!--<script src="../static/scripts/dashboard.js"></script>-->
-<script>
-  window.addEventListener('load', function() {
-    document.getElementById('preloader').style.display = 'none';
-  });
-</script>
 </body>
 </html>

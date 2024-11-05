@@ -75,7 +75,12 @@ public class DashboardController {
         model.addAttribute("totalIssuedCertificates", certificateIssueService.totalCertificatesIssued());
         model.addAttribute("totalCertificates", certificateService.totalCertificates());
 
-        return "client-dashboard";
+        LocalDate currentDate = LocalDate.now();
+        // Format the date as needed
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+        model.addAttribute("currentDate", formattedDate);
+
+        return "client-homepage";
     }
 
     @GetMapping("/dashboard/homepage")
