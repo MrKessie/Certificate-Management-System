@@ -43,9 +43,7 @@ public class FacultyService {
 
         facultyRepository.save(faculty);
 
-
         return faculty;
-
     }
 
 

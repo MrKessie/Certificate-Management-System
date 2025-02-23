@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UEW - Certificate Management System</title>
 
-
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="../static/assets/images/favicon.png">
     <!--  Font Awesome-->
@@ -24,41 +23,9 @@
     <link rel="stylesheet" href="../static/assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
     <!-- Custom Stylesheet -->
     <link href="../static/assets/css/style.css" rel="stylesheet">
+    <link href="../static/styles/global.css" rel="stylesheet">
 </head>
-<style>
-    .modal-header {
-        border-bottom: none;
-    }
-    .modal-footer {
-        border-top: none;
-    }
 
-    /* Sidebar styles */
-    #wrapper {
-        display: flex;
-        width: 100%;
-    }
-
-    #sidebar-wrapper {
-        width: 250px;
-        transition: width 0.3s;
-        overflow: hidden;
-    }
-
-    #sidebar-wrapper.collapsed {
-        width: 0;
-    }
-
-    main {
-        flex-grow: 1;
-        padding-left: 250px;
-        transition: padding-left 0.3s;
-    }
-
-    main.collapsed {
-        padding-left: 20px;
-    }
-</style>
 <body>
 <!--*******************
         Preloader start
@@ -99,7 +66,7 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Setup</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Faculty</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Department</a></li>
                 </ol>
             </div>
         </div>
@@ -140,8 +107,8 @@
                                                 <button class="btn btn-sm btn-info"
                                                         th:data-department-id="${department.departmentId}"
                                                         th:data-department-name="${department.departmentName}"
-                                                        th:data-facukty="${department.faculty}"
-                                                        onclick="editDepartmet(this)"
+                                                        th:data-faculty="${department.faculty.facultyName}"
+                                                        onclick="editDepartment(this)"
                                                         style="background-color: blue">
                                                     <i class="la la-pencil"></i>
                                                 </button>
@@ -170,7 +137,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="departmentForm">
+                        <form id="addDepartmentForm">
                             <div class="form-group">
                                 <label for="departmentId">Department ID</label>
                                 <input type="text" class="form-control" id="departmentId" name="departmentId" placeholder="Eg.26458" required>
@@ -228,36 +195,6 @@
     </div>
 </div>
 
-        <!-- Departments Table -->
-<!--        <div class="row justify-content-center mt-4">-->
-<!--            <div class="col-md-12">-->
-<!--                <div class="card mb-4">-->
-<!--                    <div class="card-body">-->
-<!--                        <div class="d-flex justify-content-between mb-3">-->
-<!--                            <h5 class="card-title">DEPARTMENT TABLE</h5>-->
-<!--                            <button class="btn btn-primary" onclick="loadPage('/department/department-add')">+ Add new</button>-->
-<!--                        </div>-->
-<!--                        <div class="table-responsive">-->
-<!--                            <table class="table table-bordered" id="departmentTable">-->
-<!--                                <thead>-->
-<!--                                <tr>-->
-<!--                                    <th>Department ID</th>-->
-<!--                                    <th>Department Name</th>-->
-<!--                                    <th>Faculty</th>-->
-<!--                                    <th>Date Added</th>-->
-<!--                                    <th>Date Edited</th>-->
-<!--                                    <th>Action</th>-->
-<!--                                </tr>-->
-<!--                                </thead>-->
-<!--                                <tbody id="departmentTableBody"></tbody>-->
-<!--                            </table>-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash; Pagination handled by DataTables &ndash;&gt;-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-
 
 <!-- EDIT DEPARTMENT MODAL -->
 <div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
@@ -283,7 +220,9 @@
                         <label for="editFaculty">Faculty</label>
                         <select class="form-control" id="editFaculty" name="faculty" required>
                             <option value="">Select Faculty</option>
-                            <!-- Add options here dynamically based on available faculties -->
+                            <th:block th:each="faculty : ${faculties}">
+                                <option th:value="${faculty.facultyId}" th:text="${faculty.facultyName}"></option>
+                            </th:block>
                         </select>
                     </div>
                 </form>
@@ -291,7 +230,7 @@
             <!-- Modal Footer -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="submitEditForm()">Submit</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white;">Cancel</button>
             </div>
         </div>
     </div>

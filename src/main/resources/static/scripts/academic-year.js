@@ -99,69 +99,61 @@ $(document).ready(function() {
 // });
 
 // Function to add academic year
-async function addAcademicYear() {
-// document.getElementById('acadeicYearForm').addEventListener('submit', async function(event) {
-    const academicYearInput = document.getElementById('academicYearInput');
-    const academicYear = academicYearInput.value.trim();
+document.getElementById('addAcademicYearForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const academicYear = document.getElementById('academicYear').value;
 
     if (!academicYear) {
         await Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Please enter an academic year.'
+            icon: 'warning',
+            title: 'Required Fields',
+            text: 'Enter Academic Year'
         });
         return;
     }
 
-    try {
-        // Show loading state
-        Swal.fire({
-            title: 'Adding Academic Year',
-            text: 'Please wait...',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            willOpen: () => {
-                Swal.showLoading();
-            }
-        });
+    const formData = new FormData();
+    formData.append('academicYear', academicYear);
 
-        // Make API call to add academic year
+    try {
         const response = await fetch('/academic-year/add', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `academicYear=${encodeURIComponent(academicYear)}`
+            body: formData
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (response.ok) {
+            // Check response status or JSON if needed
+            const result = await response.text(); // or response.json() if server returns JSON
+
+            // Handle response and display SweetAlert
+            await Swal.fire({
+                icon: 'success',
+                title: 'Academic Year Added',
+                text: 'Academic Year has been added successfully!'
+            });
+
+            // Optionally redirect or reset form
+            document.getElementById('addAcademicYearForm').reset(); // Reset form
+            window.location.reload(); // Redirect if needed
+        } else {
+            const errorText = await response.text(); // or response.json() if server returns JSON
+
+            await Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: errorText || 'There was an error with the submission. Please try again.'
+            });
         }
-
-        const data = await response.text();
-
-        await Swal.fire({
-            icon: 'success',
-            title: 'Academic Year saved successfully.',
-            text: data
-        });
-
-        // Clear the input field
-        academicYearInput.value = '';
-        // Optionally, refresh the list of academic years or update the UI
     } catch (error) {
-        console.error('Error:', error);
         await Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'An error occurred while adding the academic year. Please try again.'
+            title: 'Submission Error',
+            text: 'There was an error with the submission. Please try again.'
         });
     }
-}
+});
 
-
-// Event listener for the Save button
-document.getElementById('saveAcademicYear').addEventListener('click', addAcademicYear);
 
 // Event listener for the modal close button
 document.getElementById('closeModal').addEventListener('click', () => {
@@ -169,17 +161,19 @@ document.getElementById('closeModal').addEventListener('click', () => {
     $('#addAcademicYearModal').modal('hide');
 });
 
+
+
 // Function to handle Excel import (placeholder)
-async function importExcel() {
-    await Swal.fire({
-        icon: 'info',
-        title: 'Import Excel',
-        text: 'Excel import functionality is not implemented in this example.'
-    });
-}
+// async function importExcel() {
+//     await Swal.fire({
+//         icon: 'info',
+//         title: 'Import Excel',
+//         text: 'Excel import functionality is not implemented in this example.'
+//     });
+// }
 
 // Event listener for the Import (Excel) button
-document.getElementById('importExcel').addEventListener('click', importExcel);
+// document.getElementById('importExcel').addEventListener('click', importExcel);
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -339,27 +333,6 @@ function importAcademicYears() {
     return false; // Prevent form from submitting traditionally
 }
 
-function showEditForm() {
-    const academicYearTable = document.getElementById('academicYearTableBody');
-    const editModal = document.getElementById('editModal');
-    const editForm = document.getElementById('editForm');
-    const editAcademicYearId = document.getElementById('editAcademicYearId');
-    const editAcademicYear = document.getElementById('editAcademicYear');
-
-    academicYearTable.addEventListener('click', function(e) {
-        if (e.target.classList.contains('btn-info')) {
-            const row = e.target.closest('tr');
-            const academicYearId = row.querySelector('.academic-year-id').textContent;
-            const academicYear = row.querySelector('td:nth-child(2)').textContent;
-
-            editAcademicYearId.value = academicYearId;
-            editAcademicYear.value = academicYear;
-
-            $(editModal).modal('show');
-        }
-    });
-}
-
 function submitEditForm() {
     const formData = {
         facultyId: document.getElementById('editAcademicYearId').value,
@@ -400,4 +373,15 @@ function submitEditForm() {
         });
 
     $(editModal).modal('hide');
+}
+
+function editAcademicYear(button) {
+    const academicYearId = button.getAttribute('data-academic-year-id');
+    const academicYear = button.getAttribute('data-academic-year');
+
+    document.getElementById(('editAcademicYearId')).value = academicYearId;
+    document.getElementById('editAcademicYear').value = academicYear;
+
+    const editModal = new bootstrap.Modal(document.getElementById('editAcademicYearModal'));
+    editModal.show();
 }

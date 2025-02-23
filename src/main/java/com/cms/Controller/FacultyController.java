@@ -119,7 +119,6 @@ public class FacultyController {
 
 
     //=============METHOD TO IMPORT  FACULTY=============//
-    //=============METHOD TO IMPORT  DEPARTMENT=============//
     @PostMapping("/import-faculties")
     public ResponseEntity<?> importFaculties(@RequestParam("file") MultipartFile file) throws IOException {
         User currentUser = getCurrentUser();

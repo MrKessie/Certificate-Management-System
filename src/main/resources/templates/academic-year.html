@@ -137,7 +137,10 @@
                     <td th:text="${academicYear.dateAdded}"></td>
                     <td th:text="${academicYear.dateEdited}"></td>
                     <td>
-                      <button class="btn btn-sm btn-info" th:onclick="'editAcademicYear(' + ${academicYear.id} + ')'" style="background-color: blue">
+                      <button class="btn btn-sm btn-info"
+                              th:data-academic-year-id="${academicYear.id}"
+                              th:data-academic-year="${academicYear.academicYear}"
+                              onclick="editAcademicYear(this)" style="background-color: blue">
                         <i class="la la-pencil"></i>
                       </button>
                       <button class="btn btn-sm btn-danger" th:onclick="'deleteAcademicYear(' + ${academicYear.id} + ')'">
@@ -165,10 +168,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="academicYearForm">
+            <form id="addAcademicYearForm">
               <div class="mb-3">
-                <label for="academicYearInput" class="form-label">Academic Year</label>
-                <input type="text" class="form-control" id="academicYearInput" name="academicYear" placeholder="Eg. 2023/2024" required>
+                <label for="academicYear" class="form-label">Academic Year</label>
+                <input type="text" class="form-control" id="academicYear" name="academicYear" placeholder="Eg. 2023/2024" required>
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" style="background-color: blue; color: white">Save</button>
@@ -186,7 +189,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="importAcademicYearModalLabel">Import Academic Year (Excel)</h5>
+            <h4 class="modal-title" id="importAcademicYearModalLabel">Import Academic Year (Excel)</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -199,7 +202,7 @@
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" style="background-color: blue; color: white">Import (Excel)</button>
                 <button class="btn btn-primary" id="addAcademicYear" data-bs-toggle="modal" data-bs-target="#addAcademicYearModal">Add Academic Year</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Close</button>
               </div>
             </form>
           </div>
@@ -211,13 +214,12 @@
 
 
   <!-- Edit Academic Year Modal -->
-  <div class="modal fade" id="editModal">
+  <div class="modal fade" id="editAcademicYearModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Edit Academic Year</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="btn-close" data-dismiss="modal"  aria-label="Close"></button>
         </div>
         <!-- Modal Body -->
         <div class="modal-body">
@@ -235,7 +237,7 @@
         <!-- Modal Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" onclick="submitEditForm()">Submit</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: red; color: white;">Close</button>
         </div>
       </div>
     </div>

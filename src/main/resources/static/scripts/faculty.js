@@ -17,21 +17,6 @@ document.getElementById('cancelImport').addEventListener('click', function() {
     document.getElementById('addForm').style.display = 'block';
 });
 
-function editFaculty(button) {
-    // Read data attributes from the button
-    const facultyId = button.getAttribute('data-faculty-id');
-    const facultyName = button.getAttribute('data-faculty-name');
-
-    // Populate the form fields with the values
-    document.getElementById('editFacultyId').value = facultyId;
-    document.getElementById('editFacultyName').value = facultyName;
-
-    // Show the modal
-    const editModal = new bootstrap.Modal(document.getElementById('editFacultyModal'));
-    editModal.show();
-}
-
-
 document.getElementById('addFacultyForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -110,12 +95,108 @@ document.getElementById('addFacultyForm').addEventListener('submit', async funct
     }
 });
 
+function importFaculties() {
+    console.log('Importing');
+    const facultyFile = document.getElementById('file');
+    const form = document.getElementById('facultyImportForm');
 
-document.addEventListener('DOMContentLoaded', async () => {
-    showEditForm();s
+    if (facultyFile.files.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select a file'
+        });
+        return false;
+    }
+
+    facultyFile.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const validMimeTypes = [
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (!validMimeTypes.includes(file.type) && !['xls', 'xlsx'].includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please upload a valid Excel file.'
+                });
+                event.target.value = '';
+            }
+        }
     });
 
+    const formData = new FormData(form);
 
+    fetch('/faculty/import-faculties', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.addedCount > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: `${data.addedCount} faculties have been added successfully.`
+                });
+            }
+
+            if (data.notAddedFaculties && Object.keys(data.notAddedFaculties).length > 0) {
+                let message = 'The following faculties were not added:\n\n';
+                for (let [id, reason] of Object.entries(data.notAddedFaculties)) {
+                    message += `Faculty ID ${id}: ${reason}\n`;
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: message
+                });
+            }
+
+            if ((!data.addedCount || data.addedCount === 0) &&
+                (!data.notAddedFaculties || Object.keys(data.notAddedFaculties).length === 0)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Information',
+                    text: 'No faculties were added. The file might be empty.'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while importing faculties.'
+            });
+        });
+
+    return false; // Prevent form from submitting traditionally
+}
+
+
+function editFaculty(button) {
+    // Read data attributes from the button
+    const facultyId = button.getAttribute('data-faculty-id');
+    const facultyName = button.getAttribute('data-faculty-name');
+
+    // Populate the form fields with the values
+    document.getElementById('editFacultyId').value = facultyId;
+    document.getElementById('editFacultyName').value = facultyName;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editFacultyModal'));
+    editModal.show();
+}
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    showEditForm();
+});
 
 function attachDeleteListeners() {
     document.querySelectorAll('.btn-danger').forEach(button => {
@@ -217,90 +298,7 @@ function attachEditListeners() {
         });
     });
 }
-
 //FUNCTION IMPORT FACULTIES
-function importFaculties() {
-    console.log('Importing');
-    const facultyFile = document.getElementById('file');
-    const form = document.getElementById('facultyImportForm');
-
-    if (facultyFile.files.length === 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Please select a file'
-        });
-        return false;
-    }
-
-    facultyFile.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const validMimeTypes = [
-                'application/vnd.ms-excel',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            ];
-            const fileName = file.name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-            if (!validMimeTypes.includes(file.type) && !['xls', 'xlsx'].includes(fileExtension)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please upload a valid Excel file.'
-                });
-                event.target.value = '';
-            }
-        }
-    });
-
-    const formData = new FormData(form);
-
-    fetch('/faculty/import-faculties', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.addedCount > 0) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: `${data.addedCount} faculties have been added successfully.`
-                });
-            }
-
-            if (data.notAddedFaculties && Object.keys(data.notAddedFaculties).length > 0) {
-                let message = 'The following faculties were not added:\n\n';
-                for (let [id, reason] of Object.entries(data.notAddedFaculties)) {
-                    message += `Faculty ID ${id}: ${reason}\n`;
-                }
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning',
-                    text: message
-                });
-            }
-
-            if ((!data.addedCount || data.addedCount === 0) &&
-                (!data.notAddedFaculties || Object.keys(data.notAddedFaculties).length === 0)) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Information',
-                    text: 'No faculties were added. The file might be empty.'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while importing faculties.'
-            });
-        });
-
-    return false; // Prevent form from submitting traditionally
-}
 
 
 function showEditForm() {

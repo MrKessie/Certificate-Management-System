@@ -5,30 +5,18 @@ $(document).ready(function() {
     $('#departmentTable').DataTable();
 });
 
-// Toggle between forms
-document.getElementById('showImportForm').addEventListener('click', function() {
-    document.getElementById('addForm').style.display = 'none';
-    document.getElementById('importForm').style.display = 'block';
-});
+// function editDepartment(departmentId, departmentName, facultyId) {
+//     // Populate the form fields with the passed data
+//     document.getElementById('editDepartmentId').value = departmentId;
+//     document.getElementById('editDepartmentName').value = departmentName;
+//     document.getElementById('editFaculty').value = facultyId;
+//
+//     // Show the modal
+//     const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'));
+//     editModal.show();
+// }
 
-document.getElementById('cancelImport').addEventListener('click', function() {
-    document.getElementById('importForm').style.display = 'none';
-    document.getElementById('addForm').style.display = 'block';
-});
-
-function editDepartment(departmentId, departmentName, facultyId) {
-    // Populate the form fields with the passed data
-    document.getElementById('editDepartmentId').value = departmentId;
-    document.getElementById('editDepartmentName').value = departmentName;
-    document.getElementById('editFaculty').value = facultyId;
-
-    // Show the modal
-    const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'));
-    editModal.show();
-}
-
-
-document.getElementById('departmentForm').addEventListener('submit', async function(event) {
+document.getElementById('addDepartmentForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     // Get form data
@@ -88,7 +76,7 @@ document.getElementById('departmentForm').addEventListener('submit', async funct
             });
 
             // Optionally redirect or reset form
-            document.getElementById('departmentForm').reset(); // Reset form
+            document.getElementById('addDepartmentForm').reset(); // Reset form
             window.location.reload(); // Redirect if needed
         } else {
             const errorText = await response.text(); // or response.json() if server returns JSON
@@ -111,7 +99,6 @@ document.getElementById('departmentForm').addEventListener('submit', async funct
 
 document.addEventListener('DOMContentLoaded', async () => {
     loadFaculties();
-    showEditForm();
 });
 
 
@@ -315,38 +302,54 @@ function loadEditFaculties() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
+function editDepartment(button) {
+    // Read data attributes from the button
+    const departmentId = button.getAttribute('data-department-id');
+    const departmentName = button.getAttribute('data-department-name');
+    const faculty = button.getAttribute('data-faculty');
 
+    // Populate the form fields with the values
+    document.getElementById('editDepartmentId').value = departmentId;
+    document.getElementById('editDepartmentName').value = departmentName;
+    document.getElementById('editFaculty').value = faculty;
 
-
-function showEditForm() {
-    const departmentTable = document.getElementById('departmentTableBody');
-    const editModal = document.getElementById('editModal');
-    const editDepartmentId = document.getElementById('editDepartmentId');
-    const editDepartmentName = document.getElementById('editDepartmentName');
-    const editFaculty = document.getElementById('editFaculty');
-
-    departmentTable.addEventListener('click', function(e) {
-        if (e.target.classList.contains('btn-info')) {
-            const row = e.target.closest('tr');
-            const departmentId = row.querySelector('.department-id').textContent;
-            const departmentName = row.querySelector('td:nth-child(2)').textContent;
-            const facultyName = row.querySelector('td:nth-child(3)').textContent
-
-            editDepartmentId.value = departmentId;
-            editDepartmentName.value = departmentName;
-            // editFaculty.value = faculty;
-
-            loadEditFaculties().then(() => {
-                const facultyOption = Array.from(editFaculty.options).find(option => option.text === facultyName);
-                if (facultyOption) {
-                    editFaculty.value = facultyOption.value;
-                }
-            });
-
-            $(editModal).modal('show');
-        }
-    });
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'));
+    editModal.show();
 }
+
+
+
+
+// function showEditForm() {
+//     const departmentTable = document.getElementById('departmentTableBody');
+//     const editModal = document.getElementById('editModal');
+//     const editDepartmentId = document.getElementById('editDepartmentId');
+//     const editDepartmentName = document.getElementById('editDepartmentName');
+//     const editFaculty = document.getElementById('editFaculty');
+//
+//     departmentTable.addEventListener('click', function(e) {
+//         if (e.target.classList.contains('btn-info')) {
+//             const row = e.target.closest('tr');
+//             const departmentId = row.querySelector('.department-id').textContent;
+//             const departmentName = row.querySelector('td:nth-child(2)').textContent;
+//             const facultyName = row.querySelector('td:nth-child(3)').textContent
+//
+//             editDepartmentId.value = departmentId;
+//             editDepartmentName.value = departmentName;
+//             // editFaculty.value = faculty;
+//
+//             loadEditFaculties().then(() => {
+//                 const facultyOption = Array.from(editFaculty.options).find(option => option.text === facultyName);
+//                 if (facultyOption) {
+//                     editFaculty.value = facultyOption.value;
+//                 }
+//             });
+//
+//             $(editModal).modal('show');
+//         }
+//     });
+// }
 
 function submitEditForm() {
     const formData = {
