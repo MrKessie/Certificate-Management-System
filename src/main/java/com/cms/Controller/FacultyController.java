@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/faculty")
+@RequestMapping("/certificate-management-system/faculty")
 public class FacultyController {
 
     @Autowired
@@ -36,18 +36,18 @@ public class FacultyController {
     UserActivityService userActivityService;
 
     //=============METHOD TO SHOW FACULTY ALL PAGE=============//
-    @GetMapping("/faculty-all")
-    public String showAllFacultyPage(HttpSession session, Model model) {
-        model.addAttribute("faculties", facultyService.allFacultyList());
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "faculty-all";
-    }
+//    @GetMapping("/faculty-all")
+//    public String showAllFacultyPage(HttpSession session, Model model) {
+//        model.addAttribute("faculties", facultyService.allFacultyList());
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "faculty-all";
+//    }
 
 
 
     //=============METHOD TO SHOW FACULTY ADD PAGE=============//
-    @GetMapping("/faculty-add")
+    @GetMapping
     public String showAddFacultyPage(HttpSession session, Model model) {
         model.addAttribute("faculties", facultyService.allFacultyList());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -58,12 +58,12 @@ public class FacultyController {
 
 
     //=============METHOD TO SHOW FACULTY EDIT PAGE=============//
-    @GetMapping("/faculty-edit")
-    public String showEditFacultyPage(HttpSession session, Model model) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "faculty-edit";
-    }
+//    @GetMapping("/faculty-edit")
+//    public String showEditFacultyPage(HttpSession session, Model model) {
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "faculty-edit";
+//    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

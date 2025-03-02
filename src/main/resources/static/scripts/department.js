@@ -5,17 +5,6 @@ $(document).ready(function() {
     $('#departmentTable').DataTable();
 });
 
-// function editDepartment(departmentId, departmentName, facultyId) {
-//     // Populate the form fields with the passed data
-//     document.getElementById('editDepartmentId').value = departmentId;
-//     document.getElementById('editDepartmentName').value = departmentName;
-//     document.getElementById('editFaculty').value = facultyId;
-//
-//     // Show the modal
-//     const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'));
-//     editModal.show();
-// }
-
 document.getElementById('addDepartmentForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -286,21 +275,21 @@ function loadFaculties() {
         .catch(error => console.error('Error loading faculties:', error));
 }
 
-function loadEditFaculties() {
-    return fetch('/faculty/all/faculties')
-        .then(response => response.json())
-        .then(faculties => {
-            const editFaculty = document.getElementById('editFaculty');
-            editFaculty.innerHTML = '<option value="">Select Faculty</option>';
-            faculties.forEach(faculty => {
-                const option = document.createElement('option');
-                option.value = faculty.facultyId;
-                option.textContent = faculty.facultyName;
-                editFaculty.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading faculties:', error));
-}
+// function loadEditFaculties() {
+//     return fetch('/faculty/all/faculties')
+//         .then(response => response.json())
+//         .then(faculties => {
+//             const editFaculty = document.getElementById('editFaculty');
+//             editFaculty.innerHTML = '<option value="">Select Faculty</option>';
+//             faculties.forEach(faculty => {
+//                 const option = document.createElement('option');
+//                 option.value = faculty.facultyId;
+//                 option.textContent = faculty.facultyName;
+//                 editFaculty.appendChild(option);
+//             });
+//         })
+//         .catch(error => console.error('Error loading faculties:', error));
+// }
 
 function editDepartment(button) {
     // Read data attributes from the button
@@ -394,3 +383,5 @@ function submitEditForm() {
 
     $(editModal).modal('hide');
 }
+
+

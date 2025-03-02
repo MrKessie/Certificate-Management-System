@@ -3,15 +3,15 @@ $(document).ready(function() {
 });
 
 // Toggle between forms
-document.getElementById('showImportForm').addEventListener('click', function() {
-    document.getElementById('addForm').style.display = 'none';
-    document.getElementById('importForm').style.display = 'block';
-});
-
-document.getElementById('cancelImport').addEventListener('click', function() {
-    document.getElementById('importForm').style.display = 'none';
-    document.getElementById('addForm').style.display = 'block';
-});
+// document.getElementById('showImportForm').addEventListener('click', function() {
+//     document.getElementById('addForm').style.display = 'none';
+//     document.getElementById('importForm').style.display = 'block';
+// });
+//
+// document.getElementById('cancelImport').addEventListener('click', function() {
+//     document.getElementById('importForm').style.display = 'none';
+//     document.getElementById('addForm').style.display = 'block';
+// });
 
 $(document).ready(function() {
     $('#programmeTable').DataTable();
@@ -62,7 +62,7 @@ document.getElementById('addProgrammeForm').addEventListener('submit', async fun
     formData.append('department', department);
 
     try {
-        const response = await fetch('/programme/add', {
+        const response = await fetch('/certificate-management-system/programme/add', {
             method: 'POST',
             body: formData
         });
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     try {
-        const response = await fetch('/programme/all');
+        const response = await fetch('/certificate-management-system/programme/all');
         if (response.ok) {
             const programmes = await response.json();
 
@@ -445,4 +445,22 @@ function submitEditForm() {
         });
 
     $(editModal).modal('hide');
+}
+
+function editProgramme(button) {
+    // Read data attributes from the button
+    const programmeId = button.getAttribute('data-programme-id');
+    const programmeName = button.getAttribute('data-programme-name');
+    const faculty = button.getAttribute('data-faculty');
+    const department = button.getAttribute('data-department');
+
+    // Populate the form fields with the values
+    document.getElementById('editProgrammeId').value = departmentId;
+    document.getElementById('editProgrammeName').value = departmentName;
+    document.getElementById('editFaculty').value = faculty;
+    document.getElementById('editDepartment').value = department;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editDProgrammeModal'));
+    editModal.show();
 }

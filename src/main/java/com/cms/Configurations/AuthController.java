@@ -20,12 +20,12 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/register")
+    @GetMapping("/certificate-management-system/user")
     public String showRegistrationForm(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("users", userService.usersList());
-        return "register";
+        return "user";
     }
 
     @GetMapping("/login")

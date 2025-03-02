@@ -139,8 +139,8 @@
                                         <button class="btn btn-sm btn-info"
                                                 th:data-programme-id="${programme.programmeId}"
                                                 th:data-programme-name="${programme.programmeName}"
-                                                th:data-programme-faculty="${programme.faculty}"
-                                                th:data-programme-department="${programme.department}"
+                                                th:data-programme-faculty="${programme.faculty.facultyName}"
+                                                th:data-programme-department="${programme.department.departmentName}"
                                                 onclick="editDepartment(this)"
                                                 style="background-color: blue">
                                             <i class="la la-pencil"></i>
@@ -184,6 +184,9 @@
                                 <label for="faculty">Faculty</label>
                                 <select class="form-control" id="faculty" name="faculty" required>
                                     <option value="">Select Faculty</option>
+                                    <th:block th:each="faculty : ${faculties}">
+                                        <option th:value="${faculty.facultyId}" th:text="${faculty.facultyName}"></option>
+                                    </th:block>
                                     <!-- Dynamically load faculties -->
                                 </select>
                             </div>
@@ -191,6 +194,9 @@
                                 <label for="department">Department</label>
                                 <select class="form-control" id="department" name="department" required>
                                     <option value="">Select Department</option>
+                                    <th:block th:each="department : ${departments}">
+                                        <option th:value="${department.departmentId}" th:text="${department.departmentName}"></option>
+                                    </th:block>
                                     <!-- Dynamically load departments based on faculty -->
                                 </select>
                             </div>
@@ -239,7 +245,7 @@
 </div>
 
 
-<!-- Edit Programme Modal -->
+<!-- EDIT DEPARTMENT MODAL -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editProgrammeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -263,12 +269,18 @@
                         <label for="editFaculty">Faculty</label>
                         <select class="form-control" id="editFaculty" name="faculty" required>
                             <option value="">Select Faculty</option>
+                            <th:block th:each="faculty : ${faculties}">
+                                <option th:value="${faculty.facultyId}" th:text="${faculty.facultyName}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="form-group mb-3">
                         <label for="editDepartment">Department</label>
                         <select class="form-control" id="editDepartment" name="department" required>
                             <option value="">Select Department</option>
+                            <th:block th:each="department : ${departments}">
+                                <option th:value="${department.departmentId}" th:text="${department.departmentId}"></option>
+                            </th:block>
                         </select>
                     </div>
                 </form>

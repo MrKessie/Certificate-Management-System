@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/programme")
+@RequestMapping("/certificate-management-system/programme")
 public class ProgrammeController {
 
     @Autowired
@@ -38,15 +38,15 @@ public class ProgrammeController {
     @Autowired
     UserActivityService userActivityService;
 
-    @GetMapping("/programme-all")
-    public String showProgrammeAllPage(HttpSession session, Model model) {
-        model.addAttribute("programmes", programmeService.allProgrammes());
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "programme-all";
-    }
+//    @GetMapping("/programme-all")
+//    public String showProgrammeAllPage(HttpSession session, Model model) {
+//        model.addAttribute("programmes", programmeService.allProgrammes());
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "programme-all";
+//    }
 
-    @GetMapping("/programme-add")
+    @GetMapping
     public String showProgrammeAddPage(HttpSession session, Model model) {
         model.addAttribute("programmes", programmeService.allProgrammes());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -54,12 +54,12 @@ public class ProgrammeController {
         return "programme";
     }
 
-    @GetMapping("/programme-edit")
-    public String showProgrammeEditPage(HttpSession session, Model model) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "programme-edit";
-    }
+//    @GetMapping("/programme-edit")
+//    public String showProgrammeEditPage(HttpSession session, Model model) {
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "programme-edit";
+//    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

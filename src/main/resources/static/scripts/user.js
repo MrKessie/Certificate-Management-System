@@ -64,7 +64,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             }
         });
 
-        const response = await fetch('/register/user', {
+        const response = await fetch('/certificate-management-system/register/user', {
             method: 'POST',
             body: formData
         });
@@ -131,7 +131,7 @@ function attachDeleteListeners() {
 
             if (result.isConfirmed) {
                 try {
-                    const response = await fetch(`/user/delete/${userId}`, {
+                    const response = await fetch(`/certificate-management-system/user/delete/${userId}`, {
                         method: 'DELETE',
                     });
 
@@ -175,7 +175,7 @@ function attachDeleteListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("DOM is loaded")
     try {
-        const response = await fetch('/user/all');
+        const response = await fetch('/certificate-management-system/user/all');
         if (response.ok) {
             const users = await response.json();
 
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${user.dateAdded}</td>
                     <td>${user.dateEdited}</td>
                     <td>
-                    <button class="btn btn-sm btn-info" onclick="editFaculty(1)">Edit</button>
+                    <button class="btn btn-sm btn-info"">Edit</button>
                     <button class="btn btn-sm btn-danger" data-user-id="${user.userId}">Delete</button>
                     </td>
                 `;

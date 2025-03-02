@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/department")
+@RequestMapping("/certificate-management-system/department")
 public class DepartmentController {
 
     @Autowired
@@ -34,15 +34,15 @@ public class DepartmentController {
     @Autowired
     UserActivityService userActivityService;
 
-    @GetMapping("/department-all")
-    public String showDepartmentAllPage(HttpSession session, Model model) {
-        model.addAttribute("departments", departmentService.allDepartments());
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "department-all";
-    }
+//    @GetMapping("/department-all")
+//    public String showDepartmentAllPage(HttpSession session, Model model) {
+//        model.addAttribute("departments", departmentService.allDepartments());
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "department-all";
+//    }
 
-    @GetMapping("/department-add")
+    @GetMapping
     public String showDepartmentAddPage(HttpSession session, Model model) {
         model.addAttribute("faculties", departmentService.getAllFaculties());
         model.addAttribute("departments", departmentService.allDepartments());
@@ -52,12 +52,12 @@ public class DepartmentController {
         return "department";
     }
 
-    @GetMapping("/department-edit")
-    public String showDepartmentEditPage(HttpSession session, Model model) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "department-edit";
-    }
+//    @GetMapping("/department-edit")
+//    public String showDepartmentEditPage(HttpSession session, Model model) {
+//        User loggedInUser = (User) session.getAttribute("loggedInUser");
+//        model.addAttribute("loggedInUser", loggedInUser);
+//        return "department-edit";
+//    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

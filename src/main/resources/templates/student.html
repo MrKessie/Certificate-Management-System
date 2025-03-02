@@ -141,7 +141,7 @@
                                                 <button class="btn btn-sm btn-info"
                                                         th:data-student-id="${student.studentId}"
                                                         th:data-student-name="${student.studentName}"
-                                                        th:data-student-academicYear="${student.academicYear}"
+                                                        th:data-student-academic-year="${student.academicYear}"
                                                         th:data-student-faculty="${student.faculty}"
                                                         th:data-student-department="${student.department}"
                                                         th:data-student-programme="${student.programme}"
@@ -258,7 +258,7 @@
                                 <input type="file" class="form-control" id="file" name="file" required>
                             </div>
                             <button type="submit" class="btn btn-primary" style="background-color: blue; color: white">Import (Excel)</button>
-                            <button class="btn btn-primary" id="addStudentButton" data-bs-toggle="modal" data-bs-target="#addStudentModal" style="color: white">Add Faculty</button>
+                            <button class="btn btn-primary" id="addStudentButton" data-bs-toggle="modal" data-bs-target="#addStudentModal" style="color: white">Add Student</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: red; color: white">Cancel</button>
                         </form>
                     </div>
@@ -271,7 +271,7 @@
 
 
 <!-- EDIT STUDENT MODAL -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <!-- Modal Header -->
@@ -294,28 +294,36 @@
                         <label for="editAcademicYear">Academic Year</label>
                         <select class="form-control" id="editAcademicYear" name="academicYear" required>
                             <option value="">Select Academic Year</option>
-                            <!-- Options will be populated dynamically -->
+                            <th:block th:each="academicYear : ${academicYears}">
+                                <option th:value="${academicYear.Id}" th:text="${academicYear.academicYear}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="form-group mb-3">
                         <label for="editFaculty">Faculty</label>
                         <select class="form-control" id="editFaculty" name="faculty" required>
                             <option value="">Select Faculty</option>
-                            <!-- Options will be populated dynamically -->
+                            <th:block th:each="faculty : ${faculties}">
+                                <option th:value="${faculty.facultyId}" th:text="${faculty.facultyName}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="form-group mb-3">
                         <label for="editDepartment">Department</label>
                         <select class="form-control" id="editDepartment" name="department" required>
                             <option value="">Select Department</option>
-                            <!-- Options will be populated dynamically -->
+                            <th:block th:each="department : ${departments}">
+                                <option th:value="${department.departmentId}" th:text="${department.departmentName}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="form-group mb-3">
                         <label for="editProgramme">Programme</label>
                         <select class="form-control" id="editProgramme" name="programme" required>
                             <option value="">Select Programme</option>
-                            <!-- Options will be populated dynamically -->
+                            <th:block th:each="programme : ${programmes}">
+                                <option th:value="${programme.programmeId}" th:text="${programme.programmeName}"></option>
+                            </th:block>
                         </select>
                     </div>
                 </form>

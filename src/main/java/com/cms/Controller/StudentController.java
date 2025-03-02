@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/student")
+@RequestMapping("/certificate-management-system/student")
 public class StudentController {
 
     @Autowired
@@ -49,30 +49,18 @@ public class StudentController {
     UserActivityService userActivityService;
 
 
-
-
-    @GetMapping("/student-all")
-    public String showStudentAllPage(HttpSession session, Model model) {
-        model.addAttribute("students", studentService.allStudents());
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "student-all";
-    }
-
-    @GetMapping("/student-add")
+    @GetMapping
     public String showStudentAAddPage(HttpSession session, Model model) {
         model.addAttribute("students", studentService.allStudents());
+        model.addAttribute("faculties", departmentService.getAllFaculties());
+        model.addAttribute("departments", departmentService.allDepartments());
+        model.addAttribute("academicYears", academicYearService.academicYearList());
+        model.addAttribute("programmes", programmeService.allProgrammes());
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
         return "student";
     }
 
-    @GetMapping("/student-edit")
-    public String showStudentEditPage(HttpSession session, Model model) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser);
-        return "student-edit";
-    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

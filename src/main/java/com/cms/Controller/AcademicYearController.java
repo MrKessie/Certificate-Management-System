@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/academic-year")
+@RequestMapping("/certificate-management-system/academic-year")
 public class AcademicYearController {
 
     @Autowired
