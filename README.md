@@ -25,9 +25,11 @@ Most educatinal institutions still rely on the traditional methods for managing 
 ---
 
 ## ✨ Features
-- ✅ Certificate upload  
-- ✅ Certificate search  
-- ✅ Viewing and printing of certificate  
+- ✅ Role-based access
+- ✅ Certificate upload
+- ✅ Certificate search
+- ✅ Viewing and printing of certificate
+- ✅ User activity tracking
 
 ---
 
@@ -35,7 +37,12 @@ Most educatinal institutions still rely on the traditional methods for managing 
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/your-project.git
-cd your-project
-npm install   # or yarn install / pip install -r requirements.txt
+git clone https://github.com/MrKessie/Certificate-Management-System.git
+Launch IDE
+Open projet folder in IDE
+Run project
 
+---
+
+## 🛠️ Usage
+- 
