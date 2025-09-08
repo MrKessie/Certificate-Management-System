@@ -13,6 +13,11 @@ $('#showGetForm').on('click', function() {
     $('#resultsVerify').hide();
 });
 
+document.getElementById('showImportForm').addEventListener('click', function () {
+    document.getElementById('getCertificateFormContainer').style.display = 'none';
+    document.getElementById('importForm').style.display = 'block';
+});
+
 
 document.getElementById("getCertificateForm").addEventListener("submit", async function (event) {
     event.preventDefault();

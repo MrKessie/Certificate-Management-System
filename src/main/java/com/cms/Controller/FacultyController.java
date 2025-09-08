@@ -35,15 +35,6 @@ public class FacultyController {
     @Autowired
     UserActivityService userActivityService;
 
-    //=============METHOD TO SHOW FACULTY ALL PAGE=============//
-//    @GetMapping("/faculty-all")
-//    public String showAllFacultyPage(HttpSession session, Model model) {
-//        model.addAttribute("faculties", facultyService.allFacultyList());
-//        User loggedInUser = (User) session.getAttribute("loggedInUser");
-//        model.addAttribute("loggedInUser", loggedInUser);
-//        return "faculty-all";
-//    }
-
 
 
     //=============METHOD TO SHOW FACULTY ADD PAGE=============//
@@ -55,15 +46,6 @@ public class FacultyController {
         return "faculty";
     }
 
-
-
-    //=============METHOD TO SHOW FACULTY EDIT PAGE=============//
-//    @GetMapping("/faculty-edit")
-//    public String showEditFacultyPage(HttpSession session, Model model) {
-//        User loggedInUser = (User) session.getAttribute("loggedInUser");
-//        model.addAttribute("loggedInUser", loggedInUser);
-//        return "faculty-edit";
-//    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -78,14 +60,12 @@ public class FacultyController {
     public ResponseEntity<String> addFaculty(@RequestParam int facultyId, @RequestParam String facultyName) {
         User currentUser = getCurrentUser();
         try {
-
             if (facultyService.existByFacultyId(facultyId)) {
                 userActivityService.logActivity(currentUser, "ADD_FACULTY_FAILED",
                         "Attempted to add existing faculty: " + facultyName);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Faculty ID already exists.");
             }
 
-//        int userId = Integer.parseInt(principal.getName());
             Faculty faculty = facultyService.addFaculty(facultyId, facultyName);
 
             if (faculty == null) {
